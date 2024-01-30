@@ -1,4 +1,4 @@
 # Haora Go
 
-"Pet project" to implement a CLI application in Go to track working hours.
+"Pet project" to implement a CLI application in Go to track working times.
 

@@ -1,5 +1,7 @@
 package main
 
-func main() {
+import "haora/cmd"
 
+func main() {
+	cmd.Execute()
 }

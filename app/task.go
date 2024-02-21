@@ -3,8 +3,8 @@ package app
 import "time"
 
 type Task struct {
-	start   time.Time
-	text    string
-	isPause bool
-	tags    []string
+	Start   time.Time
+	Text    string
+	IsPause bool
+	Tags    []string
 }

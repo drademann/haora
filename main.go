@@ -9,7 +9,6 @@ import (
 )
 
 func main() {
-	versionCmd := flag.NewFlagSet("version", flag.ExitOnError)
 	flag.Parse()
 
 	if len(os.Args) < 2 {
@@ -19,7 +18,7 @@ func main() {
 
 	var err error
 	switch os.Args[1] {
-	case versionCmd.Name():
+	case cmd.VersionCmd.Name():
 		err = cmd.ExecVersion()
 	default:
 		flag.Usage()

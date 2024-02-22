@@ -9,7 +9,7 @@ import (
 
 func TestNewDay(t *testing.T) {
 	t.Run("should initialise the days date", func(t *testing.T) {
-		date := time.Date(2024, time.February, 21, 14, 58, 42, 12, time.Local)
+		date := testDate(2024, time.February, 21, 14, 58)
 		day := app.NewDay(date)
 
 		if len(day.Tasks) != 0 {
@@ -39,24 +39,24 @@ func TestSameDay(t *testing.T) {
 		expected bool
 	}{
 		{"dates at exact same time should return true",
-			time.Date(2024, time.February, 21, 10, 0, 0, 0, time.Local),
-			time.Date(2024, time.February, 21, 10, 0, 0, 0, time.Local),
+			testDate(2024, time.February, 21, 10, 0),
+			testDate(2024, time.February, 21, 10, 0),
 			true},
 		{"dates at same day should return true",
-			time.Date(2024, time.February, 21, 10, 0, 0, 0, time.Local),
-			time.Date(2024, time.February, 21, 15, 22, 31, 0, time.Local),
+			testDate(2024, time.February, 21, 10, 0),
+			testDate(2024, time.February, 21, 15, 22),
 			true},
 		{"dates at different days should return false",
-			time.Date(2024, time.February, 21, 10, 0, 0, 0, time.Local),
-			time.Date(2024, time.February, 12, 10, 0, 0, 0, time.Local),
+			testDate(2024, time.February, 21, 10, 0),
+			testDate(2024, time.February, 12, 10, 0),
 			false},
 		{"dates at different month should return false",
-			time.Date(2024, time.February, 21, 10, 0, 0, 0, time.Local),
-			time.Date(2024, time.December, 21, 10, 0, 0, 0, time.Local),
+			testDate(2024, time.February, 21, 10, 0),
+			testDate(2024, time.December, 21, 10, 0),
 			false},
 		{"dates at different years should return false",
-			time.Date(2024, time.February, 21, 10, 0, 0, 0, time.Local),
-			time.Date(2025, time.February, 21, 10, 0, 0, 0, time.Local),
+			testDate(2024, time.February, 21, 10, 0),
+			testDate(2025, time.February, 21, 10, 0),
 			false},
 	}
 

@@ -24,8 +24,10 @@ func main() {
 	}
 
 	switch os.Args[1] {
+	case cmd.ListCmd.Name():
+		err = cmd.ExecListCmd()
 	case cmd.VersionCmd.Name():
-		err = cmd.ExecVersion()
+		err = cmd.ExecVersionCmd()
 	default:
 		flag.Usage()
 	}

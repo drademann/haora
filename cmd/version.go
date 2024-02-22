@@ -9,7 +9,7 @@ const version = "1.0.0"
 
 var VersionCmd = flag.NewFlagSet("version", flag.ExitOnError)
 
-func ExecVersion() error {
+func ExecVersionCmd() error {
 	_, err := fmt.Fprintf(Config.Out, "haora version %s\n", version)
 	if err != nil {
 		return err

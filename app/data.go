@@ -7,6 +7,12 @@ import (
 	"path/filepath"
 )
 
+// Data represents the so far added Days.
+//
+// The app will load the list before executing a command,
+// and will save the (changed) list after the command finishes without an error.
+var Data DayList
+
 const (
 	dataDir  = ".haora"
 	dataFile = "workbook"
@@ -42,7 +48,7 @@ func Load() error {
 	file, err := os.Open(filePath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			DayList = make(dayList, 0)
+			Data = make(DayList, 0)
 			return nil
 		}
 		return err
@@ -59,7 +65,7 @@ func read(r io.Reader) error {
 	if err != nil {
 		return err
 	}
-	if err = json.Unmarshal(data, &DayList); err != nil {
+	if err = json.Unmarshal(data, &Data); err != nil {
 		return err
 	}
 	return nil
@@ -86,7 +92,7 @@ func Save() error {
 }
 
 func write(w io.Writer) error {
-	bytes, err := json.Marshal(DayList)
+	bytes, err := json.Marshal(Data)
 	if err != nil {
 		return err
 	}

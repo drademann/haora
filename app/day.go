@@ -8,6 +8,10 @@ type Day struct {
 	Finished time.Time
 }
 
+func (d Day) HasNoTasks() bool {
+	return len(d.Tasks) == 0
+}
+
 func NewDay(date time.Time) *Day {
 	return &Day{
 		Date:     date,

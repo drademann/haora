@@ -1,9 +1,16 @@
 package app
 
-type dayList []Day
+import "time"
 
-// DayList represents the so far added Days.
-//
-// The app will load the list before executing a command,
-// and will save the (changed) list after the command finishes without an error.
-var DayList dayList
+type DayList []Day
+
+func (dl *DayList) Day(date time.Time) Day {
+	for _, day := range *dl {
+		if IsSameDay(day.Date, date) {
+			return day
+		}
+	}
+	newDay := *NewDay(date)
+	*dl = append(*dl, newDay)
+	return newDay
+}

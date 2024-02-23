@@ -2,19 +2,15 @@ package app
 
 import (
 	"errors"
-	"fmt"
 	"testing"
 	"time"
 )
 
-func TestSuccPred(t *testing.T) {
+func TestTaskSuccPred(t *testing.T) {
 	testDayDate := MockTime(0, 0)
 	task1 := *NewTask(MockTime(9, 0), "task 1", false, nil)
 	task2 := *NewTask(MockTime(10, 0), "task 2", false, nil)
 	task3 := *NewTask(MockTime(12, 0), "task 3", false, nil)
-	fmt.Println(task1.Id)
-	fmt.Println(task2.Id)
-	fmt.Println(task3.Id)
 	day := Day{Date: testDayDate,
 		Tasks:    []Task{task1, task2, task3},
 		Finished: time.Time{},
@@ -58,6 +54,35 @@ func TestSuccPred(t *testing.T) {
 		}
 		if !errors.Is(err, NoTaskPred) {
 			t.Errorf("expected error %q, but got %q", NoTaskPred, err)
+		}
+	})
+}
+
+func TestTaskDuration(t *testing.T) {
+	testDayDate := MockTime(0, 0)
+	task1 := *NewTask(MockTime(9, 0), "task 1", false, nil)
+	task2 := *NewTask(MockTime(10, 0), "task 2", false, nil)
+	day := Day{Date: testDayDate,
+		Tasks:    []Task{task1, task2},
+		Finished: time.Time{},
+	}
+
+	t.Run("task with a successor", func(t *testing.T) {
+		d := day.Duration(task1)
+
+		expected := time.Hour
+		if d != expected {
+			t.Errorf("expected duration to be %q, but got %q", expected, d)
+		}
+	})
+	t.Run("task without a successor should return duration until now", func(t *testing.T) {
+		Now = func() time.Time { return MockTime(12, 0) }
+
+		d := day.Duration(task2)
+
+		expected := 2 * time.Hour
+		if d != expected {
+			t.Errorf("expected duration to be %q, but got %q", expected, d)
 		}
 	})
 }

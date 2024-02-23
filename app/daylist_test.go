@@ -1,47 +1,46 @@
-package app_test
+package app
 
 import (
-	"haora/app"
 	"testing"
 	"time"
 )
 
 func TestDay(t *testing.T) {
-	existingDay := app.Day{
-		Date: app.MockTime(9, 0),
-		Tasks: []app.Task{
-			{Start: app.MockTime(9, 0),
+	existingDay := Day{
+		Date: MockTime(9, 0),
+		Tasks: []Task{
+			{Start: MockTime(9, 0),
 				Text:    "a task",
 				IsPause: false,
 				Tags:    []string{}},
 		},
 		Finished: time.Time{}}
-	app.Data = app.DayList{
+	Data = DayList{
 		existingDay,
 	}
 
 	t.Run("should return day if it exists", func(t *testing.T) {
-		date := app.MockTime(13, 48)
+		date := MockTime(13, 48)
 
-		day := app.Data.Day(date)
+		day := Data.Day(date)
 
-		if !app.IsSameDay(day.Date, existingDay.Date) {
+		if !isSameDay(day.Date, existingDay.Date) {
 			t.Errorf("got unexpected task: %+v", day)
 		}
-		if len(app.Data) != 1 {
-			t.Errorf("number of days should'nt have changed, but is now %d", len(app.Data))
+		if len(Data) != 1 {
+			t.Errorf("number of days should'nt have changed, but is now %d", len(Data))
 		}
 	})
 	t.Run("should create a new day if it doesn't exist", func(t *testing.T) {
-		date := app.MockDate(2024, time.June, 30, 10, 0)
+		date := MockDate(2024, time.June, 30, 10, 0)
 
-		day := app.Data.Day(date)
+		day := Data.Day(date)
 
-		if !app.IsSameDay(day.Date, date) {
+		if !isSameDay(day.Date, date) {
 			t.Errorf("got unexpected task: %+v", day)
 		}
-		if len(app.Data) != 2 {
-			t.Errorf("number of days should have increased to 2, but is now %d", len(app.Data))
+		if len(Data) != 2 {
+			t.Errorf("number of days should have increased to 2, but is now %d", len(Data))
 		}
 	})
 }

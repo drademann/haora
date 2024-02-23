@@ -1,6 +1,7 @@
 package app
 
 import (
+	"errors"
 	"github.com/google/uuid"
 	"slices"
 	"time"
@@ -26,19 +27,37 @@ func (d Day) HasNoTasks() bool {
 	return len(d.Tasks) == 0
 }
 
-func (d Day) succ(task Task) Task {
+var (
+	NoTaskSucc = errors.New("no succeeding task")
+	NoTaskPred = errors.New("no preceding task")
+)
+
+func (d Day) succ(task Task) (Task, error) {
 	slices.SortFunc(d.Tasks, tasksByStart)
 	for i, t := range d.Tasks {
 		if t.Id == task.Id {
 			j := i + 1
 			if j < len(d.Tasks) {
-				return d.Tasks[j]
+				return d.Tasks[j], nil
 			}
 		}
 	}
-	return task
+	return task, NoTaskSucc
 }
 
-func IsSameDay(date1, date2 time.Time) bool {
+func (d Day) pred(task Task) (Task, error) {
+	slices.SortFunc(d.Tasks, tasksByStart)
+	for i, t := range d.Tasks {
+		if t.Id == task.Id {
+			j := i - 1
+			if j >= 0 {
+				return d.Tasks[j], nil
+			}
+		}
+	}
+	return task, NoTaskPred
+}
+
+func isSameDay(date1, date2 time.Time) bool {
 	return date1.Location() == date2.Location() && date1.Day() == date2.Day() && date1.Month() == date2.Month() && date1.Year() == date2.Year()
 }

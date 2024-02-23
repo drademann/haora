@@ -8,7 +8,7 @@ type DayList []Day
 
 func (dl *DayList) Day(date time.Time) Day {
 	for _, day := range *dl {
-		if IsSameDay(day.Date, date) {
+		if isSameDay(day.Date, date) {
 			return day
 		}
 	}

@@ -1,20 +1,18 @@
-package cmd_test
+package cmd
 
 import (
 	"bytes"
 	"haora/app"
 	"testing"
 	"time"
-
-	"haora/cmd"
 )
 
 func TestExecListCmd_givenNoDays(t *testing.T) {
 	out := bytes.Buffer{}
-	cmd.Config = cmd.Configuration{Out: &out, OutErr: &bytes.Buffer{}}
+	rootCmd.SetOut(&out)
+	rootCmd.SetArgs([]string{"list"})
 
-	err := cmd.ExecListCmd()
-	if err != nil {
+	if err := rootCmd.Execute(); err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
@@ -25,12 +23,13 @@ func TestExecListCmd_givenNoDays(t *testing.T) {
 }
 
 func TestExecListCmd_givenTasksForToday(t *testing.T) {
+	out := bytes.Buffer{}
+	rootCmd.SetOut(&out)
+	rootCmd.SetArgs([]string{"list"})
+
 	app.Now = func() time.Time {
 		return time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local)
 	}
-	out := bytes.Buffer{}
-	cmd.Config = cmd.Configuration{Out: &out, OutErr: &bytes.Buffer{}}
-
 	app.Data = app.DayList{
 		{Date: time.Date(2024, time.February, 22, 6, 24, 13, 0, time.Local),
 			Tasks: []app.Task{
@@ -42,8 +41,7 @@ func TestExecListCmd_givenTasksForToday(t *testing.T) {
 			Finished: time.Time{}},
 	}
 
-	err := cmd.ExecListCmd()
-	if err != nil {
+	if err := rootCmd.Execute(); err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 

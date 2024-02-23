@@ -1,18 +1,20 @@
 package cmd
 
 import (
-	"flag"
 	"fmt"
+	"github.com/spf13/cobra"
 )
 
 const version = "1.0.0"
 
-var VersionCmd = flag.NewFlagSet("version", flag.ExitOnError)
+func init() {
+	rootCmd.AddCommand(versionCmd)
+}
 
-func ExecVersionCmd() error {
-	_, err := fmt.Fprintf(Config.Out, "haora version %s\n", version)
-	if err != nil {
-		return err
-	}
-	return nil
+var versionCmd = &cobra.Command{
+	Use:   "version",
+	Short: "Print the version number of Haora",
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Fprintf(cmd.OutOrStdout(), "haora version %s\n", version)
+	},
 }

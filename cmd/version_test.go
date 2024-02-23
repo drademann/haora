@@ -1,21 +1,19 @@
-package cmd_test
+package cmd
 
 import (
 	"bytes"
 	"testing"
-
-	"haora/cmd"
 )
 
-func TestExecVersionCmd(t *testing.T) {
+func TestVersionCmd(t *testing.T) {
 	out := bytes.Buffer{}
-	cmd.Config = cmd.Configuration{Out: &out, OutErr: &bytes.Buffer{}}
+	rootCmd.SetOut(&out)
+	rootCmd.SetArgs([]string{"version"})
 
-	err := cmd.ExecVersionCmd()
-
-	if err != nil {
+	if err := rootCmd.Execute(); err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
+
 	expected := "haora version 1.0.0\n"
 	if out.String() != expected {
 		t.Errorf("expected output %q but got %q", expected, out.String())

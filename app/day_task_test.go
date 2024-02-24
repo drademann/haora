@@ -76,6 +76,8 @@ func TestTaskDuration(t *testing.T) {
 		}
 	})
 	t.Run("task without a successor should return duration until now", func(t *testing.T) {
+		realNow := Now
+		defer func() { Now = realNow }()
 		Now = func() time.Time { return MockTime(12, 0) }
 
 		d := day.Duration(task2)

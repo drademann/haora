@@ -26,6 +26,8 @@ func TestExecListCmd_givenTasksForToday(t *testing.T) {
 	out := bytes.Buffer{}
 	rootCmd.SetOut(&out)
 	rootCmd.SetArgs([]string{"list"})
+	realNow := app.Now
+	defer func() { app.Now = realNow }()
 
 	app.Now = func() time.Time {
 		return time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local)

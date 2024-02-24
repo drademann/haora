@@ -16,7 +16,7 @@ type Task struct {
 func NewTask(start time.Time, text string, isPause bool, tags []string) *Task {
 	return &Task{
 		Id:      uuid.New(),
-		Start:   start,
+		Start:   start.Truncate(time.Minute),
 		Text:    text,
 		IsPause: isPause,
 		Tags:    tags,

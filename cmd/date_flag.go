@@ -12,7 +12,6 @@ import (
 
 var (
 	workingDateFlag *string
-	workingDate     time.Time
 
 	// RE for parsing dates like 02.01.2006 or 02.01. or 02. ...
 	re = regexp.MustCompile(`(\d+)(?:\.(\d+)(?:\.(\d+)?)?)?`)
@@ -31,7 +30,7 @@ var (
 func ParseDateFlag() error {
 	// no date flag given
 	if workingDateFlag == nil || *workingDateFlag == "" {
-		workingDate = app.Now()
+		app.WorkingDate = app.Now()
 		return nil
 	}
 
@@ -72,7 +71,7 @@ func tryDateString() error {
 	if day < 1 || day > daysInMonth(year, month) || month < 1 || month > 12 {
 		return fmt.Errorf("unable to parse date flag %q", *workingDateFlag)
 	}
-	workingDate = time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.Local)
+	app.WorkingDate = time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.Local)
 	return nil
 }
 
@@ -95,7 +94,7 @@ func daysInMonth(year, month int) int {
 func tryWeekdayString() error {
 	for s, wd := range weekdays {
 		if strings.HasPrefix(strings.ToLower(*workingDateFlag), s) {
-			workingDate = previous(wd)
+			app.WorkingDate = previous(wd)
 			return nil
 		}
 	}

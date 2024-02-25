@@ -9,9 +9,9 @@ import (
 
 func TestTaskSuccPred(t *testing.T) {
 	testDayDate := test.MockTime(0, 0)
-	task1 := *NewTask(test.MockTime(9, 0), "task 1", false, nil)
-	task2 := *NewTask(test.MockTime(10, 0), "task 2", false, nil)
-	task3 := *NewTask(test.MockTime(12, 0), "task 3", false, nil)
+	task1 := *NewTask(test.MockTime(9, 0), "task 1", nil)
+	task2 := *NewTask(test.MockTime(10, 0), "task 2", nil)
+	task3 := *NewTask(test.MockTime(12, 0), "task 3", nil)
 	day := Day{Date: testDayDate,
 		Tasks:    []Task{task1, task2, task3},
 		Finished: time.Time{},
@@ -60,10 +60,10 @@ func TestTaskSuccPred(t *testing.T) {
 }
 
 func TestTaskDuration(t *testing.T) {
-	testDayDate := test.MockTime(0, 0)
-	task1 := *NewTask(test.MockTime(9, 0), "task 1", false, nil)
-	task2 := *NewTask(test.MockTime(10, 0), "task 2", false, nil)
-	day := Day{Date: testDayDate,
+	WorkingDate = test.MockTime(0, 0)
+	task1 := *NewTask(test.MockTime(9, 0), "task 1", nil)
+	task2 := *NewTask(test.MockTime(10, 0), "task 2", nil)
+	day := Day{Date: WorkingDate,
 		Tasks:    []Task{task1, task2},
 		Finished: time.Time{},
 	}

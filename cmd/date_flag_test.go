@@ -22,8 +22,8 @@ func TestParseNoFlag(t *testing.T) {
 	}
 
 	expected := testNow
-	if workingDate != expected {
-		t.Errorf("expected parsed working date to be %v, but got %v", expected, workingDate)
+	if app.WorkingDate != expected {
+		t.Errorf("expected parsed working date to be %v, but got %v", expected, app.WorkingDate)
 	}
 }
 
@@ -49,7 +49,7 @@ func TestParseDateFlag(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			workingDate = time.Time{}
+			app.WorkingDate = time.Time{}
 			*workingDateFlag = tc.flag
 
 			err := ParseDateFlag()
@@ -57,8 +57,8 @@ func TestParseDateFlag(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if workingDate != tc.expected {
-				t.Errorf("expected parsed working date to be %v, but got %v", tc.expected, workingDate)
+			if app.WorkingDate != tc.expected {
+				t.Errorf("expected parsed working date to be %v, but got %v", tc.expected, app.WorkingDate)
 			}
 		})
 	}
@@ -86,7 +86,7 @@ func TestWeekdayFlag(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("flag starting with %q", tc.flag), func(t *testing.T) {
-			workingDate = time.Time{}
+			app.WorkingDate = time.Time{}
 			*workingDateFlag = tc.flag
 
 			err := ParseDateFlag()
@@ -94,8 +94,8 @@ func TestWeekdayFlag(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if workingDate != tc.expected {
-				t.Errorf("expected parsed working date to be %v, but got %v", tc.expected, workingDate)
+			if app.WorkingDate != tc.expected {
+				t.Errorf("expected parsed working date to be %v, but got %v", tc.expected, app.WorkingDate)
 			}
 		})
 	}
@@ -111,7 +111,7 @@ func TestParseDayOnly(t *testing.T) {
 
 	err := ParseDateFlag()
 
-	fmt.Println(workingDate)
+	fmt.Println(app.WorkingDate)
 	if err == nil {
 		t.Errorf("expected error, but got nil")
 	}

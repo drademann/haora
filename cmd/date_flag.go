@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"haora/app"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -12,7 +14,18 @@ var (
 	workingDateFlag *string
 	workingDate     time.Time
 
+	// RE for parsing dates like 02.01.2006 or 02.01. or 02. ...
 	re = regexp.MustCompile(`(\d+)(?:\.(\d+)(?:\.(\d+)?)?)?`)
+	// weekdays for selecting the preceding weekday
+	weekdays = map[string]time.Weekday{
+		"mo": time.Monday,
+		"tu": time.Tuesday,
+		"we": time.Wednesday,
+		"th": time.Thursday,
+		"fr": time.Friday,
+		"sa": time.Saturday,
+		"su": time.Sunday,
+	}
 )
 
 func ParseDateFlag() error {
@@ -22,8 +35,25 @@ func ParseDateFlag() error {
 		return nil
 	}
 
+	var dateStringErr, weekdayErr error
+	dateStringErr = tryDateString()
+	if dateStringErr == nil {
+		return nil
+	}
+	weekdayErr = tryWeekdayString()
+	if weekdayErr == nil {
+		return nil
+	}
+
+	return errors.Join(dateStringErr, weekdayErr)
+}
+
+func tryDateString() error {
 	var err error
 	groups := re.FindStringSubmatch(*workingDateFlag)
+	if len(groups) == 0 {
+		return errors.New("no date string match")
+	}
 
 	var now = app.Now()
 	var day = now.Day()
@@ -60,4 +90,22 @@ func parse(v *int, s string) error {
 func daysInMonth(year, month int) int {
 	t := time.Date(year, time.Month(month+1), 0, 0, 0, 0, 0, time.UTC)
 	return t.Day()
+}
+
+func tryWeekdayString() error {
+	for s, wd := range weekdays {
+		if strings.HasPrefix(strings.ToLower(*workingDateFlag), s) {
+			workingDate = previous(wd)
+			return nil
+		}
+	}
+	return errors.New("no weekday string match")
+}
+
+func previous(weekday time.Weekday) time.Time {
+	d := app.Now().Add(-24 * time.Hour)
+	for d.Weekday() != weekday {
+		d = d.Add(-24 * time.Hour)
+	}
+	return time.Date(d.Year(), d.Month(), d.Day(), 0, 0, 0, 0, d.Location())
 }

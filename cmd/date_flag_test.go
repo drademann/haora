@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"haora/app"
 	"haora/test"
 	"testing"
@@ -73,6 +74,7 @@ func TestParseDayOnly(t *testing.T) {
 
 	err := ParseDateFlag()
 
+	fmt.Println(workingDate)
 	if err == nil {
 		t.Errorf("expected error, but got nil")
 	}

@@ -23,8 +23,12 @@ func NewDay(date time.Time) *Day {
 	}
 }
 
-func (d Day) HasNoTasks() bool {
+func (d *Day) IsEmpty() bool {
 	return len(d.Tasks) == 0
+}
+
+func (d *Day) Add(task Task) {
+	d.Tasks = append(d.Tasks, task)
 }
 
 var (
@@ -32,7 +36,7 @@ var (
 	NoTaskPred = errors.New("no preceding task")
 )
 
-func (d Day) succ(task Task) (Task, error) {
+func (d *Day) succ(task Task) (Task, error) {
 	slices.SortFunc(d.Tasks, tasksByStart)
 	for i, t := range d.Tasks {
 		if t.Id == task.Id {
@@ -45,7 +49,7 @@ func (d Day) succ(task Task) (Task, error) {
 	return task, NoTaskSucc
 }
 
-func (d Day) pred(task Task) (Task, error) {
+func (d *Day) pred(task Task) (Task, error) {
 	slices.SortFunc(d.Tasks, tasksByStart)
 	for i, t := range d.Tasks {
 		if t.Id == task.Id {
@@ -58,7 +62,7 @@ func (d Day) pred(task Task) (Task, error) {
 	return task, NoTaskPred
 }
 
-func (d Day) Duration(task Task) time.Duration {
+func (d *Day) Duration(task Task) time.Duration {
 	s, err := d.succ(task)
 	if errors.Is(err, NoTaskSucc) {
 		return Now().Sub(task.Start)

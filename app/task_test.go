@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/google/uuid"
+	"haora/test"
 	"slices"
 	"testing"
 	"time"
@@ -29,9 +30,9 @@ func TestNewTask(t *testing.T) {
 
 func TestTasksByStart(t *testing.T) {
 	tasks := []Task{
-		*NewTask(MockTime(10, 0), "Y", false, nil),
-		*NewTask(MockTime(9, 0), "Z", false, nil),
-		*NewTask(MockTime(12, 0), "X", false, nil),
+		*NewTask(test.MockTime(10, 0), "Y", false, nil),
+		*NewTask(test.MockTime(9, 0), "Z", false, nil),
+		*NewTask(test.MockTime(12, 0), "X", false, nil),
 	}
 
 	slices.SortFunc(tasks, tasksByStart)

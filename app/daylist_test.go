@@ -1,15 +1,16 @@
 package app
 
 import (
+	"haora/test"
 	"testing"
 	"time"
 )
 
 func TestDay(t *testing.T) {
 	existingDay := Day{
-		Date: MockTime(9, 0),
+		Date: test.MockTime(9, 0),
 		Tasks: []Task{
-			{Start: MockTime(9, 0),
+			{Start: test.MockTime(9, 0),
 				Text:    "a task",
 				IsPause: false,
 				Tags:    []string{}},
@@ -20,7 +21,7 @@ func TestDay(t *testing.T) {
 	}
 
 	t.Run("should return day if it exists", func(t *testing.T) {
-		date := MockTime(13, 48)
+		date := test.MockTime(13, 48)
 
 		day := Data.Day(date)
 
@@ -32,7 +33,7 @@ func TestDay(t *testing.T) {
 		}
 	})
 	t.Run("should create a new day if it doesn't exist", func(t *testing.T) {
-		date := MockDate(2024, time.June, 30, 10, 0)
+		date := test.MockDate(2024, time.June, 30, 10, 0)
 
 		day := Data.Day(date)
 

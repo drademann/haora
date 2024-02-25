@@ -17,7 +17,7 @@ var listCmd = &cobra.Command{
 		now := app.Now()
 		day := app.Data.Day(now)
 
-		if day.HasNoTasks() {
+		if day.IsEmpty() {
 			fmt.Fprintln(cmd.OutOrStdout(), "no tasks recorded for today")
 			return
 		}

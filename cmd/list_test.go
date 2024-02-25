@@ -11,6 +11,7 @@ func TestExecListCmd_givenNoDays(t *testing.T) {
 	out := bytes.Buffer{}
 	rootCmd.SetOut(&out)
 	rootCmd.SetArgs([]string{"list"})
+	*workingDateFlag = ""
 
 	if err := rootCmd.Execute(); err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -28,6 +29,7 @@ func TestExecListCmd_givenTasksForToday(t *testing.T) {
 	rootCmd.SetArgs([]string{"list"})
 	realNow := app.Now
 	defer func() { app.Now = realNow }()
+	*workingDateFlag = ""
 
 	app.Now = func() time.Time {
 		return time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local)

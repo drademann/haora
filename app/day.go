@@ -14,8 +14,8 @@ type Day struct {
 	Finished time.Time
 }
 
-func NewDay(date time.Time) *Day {
-	return &Day{
+func NewDay(date time.Time) Day {
+	return Day{
 		Id:       uuid.New(),
 		Date:     date,
 		Tasks:    []Task{},
@@ -25,10 +25,6 @@ func NewDay(date time.Time) *Day {
 
 func (d *Day) IsEmpty() bool {
 	return len(d.Tasks) == 0
-}
-
-func (d *Day) Add(task Task) {
-	d.Tasks = append(d.Tasks, task)
 }
 
 var (

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 	"haora/app"
 	"os"
@@ -14,7 +13,7 @@ var rootCmd = &cobra.Command{
 		return ParseDateFlag()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Fprintln(cmd.OutOrStdout(), "The Haora CLI. Choose your command ...")
+		cmd.Println("The Haora CLI. Choose your command ...")
 	},
 	SilenceErrors: true,
 	SilenceUsage:  true,
@@ -27,17 +26,17 @@ func init() {
 func Execute() {
 	var err error
 	if err = app.Load(); err != nil {
-		fmt.Fprintf(rootCmd.OutOrStderr(), "failed to load app data: %v\n", err)
+		rootCmd.PrintErrf("failed to load app data: %v\n", err)
 		os.Exit(1)
 	}
 
 	if err = rootCmd.Execute(); err != nil {
-		fmt.Fprintf(rootCmd.OutOrStderr(), "error: %v\n\n", err)
+		rootCmd.PrintErrf("error: %v\n\n", err)
 		os.Exit(1)
 	}
 
 	if err = app.Save(); err != nil {
-		fmt.Fprintf(rootCmd.OutOrStderr(), "failed to save app data: %v\n", err)
+		rootCmd.PrintErrf("failed to save app data: %v\n", err)
 		os.Exit(1)
 	}
 }

@@ -52,7 +52,7 @@ func Load() error {
 	file, err := os.Open(filePath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			Data = make(DayList, 0)
+			Data = DayList{}
 			return nil
 		}
 		return err

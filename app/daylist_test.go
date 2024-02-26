@@ -17,7 +17,7 @@ func TestDay(t *testing.T) {
 		},
 		Finished: time.Time{}}
 	Data = DayList{
-		existingDay,
+		Days: []Day{existingDay},
 	}
 
 	t.Run("should return day if it exists", func(t *testing.T) {
@@ -28,8 +28,8 @@ func TestDay(t *testing.T) {
 		if !isSameDay(day.Date, existingDay.Date) {
 			t.Errorf("got unexpected task: %+v", day)
 		}
-		if len(Data) != 1 {
-			t.Errorf("number of days should'nt have changed, but is now %d", len(Data))
+		if len(Data.Days) != 1 {
+			t.Errorf("number of days should'nt have changed, but is now %d", len(Data.Days))
 		}
 	})
 	t.Run("should create a new day if it doesn't exist", func(t *testing.T) {
@@ -40,8 +40,8 @@ func TestDay(t *testing.T) {
 		if !isSameDay(day.Date, date) {
 			t.Errorf("got unexpected task: %+v", day)
 		}
-		if len(Data) != 2 {
-			t.Errorf("number of days should have increased to 2, but is now %d", len(Data))
+		if len(Data.Days) != 2 {
+			t.Errorf("number of days should have increased to 2, but is now %d", len(Data.Days))
 		}
 	})
 }

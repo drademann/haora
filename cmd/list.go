@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 	"haora/app"
 )
@@ -18,12 +17,12 @@ var listCmd = &cobra.Command{
 		day := app.Data.Day(now)
 
 		if day.IsEmpty() {
-			fmt.Fprintln(cmd.OutOrStdout(), "no tasks recorded for today")
+			cmd.Println("no tasks recorded for today")
 			return
 		}
 
 		for _, task := range day.Tasks {
-			fmt.Fprintf(cmd.OutOrStdout(), "%v - ... %v\n", task.Start.Format("15:04"), task.Text)
+			cmd.Printf("%v - ... %v\n", task.Start.Format("15:04"), task.Text)
 		}
 	},
 }

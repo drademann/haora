@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"github.com/spf13/cobra"
+	"haora/app"
 	"strings"
 	"time"
 )
@@ -23,20 +23,21 @@ var addCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Add a task to a day",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		time, args, err := parseTime(args)
+		start, args, err := parseStart(args)
 		if err != nil {
 			return err
 		}
-		tags, args := parseTags(args)
 		text := strings.Join(args, " ")
-		fmt.Fprintf(cmd.OutOrStdout(), "Time: %v\n", time)
-		fmt.Fprintf(cmd.OutOrStdout(), "Tags: %v\n", tags)
-		fmt.Fprintf(cmd.OutOrStdout(), "Text: %v\n", text)
+		tags, args := parseTags(args)
+		task := app.NewTask(start, text, tags)
+		day := app.Data.Day(app.WorkingDate)
+		day.Tasks = append(day.Tasks, task)
+		app.Data.UpdateDay(day)
 		return nil
 	},
 }
 
-func parseTime(args []string) (time.Time, []string, error) {
+func parseStart(args []string) (time.Time, []string, error) {
 	if timeFlag != "" {
 		t, err := time.Parse("15:04", timeFlag)
 		if err != nil {

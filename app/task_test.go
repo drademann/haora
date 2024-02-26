@@ -41,9 +41,9 @@ func TestNewTask(t *testing.T) {
 
 func TestTasksByStart(t *testing.T) {
 	tasks := []Task{
-		*NewTask(test.MockTime(10, 0), "Y", nil),
-		*NewTask(test.MockTime(9, 0), "Z", nil),
-		*NewTask(test.MockTime(12, 0), "X", nil),
+		NewTask(test.MockTime(10, 0), "Y", nil),
+		NewTask(test.MockTime(9, 0), "Z", nil),
+		NewTask(test.MockTime(12, 0), "X", nil),
 	}
 
 	slices.SortFunc(tasks, tasksByStart)

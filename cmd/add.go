@@ -29,10 +29,7 @@ var addCmd = &cobra.Command{
 		}
 		text := strings.Join(args, " ")
 		tags, args := parseTags(args)
-		task := app.NewTask(start, text, tags)
-		day := app.Data.Day(app.WorkingDate)
-		day.Tasks = append(day.Tasks, task)
-		app.Data.UpdateDay(day)
+		app.Data.AddNewTask(start, text, tags)
 		return nil
 	},
 }

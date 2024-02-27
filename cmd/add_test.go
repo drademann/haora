@@ -11,14 +11,13 @@ import (
 func TestAddSimpleTask(t *testing.T) {
 	buf := new(bytes.Buffer)
 	rootCmd.SetOut(buf)
-	rootCmd.SetArgs([]string{"add", "--start", "12:15", "--tags", "haora", "simple", "task"})
-	app.WorkingDate = test.MockDate(2024, time.February, 26, 0, 0)
+	rootCmd.SetArgs([]string{"--date", "26.2.2024", "add", "--start", "12:15", "--tags", "haora", "simple", "task"})
 
 	if err := rootCmd.Execute(); err != nil {
 		t.Fatal(err)
 	}
 
-	day := app.Data.Day(app.WorkingDate)
+	day := app.Data.Day(test.MockDate(2024, time.February, 26, 0, 0))
 	if len(day.Tasks) != 1 {
 		t.Fatalf("expected 1 task, got %d", len(day.Tasks))
 	}

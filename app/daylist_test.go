@@ -43,5 +43,8 @@ func TestDay(t *testing.T) {
 		if len(Data.Days) != 2 {
 			t.Errorf("number of days should have increased to 2, but is now %d", len(Data.Days))
 		}
+		if _ = Data.Day(date); len(Data.Days) != 2 {
+			t.Errorf("number of days shouldn't have increased calling the same date a second time")
+		}
 	})
 }

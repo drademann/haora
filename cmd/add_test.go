@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"haora/app"
 	"haora/test"
+	"reflect"
 	"testing"
 	"time"
 )
@@ -31,5 +32,42 @@ func TestAddSimpleTask(t *testing.T) {
 	}
 	if len(task.Tags) != 1 || task.Tags[0] != "haora" {
 		t.Errorf("expected tags ['haora'], got %v", task.Tags)
+	}
+}
+
+func TestAddShouldUpdateExistingTaskAtSameTime(t *testing.T) {
+	app.Data = app.DayList{
+		Days: []app.Day{
+			{
+				Date: test.MockDate(2024, time.February, 26, 0, 0),
+				Tasks: []app.Task{
+					{
+						Start: test.MockDate(2024, time.February, 26, 12, 15),
+						Text:  "existing task",
+						Tags:  []string{"beer"},
+					},
+				},
+			},
+		},
+	}
+
+	buf := new(bytes.Buffer)
+	rootCmd.SetOut(buf)
+	rootCmd.SetArgs([]string{"--date", "26.2.2024", "add", "--start", "12:15", "--tags", "haora", "simple", "task"})
+
+	if err := rootCmd.Execute(); err != nil {
+		t.Fatal(err)
+	}
+
+	day := app.Data.Day(test.MockDate(2024, time.February, 26, 0, 0))
+	if len(day.Tasks) != 1 {
+		t.Fatalf("expected 1 task, got %d", len(day.Tasks))
+	}
+	task := day.Tasks[0]
+	if task.Text != "simple task" {
+		t.Errorf("expected updated task's text to be %q, but got %q", "simple task", task.Text)
+	}
+	if !reflect.DeepEqual(task.Tags, []string{"haora"}) {
+		t.Errorf("expected updated task's tags to be %v, but got %v", []string{"haora"}, task.Tags)
 	}
 }

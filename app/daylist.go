@@ -1,6 +1,7 @@
 package app
 
 import (
+	"errors"
 	"time"
 )
 
@@ -27,18 +28,29 @@ func (d *DayList) Day(date time.Time) Day {
 //
 // The new task starts at the start timestamp with given text and tags.
 // The date part of the start timestamp is not used, instead the working date's date is applied.
-func (d *DayList) AddNewTask(start time.Time, text string, tags []string) {
-	task := NewTask(start, text, tags)
+// If a task at the specific timestamp already exists, it will be updated instead of added.
+func (d *DayList) AddNewTask(start time.Time, text string, tags []string) error {
 	day := d.Day(WorkingDate)
-	day.Tasks = append(day.Tasks, task)
+	task, err := day.taskAt(start)
+	if err != nil {
+		if errors.Is(err, NoTask) {
+			task = newTask(start, text, tags)
+			day.Tasks = append(day.Tasks, task)
+		} else {
+			return err
+		}
+	} else {
+		task = task.with(start, text, tags)
+		day.update(task)
+	}
 	d.update(day)
+	return nil
 }
 
 func (d *DayList) update(day Day) {
 	for i, e := range d.Days {
-		if isSameDay(e.Date, day.Date) {
-			d.Days = append(d.Days[:i], d.Days[i+1:]...)
+		if e.Id == day.Id {
+			d.Days[i] = day
 		}
 	}
-	d.Days = append(d.Days, day)
 }

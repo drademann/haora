@@ -27,7 +27,16 @@ func (d *Day) IsEmpty() bool {
 	return len(d.Tasks) == 0
 }
 
+func (d *Day) Duration(task Task) time.Duration {
+	s, err := d.succ(task)
+	if errors.Is(err, NoTaskSucc) {
+		return Now().Sub(task.Start)
+	}
+	return s.Start.Sub(task.Start)
+}
+
 var (
+	NoTask     = errors.New("no task")
 	NoTaskSucc = errors.New("no succeeding task")
 	NoTaskPred = errors.New("no preceding task")
 )
@@ -58,12 +67,21 @@ func (d *Day) pred(task Task) (Task, error) {
 	return task, NoTaskPred
 }
 
-func (d *Day) Duration(task Task) time.Duration {
-	s, err := d.succ(task)
-	if errors.Is(err, NoTaskSucc) {
-		return Now().Sub(task.Start)
+func (d *Day) taskAt(start time.Time) (Task, error) {
+	for _, t := range d.Tasks {
+		if t.Start.Hour() == start.Hour() && t.Start.Minute() == start.Minute() {
+			return t, nil
+		}
 	}
-	return s.Start.Sub(task.Start)
+	return Task{}, NoTask
+}
+
+func (d *Day) update(task Task) {
+	for i, t := range d.Tasks {
+		if t.Id == task.Id {
+			d.Tasks[i] = task
+		}
+	}
 }
 
 func isSameDay(date1, date2 time.Time) bool {

@@ -111,7 +111,6 @@ func TestParseDayOnly(t *testing.T) {
 
 	err := ParseDateFlag()
 
-	fmt.Println(app.WorkingDate)
 	if err == nil {
 		t.Errorf("expected error, but got nil")
 	}

@@ -29,8 +29,7 @@ var addCmd = &cobra.Command{
 		}
 		text := strings.Join(args, " ")
 		tags, args := parseTags(args)
-		app.Data.AddNewTask(start, text, tags)
-		return nil
+		return app.Data.AddNewTask(start, text, tags)
 	},
 }
 

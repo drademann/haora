@@ -1,6 +1,8 @@
 package app
 
-import "time"
+import (
+	"time"
+)
 
 // Data represents the so far added Days.
 //
@@ -10,3 +12,7 @@ var Data DayList
 
 // WorkingDate represents the global set date to apply commands on.
 var WorkingDate time.Time
+
+func atWorkingDateTime(t time.Time) time.Time {
+	return time.Date(WorkingDate.Year(), WorkingDate.Month(), WorkingDate.Day(), t.Hour(), t.Minute(), 0, 0, WorkingDate.Location())
+}

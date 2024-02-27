@@ -13,14 +13,22 @@ type Task struct {
 	Tags    []string
 }
 
-func NewTask(start time.Time, text string, tags []string) Task {
-	s := time.Date(WorkingDate.Year(), WorkingDate.Month(), WorkingDate.Day(), start.Hour(), start.Minute(), 0, 0, WorkingDate.Location())
+func newTask(start time.Time, text string, tags []string) Task {
 	return Task{
 		Id:      uuid.New(),
-		Start:   s,
+		Start:   atWorkingDateTime(start),
 		Text:    text,
 		IsPause: false,
 		Tags:    tags,
+	}
+}
+
+func (t Task) with(start time.Time, text string, tags []string) Task {
+	return Task{
+		Id:    t.Id,
+		Start: atWorkingDateTime(start),
+		Text:  text,
+		Tags:  tags,
 	}
 }
 

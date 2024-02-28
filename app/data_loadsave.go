@@ -43,7 +43,7 @@ func read(r io.Reader) error {
 	if err != nil {
 		return err
 	}
-	if err = json.Unmarshal(data, &Data); err != nil {
+	if err = json.Unmarshal(data, &Data.Days); err != nil {
 		return err
 	}
 	return nil
@@ -70,7 +70,7 @@ func Save() error {
 }
 
 func write(w io.Writer) error {
-	bytes, err := json.Marshal(Data)
+	bytes, err := json.Marshal(Data.Days)
 	if err != nil {
 		return err
 	}

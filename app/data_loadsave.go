@@ -70,7 +70,7 @@ func Save() error {
 }
 
 func write(w io.Writer) error {
-	bytes, err := json.Marshal(Data.Days)
+	bytes, err := json.Marshal(nonEmptyDays(Data.Days))
 	if err != nil {
 		return err
 	}
@@ -79,6 +79,16 @@ func write(w io.Writer) error {
 		return err
 	}
 	return nil
+}
+
+func nonEmptyDays(days []Day) []Day {
+	var filtered = make([]Day, 0)
+	for _, day := range days {
+		if !day.IsEmpty() {
+			filtered = append(filtered, day)
+		}
+	}
+	return filtered
 }
 
 func ensureDataDirExists() error {

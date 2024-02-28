@@ -28,6 +28,17 @@ func TestHasNoTasks(t *testing.T) {
 	}
 }
 
+func TestIsToday(t *testing.T) {
+	today := time.Now()
+	day := NewDay(today)
+
+	result := day.IsToday()
+
+	if !result {
+		t.Errorf("expected day to be today, but it is not")
+	}
+}
+
 func TestTaskAt(t *testing.T) {
 	task1 := Task{
 		Start: test.MockTime(10, 20),

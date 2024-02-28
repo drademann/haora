@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 	"haora/app"
 )
@@ -13,11 +14,11 @@ var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List the recorded tasks of the selected day",
 	Run: func(cmd *cobra.Command, args []string) {
-		now := app.Now()
-		day := app.Data.Day(now)
+		day := app.Data.Day(app.WorkingDate)
 
+		cmd.Println(header(day))
 		if day.IsEmpty() {
-			cmd.Println("no tasks recorded for today")
+			cmd.Println(noTasks())
 			return
 		}
 
@@ -25,4 +26,16 @@ var listCmd = &cobra.Command{
 			cmd.Printf("%v - ... %v\n", task.Start.Format("15:04"), task.Text)
 		}
 	},
+}
+
+func header(day app.Day) string {
+	ds := day.Date.Format("02.01.2006 (Mon)")
+	if day.IsToday() {
+		return fmt.Sprintf("Tasks for today, %s\n", ds)
+	}
+	return fmt.Sprintf("Tasks for %s\n", ds)
+}
+
+func noTasks() string {
+	return "no tasks recorded"
 }

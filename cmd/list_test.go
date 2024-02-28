@@ -3,31 +3,59 @@ package cmd
 import (
 	"bytes"
 	"haora/app"
+	"haora/test"
 	"testing"
 	"time"
 )
 
-func TestExecListCmd_givenNoDays(t *testing.T) {
-	out := bytes.Buffer{}
-	rootCmd.SetOut(&out)
-	rootCmd.SetArgs([]string{"list"})
-	*workingDateFlag = ""
-
-	app.Data.Days = nil
-
-	if err := rootCmd.Execute(); err != nil {
-		t.Fatalf("unexpected error: %v", err)
+func TestExecListCmd_givenNoTasks(t *testing.T) {
+	realNow := app.Now
+	defer func() { app.Now = realNow }()
+	app.Now = func() time.Time {
+		return time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local)
 	}
 
-	expected := "no tasks recorded for today\n"
-	if out.String() != expected {
-		t.Errorf("expected output %q, but got %q", expected, out.String())
-	}
+	t.Run("no days and thus no tasks for today", func(t *testing.T) {
+		app.Data.Days = nil
+
+		out := new(bytes.Buffer)
+		rootCmd.SetOut(out)
+		rootCmd.SetArgs([]string{"-d", "22.02.2024", "list"})
+
+		if err := rootCmd.Execute(); err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		test.AssertOutput(t, out,
+			`
+			Tasks for today, 22.02.2024 (Thu)
+
+			no tasks recorded
+			`)
+	})
+	t.Run("no tasks for other day than today", func(t *testing.T) {
+		app.Data.Days = nil
+
+		out := new(bytes.Buffer)
+		rootCmd.SetOut(out)
+		rootCmd.SetArgs([]string{"-d", "20.02.2024", "list"})
+
+		if err := rootCmd.Execute(); err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		test.AssertOutput(t, out,
+			`
+			Tasks for 20.02.2024 (Tue)
+			
+			no tasks recorded
+			`)
+	})
 }
 
 func TestExecListCmd_givenTasksForToday(t *testing.T) {
-	out := bytes.Buffer{}
-	rootCmd.SetOut(&out)
+	out := new(bytes.Buffer)
+	rootCmd.SetOut(out)
 	rootCmd.SetArgs([]string{"list"})
 	realNow := app.Now
 	defer func() { app.Now = realNow }()
@@ -52,8 +80,10 @@ func TestExecListCmd_givenTasksForToday(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	expected := "09:00 - ... a task\n"
-	if out.String() != expected {
-		t.Errorf("expected output %q, but got %q", expected, out.String())
-	}
+	test.AssertOutput(t, out,
+		`
+		Tasks for today, 22.02.2024 (Thu)
+
+		09:00 - ... a task
+		`)
 }

@@ -14,7 +14,7 @@ func TestVersionCmd(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	expected := "haora version 1.0.0\n"
+	expected := "Haora version 1.0.0\n"
 	if out.String() != expected {
 		t.Errorf("expected output %q but got %q", expected, out.String())
 	}

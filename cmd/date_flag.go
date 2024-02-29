@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"haora/app"
 	"regexp"
 	"strconv"
 	"strings"
@@ -11,8 +10,6 @@ import (
 )
 
 var (
-	workingDateFlag *string
-
 	// RE for parsing dates like 02.01.2006 or 02.01. or 02. ...
 	re = regexp.MustCompile(`(\d+)(?:\.(\d+)(?:\.(\d+)?)?)?`)
 	// weekdays for selecting the preceding weekday
@@ -27,52 +24,50 @@ var (
 	}
 )
 
-func ParseDateFlag() error {
+func parseDateFlag(workingDateFlag string) (time.Time, error) {
 	// no date flag given
-	if workingDateFlag == nil || *workingDateFlag == "" {
-		app.WorkingDate = app.Now()
-		return nil
+	if workingDateFlag == "" {
+		return now(), nil
 	}
 
 	var dateStringErr, weekdayErr error
-	dateStringErr = tryDateString()
+	workingDate, dateStringErr := tryDateString(workingDateFlag)
 	if dateStringErr == nil {
-		return nil
+		return workingDate, nil
 	}
-	weekdayErr = tryWeekdayString()
+	workingDate, weekdayErr = tryWeekdayString(workingDateFlag)
 	if weekdayErr == nil {
-		return nil
+		return workingDate, nil
 	}
 
-	return errors.Join(dateStringErr, weekdayErr)
+	return time.Time{}, errors.Join(dateStringErr, weekdayErr)
 }
 
-func tryDateString() error {
+func tryDateString(workingDateFlag string) (time.Time, error) {
 	var err error
-	groups := re.FindStringSubmatch(*workingDateFlag)
+	groups := re.FindStringSubmatch(workingDateFlag)
 	if len(groups) == 0 {
-		return errors.New("no date string match")
+		return time.Time{}, errors.New("no date string match")
 	}
 
-	var now = app.Now()
+	var now = now()
 	var day = now.Day()
 	var month = int(now.Month())
 	var year = now.Year()
 	if err = parse(&day, groups[1]); err != nil {
-		return err
+		return time.Time{}, err
 	}
 	if err = parse(&month, groups[2]); err != nil {
-		return err
+		return time.Time{}, err
 	}
 	if err = parse(&year, groups[3]); err != nil {
-		return err
+		return time.Time{}, err
 	}
 
 	if day < 1 || day > daysInMonth(year, month) || month < 1 || month > 12 {
-		return fmt.Errorf("unable to parse date flag %q", *workingDateFlag)
+		return time.Time{}, fmt.Errorf("unable to parse date flag %q", workingDateFlag)
 	}
-	app.WorkingDate = time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.Local)
-	return nil
+	return time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.Local), nil
 }
 
 func parse(v *int, s string) error {
@@ -91,18 +86,17 @@ func daysInMonth(year, month int) int {
 	return t.Day()
 }
 
-func tryWeekdayString() error {
+func tryWeekdayString(workingDateFlag string) (time.Time, error) {
 	for s, wd := range weekdays {
-		if strings.HasPrefix(strings.ToLower(*workingDateFlag), s) {
-			app.WorkingDate = previous(wd)
-			return nil
+		if strings.HasPrefix(strings.ToLower(workingDateFlag), s) {
+			return previous(wd), nil
 		}
 	}
-	return errors.New("no weekday string match")
+	return time.Time{}, errors.New("no weekday string match")
 }
 
 func previous(weekday time.Weekday) time.Time {
-	d := app.Now().Add(-24 * time.Hour)
+	d := now().Add(-24 * time.Hour)
 	for d.Weekday() != weekday {
 		d = d.Add(-24 * time.Hour)
 	}

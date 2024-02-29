@@ -2,8 +2,6 @@ package cmd
 
 import (
 	"bytes"
-	"haora/app"
-	"haora/test"
 	"reflect"
 	"testing"
 	"time"
@@ -18,12 +16,12 @@ func TestAddSimpleTask(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	day := app.Data.Day(test.MockDate(2024, time.February, 26, 0, 0))
+	day := ctx.data.day(mockDate(2024, time.February, 26, 0, 0))
 	if len(day.Tasks) != 1 {
 		t.Fatalf("expected 1 task, got %d", len(day.Tasks))
 	}
 	task := day.Tasks[0]
-	expectedStart := test.MockDate(2024, time.February, 26, 12, 15)
+	expectedStart := mockDate(2024, time.February, 26, 12, 15)
 	if task.Start != expectedStart {
 		t.Errorf("expected start time %v, got %v", expectedStart, task.Start)
 	}
@@ -36,13 +34,13 @@ func TestAddSimpleTask(t *testing.T) {
 }
 
 func TestAddShouldUpdateExistingTaskAtSameTime(t *testing.T) {
-	app.Data = app.DayList{
-		Days: []app.Day{
+	ctx.data = dayList{
+		days: []Day{
 			{
-				Date: test.MockDate(2024, time.February, 26, 0, 0),
-				Tasks: []app.Task{
+				Date: mockDate(2024, time.February, 26, 0, 0),
+				Tasks: []Task{
 					{
-						Start: test.MockDate(2024, time.February, 26, 12, 15),
+						Start: mockDate(2024, time.February, 26, 12, 15),
 						Text:  "existing task",
 						Tags:  []string{"beer"},
 					},
@@ -59,7 +57,7 @@ func TestAddShouldUpdateExistingTaskAtSameTime(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	day := app.Data.Day(test.MockDate(2024, time.February, 26, 0, 0))
+	day := ctx.data.day(mockDate(2024, time.February, 26, 0, 0))
 	if len(day.Tasks) != 1 {
 		t.Fatalf("expected 1 task, got %d", len(day.Tasks))
 	}

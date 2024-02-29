@@ -1,4 +1,4 @@
-package app
+package cmd
 
 import (
 	"encoding/json"
@@ -26,7 +26,7 @@ func Load() error {
 	file, err := os.Open(filePath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			Data = DayList{}
+			ctx.data = dayList{}
 			return nil
 		}
 		return err
@@ -43,7 +43,7 @@ func read(r io.Reader) error {
 	if err != nil {
 		return err
 	}
-	if err = json.Unmarshal(data, &Data.Days); err != nil {
+	if err = json.Unmarshal(data, &ctx.data.days); err != nil {
 		return err
 	}
 	return nil
@@ -70,7 +70,7 @@ func Save() error {
 }
 
 func write(w io.Writer) error {
-	bytes, err := json.Marshal(nonEmptyDays(Data.Days))
+	bytes, err := json.Marshal(nonEmptyDays(ctx.data.days))
 	if err != nil {
 		return err
 	}

@@ -1,4 +1,4 @@
-package test
+package cmd
 
 import (
 	"bytes"
@@ -6,7 +6,8 @@ import (
 	"testing"
 )
 
-func AssertOutput(t *testing.T, out *bytes.Buffer, expected string) {
+func assertOutput(t *testing.T, out *bytes.Buffer, expected string) {
+	t.Helper()
 	if strings.HasPrefix(expected, "\n") {
 		expected = expected[1:]
 	}

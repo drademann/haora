@@ -2,21 +2,18 @@ package cmd
 
 import (
 	"bytes"
-	"haora/app"
-	"haora/test"
 	"testing"
 	"time"
 )
 
 func TestExecListCmd_givenNoTasks(t *testing.T) {
-	realNow := app.Now
-	defer func() { app.Now = realNow }()
-	app.Now = func() time.Time {
+	now = func() time.Time {
 		return time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local)
 	}
+	defer func() { now = time.Now }()
 
 	t.Run("no days and thus no tasks for today", func(t *testing.T) {
-		app.Data.Days = nil
+		ctx.data.days = nil
 
 		out := new(bytes.Buffer)
 		rootCmd.SetOut(out)
@@ -26,7 +23,7 @@ func TestExecListCmd_givenNoTasks(t *testing.T) {
 			t.Fatalf("unexpected error: %v", err)
 		}
 
-		test.AssertOutput(t, out,
+		assertOutput(t, out,
 			`
 			Tasks for today, 22.02.2024 (Thu)
 
@@ -34,7 +31,7 @@ func TestExecListCmd_givenNoTasks(t *testing.T) {
 			`)
 	})
 	t.Run("no tasks for other day than today", func(t *testing.T) {
-		app.Data.Days = nil
+		ctx.data.days = nil
 
 		out := new(bytes.Buffer)
 		rootCmd.SetOut(out)
@@ -44,7 +41,7 @@ func TestExecListCmd_givenNoTasks(t *testing.T) {
 			t.Fatalf("unexpected error: %v", err)
 		}
 
-		test.AssertOutput(t, out,
+		assertOutput(t, out,
 			`
 			Tasks for 20.02.2024 (Tue)
 			
@@ -57,17 +54,14 @@ func TestExecListCmd_givenTasksForToday(t *testing.T) {
 	out := new(bytes.Buffer)
 	rootCmd.SetOut(out)
 	rootCmd.SetArgs([]string{"list"})
-	realNow := app.Now
-	defer func() { app.Now = realNow }()
 	*workingDateFlag = ""
 
-	app.Now = func() time.Time {
-		return time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local)
-	}
-	app.Data = app.DayList{
-		Days: []app.Day{
+	mockNowAt(t, time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local))
+
+	ctx.data = dayList{
+		days: []Day{
 			{Date: time.Date(2024, time.February, 22, 6, 24, 13, 0, time.Local),
-				Tasks: []app.Task{
+				Tasks: []Task{
 					{Start: time.Date(2024, time.February, 22, 9, 0, 0, 0, time.Local),
 						Text:    "a task",
 						IsPause: false,
@@ -80,7 +74,7 @@ func TestExecListCmd_givenTasksForToday(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	test.AssertOutput(t, out,
+	assertOutput(t, out,
 		`
 		Tasks for today, 22.02.2024 (Thu)
 

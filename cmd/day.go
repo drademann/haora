@@ -1,4 +1,4 @@
-package app
+package cmd
 
 import (
 	"errors"
@@ -30,7 +30,7 @@ func (d *Day) IsEmpty() bool {
 func (d *Day) Duration(task Task) time.Duration {
 	s, err := d.succ(task)
 	if errors.Is(err, NoTaskSucc) {
-		return Now().Sub(task.Start)
+		return now().Sub(task.Start)
 	}
 	return s.Start.Sub(task.Start)
 }
@@ -85,7 +85,7 @@ func (d *Day) update(task Task) {
 }
 
 func (d *Day) IsToday() bool {
-	return isSameDay(d.Date, Now())
+	return isSameDay(d.Date, now())
 }
 
 func isSameDay(date1, date2 time.Time) bool {

@@ -1,13 +1,12 @@
-package app
+package cmd
 
 import (
-	"haora/test"
 	"testing"
 	"time"
 )
 
 func TestNewDay(t *testing.T) {
-	date := test.MockDate(2024, time.February, 21, 14, 58)
+	date := mockDate(2024, time.February, 21, 14, 58)
 	day := NewDay(date)
 
 	if len(day.Tasks) != 0 {
@@ -41,18 +40,18 @@ func TestIsToday(t *testing.T) {
 
 func TestTaskAt(t *testing.T) {
 	task1 := Task{
-		Start: test.MockTime(10, 20),
+		Start: mockTime(10, 20),
 		Text:  "existing text",
 		Tags:  []string{"haora"},
 	}
 	task2 := Task{
-		Start: test.MockTime(12, 30),
+		Start: mockTime(12, 30),
 		Text:  "lunch",
 		Tags:  nil,
 	}
 	day := Day{Tasks: []Task{task1, task2}}
 
-	found, err := day.taskAt(test.MockTime(10, 20))
+	found, err := day.taskAt(mockTime(10, 20))
 
 	if err != nil {
 		t.Fatal(err)
@@ -70,24 +69,24 @@ func TestSameDay(t *testing.T) {
 		expected bool
 	}{
 		{"dates at exact same time should return true",
-			test.MockDate(2024, time.February, 21, 10, 0),
-			test.MockDate(2024, time.February, 21, 10, 0),
+			mockDate(2024, time.February, 21, 10, 0),
+			mockDate(2024, time.February, 21, 10, 0),
 			true},
 		{"dates at same day should return true",
-			test.MockDate(2024, time.February, 21, 10, 0),
-			test.MockDate(2024, time.February, 21, 15, 22),
+			mockDate(2024, time.February, 21, 10, 0),
+			mockDate(2024, time.February, 21, 15, 22),
 			true},
 		{"dates at different days should return false",
-			test.MockDate(2024, time.February, 21, 10, 0),
-			test.MockDate(2024, time.February, 12, 10, 0),
+			mockDate(2024, time.February, 21, 10, 0),
+			mockDate(2024, time.February, 12, 10, 0),
 			false},
 		{"dates at different month should return false",
-			test.MockDate(2024, time.February, 21, 10, 0),
-			test.MockDate(2024, time.December, 21, 10, 0),
+			mockDate(2024, time.February, 21, 10, 0),
+			mockDate(2024, time.December, 21, 10, 0),
 			false},
 		{"dates at different years should return false",
-			test.MockDate(2024, time.February, 21, 10, 0),
-			test.MockDate(2025, time.February, 21, 10, 0),
+			mockDate(2024, time.February, 21, 10, 0),
+			mockDate(2025, time.February, 21, 10, 0),
 			false},
 	}
 

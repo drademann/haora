@@ -1,4 +1,4 @@
-package app
+package cmd
 
 import (
 	"github.com/google/uuid"
@@ -16,7 +16,7 @@ type Task struct {
 func newTask(start time.Time, text string, tags []string) Task {
 	return Task{
 		Id:      uuid.New(),
-		Start:   atWorkingDateTime(start),
+		Start:   ctx.atWorkingDateTime(start),
 		Text:    text,
 		IsPause: false,
 		Tags:    tags,
@@ -26,7 +26,7 @@ func newTask(start time.Time, text string, tags []string) Task {
 func (t Task) with(start time.Time, text string, tags []string) Task {
 	return Task{
 		Id:    t.Id,
-		Start: atWorkingDateTime(start),
+		Start: ctx.atWorkingDateTime(start),
 		Text:  text,
 		Tags:  tags,
 	}

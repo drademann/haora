@@ -1,17 +1,16 @@
-package app
+package cmd
 
 import (
 	"errors"
-	"haora/test"
 	"testing"
 	"time"
 )
 
 func TestTaskSuccPred(t *testing.T) {
-	testDayDate := test.MockTime(0, 0)
-	task1 := newTask(test.MockTime(9, 0), "task 1", nil)
-	task2 := newTask(test.MockTime(10, 0), "task 2", nil)
-	task3 := newTask(test.MockTime(12, 0), "task 3", nil)
+	testDayDate := mockTime(0, 0)
+	task1 := newTask(mockTime(9, 0), "task 1", nil)
+	task2 := newTask(mockTime(10, 0), "task 2", nil)
+	task3 := newTask(mockTime(12, 0), "task 3", nil)
 	day := Day{Date: testDayDate,
 		Tasks:    []Task{task1, task2, task3},
 		Finished: time.Time{},
@@ -60,10 +59,10 @@ func TestTaskSuccPred(t *testing.T) {
 }
 
 func TestTaskDuration(t *testing.T) {
-	WorkingDate = test.MockTime(0, 0)
-	task1 := newTask(test.MockTime(9, 0), "task 1", nil)
-	task2 := newTask(test.MockTime(10, 0), "task 2", nil)
-	day := Day{Date: WorkingDate,
+	ctx.workingDate = mockTime(0, 0)
+	task1 := newTask(mockTime(9, 0), "task 1", nil)
+	task2 := newTask(mockTime(10, 0), "task 2", nil)
+	day := Day{Date: ctx.workingDate,
 		Tasks:    []Task{task1, task2},
 		Finished: time.Time{},
 	}
@@ -77,9 +76,7 @@ func TestTaskDuration(t *testing.T) {
 		}
 	})
 	t.Run("task without a successor should return duration until now", func(t *testing.T) {
-		realNow := Now
-		defer func() { Now = realNow }()
-		Now = func() time.Time { return test.MockTime(12, 0) }
+		mockNowAt(t, mockTime(12, 0))
 
 		d := day.Duration(task2)
 

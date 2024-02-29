@@ -1,8 +1,7 @@
-package app
+package cmd
 
 import (
 	"github.com/google/uuid"
-	"haora/test"
 	"slices"
 	"testing"
 	"time"
@@ -17,9 +16,9 @@ func TestNewTask(t *testing.T) {
 		}
 	})
 	t.Run("should use working date with given hour and minute applied", func(t *testing.T) {
-		WorkingDate = test.MockDate(2024, time.February, 25, 0, 0)
+		ctx.workingDate = mockDate(2024, time.February, 25, 0, 0)
 
-		task := newTask(test.MockTime(10, 30), "a task", nil)
+		task := newTask(mockTime(10, 30), "a task", nil)
 
 		got := task.Start.Format("02.01.2006 15:04")
 		want := "25.02.2024 10:30"
@@ -41,9 +40,9 @@ func TestNewTask(t *testing.T) {
 
 func TestTasksByStart(t *testing.T) {
 	tasks := []Task{
-		newTask(test.MockTime(10, 0), "Y", nil),
-		newTask(test.MockTime(9, 0), "Z", nil),
-		newTask(test.MockTime(12, 0), "X", nil),
+		newTask(mockTime(10, 0), "Y", nil),
+		newTask(mockTime(9, 0), "Z", nil),
+		newTask(mockTime(12, 0), "X", nil),
 	}
 
 	slices.SortFunc(tasks, tasksByStart)

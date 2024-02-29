@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"github.com/spf13/cobra"
-	"haora/app"
 	"strings"
 	"time"
 )
@@ -29,7 +28,7 @@ var addCmd = &cobra.Command{
 		}
 		text := strings.Join(args, " ")
 		tags, args := parseTags(args)
-		return app.Data.AddNewTask(start, text, tags)
+		return AddNewTask(start, text, tags)
 	},
 }
 

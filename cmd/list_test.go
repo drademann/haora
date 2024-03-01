@@ -36,19 +36,11 @@ func TestExecListCmd_givenNoTasks(t *testing.T) {
 
 func TestExecListCmd_oneOpenTaskForToday(t *testing.T) {
 	*workingDateFlag = ""
-	mockNowAt(t, time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local))
+	mockNowAt(t, mockDate(2024, time.February, 22, 16, 32))
 
-	ctx.data = dayList{
-		days: []Day{
-			{date: time.Date(2024, time.February, 22, 6, 24, 13, 0, time.Local),
-				tasks: []Task{
-					{start: time.Date(2024, time.February, 22, 9, 0, 0, 0, time.Local),
-						text:    "a task",
-						isPause: false,
-						tags:    []string{"Haora"}},
-				},
-				finished: time.Time{}}},
-	}
+	d := day{date: mockDate(2024, time.February, 22, 6, 24)}
+	d.addTasks(mockTask(t, mockDate(2024, time.February, 22, 9, 0), "a task", "Haora"))
+	ctx.data = dayList{days: []day{d}}
 
 	out := executeCommand(t, "list")
 
@@ -56,10 +48,38 @@ func TestExecListCmd_oneOpenTaskForToday(t *testing.T) {
 		`
 		Tasks for today, 22.02.2024 (Thu)
 
-		09:00 - now      7h 32m   Haora   a task
+		09:00 -  now     7h 32m   a task #Haora
+		
 		          total  7h 32m
 		         breaks      0m
 		         worked  7h 32m
 		       on Haora  7h 32m
+		`)
+}
+
+func TestExecListCmd_multipleTasksLastOpen(t *testing.T) {
+	*workingDateFlag = ""
+	mockNowAt(t, mockDate(2024, time.February, 22, 16, 32))
+
+	d := day{date: mockDate(2024, time.February, 22, 0, 0)}
+	d.addTasks(
+		mockTask(t, mockDate(2024, time.February, 22, 9, 0), "some programming", "Haora"),
+		mockTask(t, mockDate(2024, time.February, 22, 10, 0), "fixing bugs"),
+	)
+	ctx.data = dayList{days: []day{d}}
+
+	out := executeCommand(t, "list")
+
+	assertOutput(t, out,
+		`
+		Tasks for today, 22.02.2024 (Thu)
+
+		09:00 - 10:00    1h  0m   some programming #Haora
+		10:00 -  now     6h 32m   fixing bugs
+
+		          total  7h 32m
+		         breaks      0m
+		         worked  7h 32m
+		       on Haora  1h  0m
 		`)
 }

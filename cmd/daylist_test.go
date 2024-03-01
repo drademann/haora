@@ -6,7 +6,7 @@ import (
 )
 
 func TestDay(t *testing.T) {
-	existingDay := Day{
+	existingDay := day{
 		date: mockTime(9, 0),
 		tasks: []Task{
 			{start: mockTime(9, 0),
@@ -16,7 +16,7 @@ func TestDay(t *testing.T) {
 		},
 		finished: time.Time{}}
 	ctx.data = dayList{
-		days: []Day{existingDay},
+		days: []day{existingDay},
 	}
 
 	t.Run("should return day if it exists", func(t *testing.T) {

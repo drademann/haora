@@ -17,21 +17,22 @@ var listCmd = &cobra.Command{
 		day := ctx.workingDay()
 
 		cmd.Println(header(day))
-		if day.IsEmpty() {
+		if day.isEmpty() {
 			cmd.Println(noTasks())
 			return
 		}
 
 		for _, task := range day.tasks {
 			start := task.start.Format("15:04")
-			end := "now  "
+			end := " now "
 			succ, err := day.succ(task)
 			if err == nil {
 				end = succ.start.Format("15:04")
 			}
 			dur := formatDuration(day.taskDuration(task))
-			cmd.Printf("%v - %v   %v   %v   %v\n", start, end, dur, strings.Join(task.tags, ","), task.text)
+			cmd.Printf("%v - %v   %v   %v%v\n", start, end, dur, task.text, tags(task.tags))
 		}
+		cmd.Println()
 		f := "%23s\n"
 		totalStr := fmt.Sprintf("total %v", formatDuration(day.totalDuration()))
 		cmd.Printf(f, totalStr)
@@ -46,7 +47,7 @@ var listCmd = &cobra.Command{
 	},
 }
 
-func header(day Day) string {
+func header(day day) string {
 	ds := day.date.Format("02.01.2006 (Mon)")
 	if day.IsToday() {
 		return fmt.Sprintf("Tasks for today, %s\n", ds)
@@ -56,4 +57,15 @@ func header(day Day) string {
 
 func noTasks() string {
 	return "no tasks recorded"
+}
+
+func tags(tags []string) string {
+	hashed := make([]string, len(tags))
+	for i, tag := range tags {
+		hashed[i] = "#" + tag
+	}
+	if len(hashed) == 0 {
+		return ""
+	}
+	return " " + strings.Join(hashed, " ")
 }

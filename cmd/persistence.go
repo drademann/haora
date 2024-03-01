@@ -81,10 +81,10 @@ func write(w io.Writer) error {
 	return nil
 }
 
-func nonEmptyDays(days []Day) []Day {
-	var filtered = make([]Day, 0)
+func nonEmptyDays(days []day) []day {
+	var filtered = make([]day, 0)
 	for _, day := range days {
-		if !day.IsEmpty() {
+		if !day.isEmpty() {
 			filtered = append(filtered, day)
 		}
 	}

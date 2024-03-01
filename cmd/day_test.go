@@ -8,7 +8,7 @@ import (
 
 func TestNewDay(t *testing.T) {
 	date := mockDate(2024, time.February, 21, 14, 58)
-	day := NewDay(date)
+	day := newDay(date)
 
 	if len(day.tasks) != 0 {
 		t.Errorf("expected new day to have no tasks, but found %d", len(day.tasks))
@@ -19,9 +19,9 @@ func TestNewDay(t *testing.T) {
 }
 
 func TestHasNoTasks(t *testing.T) {
-	day := NewDay(time.Now())
+	day := newDay(time.Now())
 
-	result := day.IsEmpty()
+	result := day.isEmpty()
 
 	if !result {
 		t.Errorf("expected day to have no tasks, but it has %d", len(day.tasks))
@@ -30,7 +30,7 @@ func TestHasNoTasks(t *testing.T) {
 
 func TestIsToday(t *testing.T) {
 	today := time.Now()
-	day := NewDay(today)
+	day := newDay(today)
 
 	result := day.IsToday()
 
@@ -50,7 +50,7 @@ func TestTaskAt(t *testing.T) {
 		text:  "lunch",
 		tags:  nil,
 	}
-	day := Day{tasks: []Task{task1, task2}}
+	day := day{tasks: []Task{task1, task2}}
 
 	found, err := day.taskAt(mockTime(10, 20))
 
@@ -63,7 +63,7 @@ func TestTaskAt(t *testing.T) {
 }
 
 func TestTags(t *testing.T) {
-	day := Day{
+	day := day{
 		tasks: []Task{
 			{tags: []string{"T1"}},
 			{tags: []string{"T2", "T4"}},

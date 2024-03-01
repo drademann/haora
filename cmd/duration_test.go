@@ -10,7 +10,7 @@ func TestDayDuration(t *testing.T) {
 		ctx.workingDate = mockTime(0, 0)
 		task1 := newTask(mockTime(9, 0), "task 1", nil)
 		task2 := newTask(mockTime(10, 0), "task 2", nil)
-		day := Day{date: ctx.workingDate,
+		day := day{date: ctx.workingDate,
 			tasks:    []Task{task1, task2},
 			finished: time.Time{},
 		}
@@ -23,7 +23,7 @@ func TestDayDuration(t *testing.T) {
 		ctx.workingDate = mockTime(0, 0)
 		task1 := newTask(mockTime(9, 0), "task 1", nil)
 		task2 := newTask(mockTime(10, 0), "task 2", nil)
-		day := Day{date: ctx.workingDate,
+		day := day{date: ctx.workingDate,
 			tasks:    []Task{task1, task2},
 			finished: mockTime(14, 0),
 		}
@@ -41,7 +41,7 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 		lunch := newTask(mockTime(12, 0), "lunch", nil)
 		lunch.isPause = true
 		task2 := newTask(mockTime(12, 45), "task 2", nil)
-		day := Day{date: ctx.workingDate,
+		day := day{date: ctx.workingDate,
 			tasks:    []Task{task1, lunch, task2},
 			finished: mockTime(14, 0),
 		}
@@ -62,7 +62,7 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 		tea := newTask(mockTime(16, 0), "tea", nil)
 		tea.isPause = true
 		task3 := newTask(mockTime(16, 15), "task 3", nil)
-		day := Day{date: ctx.workingDate,
+		day := day{date: ctx.workingDate,
 			tasks:    []Task{task1, lunch, task2, tea, task3},
 			finished: mockTime(17, 0),
 		}
@@ -79,7 +79,7 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 		task1 := newTask(mockTime(9, 0), "task 1", nil)
 		lunch := newTask(mockTime(12, 0), "break", nil)
 		lunch.isPause = true
-		day := Day{date: ctx.workingDate,
+		day := day{date: ctx.workingDate,
 			tasks:    []Task{task1, lunch},
 			finished: time.Time{},
 		}
@@ -98,7 +98,7 @@ func TestTagDuration(t *testing.T) {
 	task1 := newTask(mockTime(10, 0), "task 1", []string{"T1"})
 	task2 := newTask(mockTime(12, 0), "task 2", []string{"T1", "T2"})
 	task3 := newTask(mockTime(15, 0), "task 3", []string{"T3"})
-	day := Day{date: ctx.workingDate,
+	day := day{date: ctx.workingDate,
 		tasks:    []Task{task1, task2, task3},
 		finished: mockTime(16, 0),
 	}
@@ -116,7 +116,7 @@ func TestTaskDuration(t *testing.T) {
 		ctx.workingDate = mockTime(0, 0)
 		task1 := newTask(mockTime(9, 0), "task 1", nil)
 		task2 := newTask(mockTime(10, 0), "task 2", nil)
-		day := Day{date: ctx.workingDate,
+		day := day{date: ctx.workingDate,
 			tasks:    []Task{task1, task2},
 			finished: time.Time{},
 		}
@@ -128,7 +128,7 @@ func TestTaskDuration(t *testing.T) {
 		ctx.workingDate = mockTime(0, 0)
 		task1 := newTask(mockTime(9, 0), "task 1", nil)
 		task2 := newTask(mockTime(10, 0), "task 2", nil)
-		day := Day{date: ctx.workingDate,
+		day := day{date: ctx.workingDate,
 			tasks:    []Task{task1, task2},
 			finished: time.Time{},
 		}
@@ -141,7 +141,7 @@ func TestTaskDuration(t *testing.T) {
 		ctx.workingDate = mockTime(0, 0)
 		task1 := newTask(mockTime(9, 0), "task 1", nil)
 		task2 := newTask(mockTime(10, 0), "task 2", nil)
-		day := Day{date: ctx.workingDate,
+		day := day{date: ctx.workingDate,
 			tasks:    []Task{task1, task2},
 			finished: mockTime(12, 0),
 		}

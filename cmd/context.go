@@ -20,7 +20,7 @@ func initContext(workingDate time.Time) {
 	ctx.workingDate = workingDate
 }
 
-func (c context) workingDay() Day {
+func (c context) workingDay() day {
 	return c.data.day(ctx.workingDate)
 }
 

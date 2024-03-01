@@ -35,7 +35,7 @@ func TestAddSimpleTask(t *testing.T) {
 
 func TestAddShouldUpdateExistingTaskAtSameTime(t *testing.T) {
 	ctx.data = dayList{
-		days: []Day{
+		days: []day{
 			{
 				date: mockDate(2024, time.February, 26, 0, 0),
 				tasks: []Task{

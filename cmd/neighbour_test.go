@@ -11,7 +11,7 @@ func TestTaskSuccPred(t *testing.T) {
 	task1 := newTask(mockTime(9, 0), "task 1", nil)
 	task2 := newTask(mockTime(10, 0), "task 2", nil)
 	task3 := newTask(mockTime(12, 0), "task 3", nil)
-	day := Day{date: testDayDate,
+	day := day{date: testDayDate,
 		tasks:    []Task{task1, task2, task3},
 		finished: time.Time{},
 	}

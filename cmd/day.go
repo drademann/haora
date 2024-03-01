@@ -7,15 +7,15 @@ import (
 	"time"
 )
 
-type Day struct {
+type day struct {
 	id       uuid.UUID
 	date     time.Time
 	tasks    []Task
 	finished time.Time
 }
 
-func NewDay(date time.Time) Day {
-	return Day{
+func newDay(date time.Time) day {
+	return day{
 		id:       uuid.New(),
 		date:     date,
 		tasks:    []Task{},
@@ -23,15 +23,20 @@ func NewDay(date time.Time) Day {
 	}
 }
 
-func (d *Day) IsEmpty() bool {
+func (d *day) isEmpty() bool {
 	return len(d.tasks) == 0
 }
 
-func (d *Day) totalDuration() time.Duration {
+func (d *day) addTasks(tasks ...Task) *day {
+	d.tasks = append(d.tasks, tasks...)
+	slices.SortFunc(d.tasks, tasksByStart)
+	return d
+}
+
+func (d *day) totalDuration() time.Duration {
 	if len(d.tasks) == 0 {
 		return 0
 	}
-	slices.SortFunc(d.tasks, tasksByStart)
 	start := d.tasks[0].start
 	end := now()
 	if !d.finished.IsZero() {
@@ -40,7 +45,7 @@ func (d *Day) totalDuration() time.Duration {
 	return end.Sub(start)
 }
 
-func (d *Day) totalBreakDuration() time.Duration {
+func (d *day) totalBreakDuration() time.Duration {
 	var sum time.Duration = 0
 	for _, t := range d.tasks {
 		if t.isPause {
@@ -50,7 +55,7 @@ func (d *Day) totalBreakDuration() time.Duration {
 	return sum
 }
 
-func (d *Day) totalWorkDuration() time.Duration {
+func (d *day) totalWorkDuration() time.Duration {
 	var sum time.Duration = 0
 	for _, t := range d.tasks {
 		if !t.isPause {
@@ -60,7 +65,7 @@ func (d *Day) totalWorkDuration() time.Duration {
 	return sum
 }
 
-func (d *Day) totalTagDuration(tag string) time.Duration {
+func (d *day) totalTagDuration(tag string) time.Duration {
 	var sum time.Duration = 0
 	for _, t := range d.tasks {
 		if slices.Contains(t.tags, tag) {
@@ -70,7 +75,7 @@ func (d *Day) totalTagDuration(tag string) time.Duration {
 	return sum
 }
 
-func (d *Day) taskDuration(task Task) time.Duration {
+func (d *day) taskDuration(task Task) time.Duration {
 	s, err := d.succ(task)
 	if errors.Is(err, NoTaskSucc) {
 		if d.finished.IsZero() {
@@ -87,8 +92,7 @@ var (
 	NoTaskPred = errors.New("no preceding task")
 )
 
-func (d *Day) succ(task Task) (Task, error) {
-	slices.SortFunc(d.tasks, tasksByStart)
+func (d *day) succ(task Task) (Task, error) {
 	for i, t := range d.tasks {
 		if t.id == task.id {
 			j := i + 1
@@ -100,8 +104,7 @@ func (d *Day) succ(task Task) (Task, error) {
 	return task, NoTaskSucc
 }
 
-func (d *Day) pred(task Task) (Task, error) {
-	slices.SortFunc(d.tasks, tasksByStart)
+func (d *day) pred(task Task) (Task, error) {
 	for i, t := range d.tasks {
 		if t.id == task.id {
 			j := i - 1
@@ -113,7 +116,7 @@ func (d *Day) pred(task Task) (Task, error) {
 	return task, NoTaskPred
 }
 
-func (d *Day) taskAt(start time.Time) (Task, error) {
+func (d *day) taskAt(start time.Time) (Task, error) {
 	for _, t := range d.tasks {
 		if t.start.Hour() == start.Hour() && t.start.Minute() == start.Minute() {
 			return t, nil
@@ -122,7 +125,7 @@ func (d *Day) taskAt(start time.Time) (Task, error) {
 	return Task{}, NoTask
 }
 
-func (d *Day) update(task Task) {
+func (d *day) updateTask(task Task) {
 	for i, t := range d.tasks {
 		if t.id == task.id {
 			d.tasks[i] = task
@@ -130,11 +133,11 @@ func (d *Day) update(task Task) {
 	}
 }
 
-func (d *Day) IsToday() bool {
+func (d *day) IsToday() bool {
 	return isSameDay(d.date, now())
 }
 
-func (d *Day) tags() []string {
+func (d *day) tags() []string {
 	set := make(map[string]struct{})
 	for _, t := range d.tasks {
 		for _, tag := range t.tags {

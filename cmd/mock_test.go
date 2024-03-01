@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	uuid2 "github.com/google/uuid"
 	"testing"
 	"time"
 )
@@ -20,4 +21,19 @@ func mockDate(year int, month time.Month, day, hour, minute int) time.Time {
 
 func mockTime(hour, minute int) time.Time {
 	return mockDate(2024, time.June, 21, hour, minute)
+}
+
+func mockTask(t *testing.T, start time.Time, text string, tags ...string) Task {
+	t.Helper()
+	uuid, err := uuid2.NewRandom()
+	if err != nil {
+		t.Fatal(err)
+	}
+	return Task{
+		id:      uuid,
+		start:   start,
+		text:    text,
+		isPause: false,
+		tags:    tags,
+	}
 }

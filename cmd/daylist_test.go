@@ -7,14 +7,14 @@ import (
 
 func TestDay(t *testing.T) {
 	existingDay := Day{
-		Date: mockTime(9, 0),
-		Tasks: []Task{
-			{Start: mockTime(9, 0),
-				Text:    "a task",
-				IsPause: false,
-				Tags:    []string{}},
+		date: mockTime(9, 0),
+		tasks: []Task{
+			{start: mockTime(9, 0),
+				text:    "a task",
+				isPause: false,
+				tags:    []string{}},
 		},
-		Finished: time.Time{}}
+		finished: time.Time{}}
 	ctx.data = dayList{
 		days: []Day{existingDay},
 	}
@@ -24,7 +24,7 @@ func TestDay(t *testing.T) {
 
 		day := ctx.data.day(date)
 
-		if !isSameDay(day.Date, existingDay.Date) {
+		if !isSameDay(day.date, existingDay.date) {
 			t.Errorf("got unexpected task: %+v", day)
 		}
 		if len(ctx.data.days) != 1 {
@@ -36,7 +36,7 @@ func TestDay(t *testing.T) {
 
 		day := ctx.data.day(date)
 
-		if !isSameDay(day.Date, date) {
+		if !isSameDay(day.date, date) {
 			t.Errorf("got unexpected task: %+v", day)
 		}
 		if len(ctx.data.days) != 2 {

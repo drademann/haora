@@ -17,19 +17,19 @@ func TestAddSimpleTask(t *testing.T) {
 	}
 
 	day := ctx.data.day(mockDate(2024, time.February, 26, 0, 0))
-	if len(day.Tasks) != 1 {
-		t.Fatalf("expected 1 task, got %d", len(day.Tasks))
+	if len(day.tasks) != 1 {
+		t.Fatalf("expected 1 task, got %d", len(day.tasks))
 	}
-	task := day.Tasks[0]
+	task := day.tasks[0]
 	expectedStart := mockDate(2024, time.February, 26, 12, 15)
-	if task.Start != expectedStart {
-		t.Errorf("expected start time %v, got %v", expectedStart, task.Start)
+	if task.start != expectedStart {
+		t.Errorf("expected start time %v, got %v", expectedStart, task.start)
 	}
-	if task.Text != "simple task" {
-		t.Errorf("expected text 'simple task', got %s", task.Text)
+	if task.text != "simple task" {
+		t.Errorf("expected text 'simple task', got %s", task.text)
 	}
-	if len(task.Tags) != 1 || task.Tags[0] != "haora" {
-		t.Errorf("expected tags ['haora'], got %v", task.Tags)
+	if len(task.tags) != 1 || task.tags[0] != "haora" {
+		t.Errorf("expected tags ['haora'], got %v", task.tags)
 	}
 }
 
@@ -37,12 +37,12 @@ func TestAddShouldUpdateExistingTaskAtSameTime(t *testing.T) {
 	ctx.data = dayList{
 		days: []Day{
 			{
-				Date: mockDate(2024, time.February, 26, 0, 0),
-				Tasks: []Task{
+				date: mockDate(2024, time.February, 26, 0, 0),
+				tasks: []Task{
 					{
-						Start: mockDate(2024, time.February, 26, 12, 15),
-						Text:  "existing task",
-						Tags:  []string{"beer"},
+						start: mockDate(2024, time.February, 26, 12, 15),
+						text:  "existing task",
+						tags:  []string{"beer"},
 					},
 				},
 			},
@@ -58,14 +58,14 @@ func TestAddShouldUpdateExistingTaskAtSameTime(t *testing.T) {
 	}
 
 	day := ctx.data.day(mockDate(2024, time.February, 26, 0, 0))
-	if len(day.Tasks) != 1 {
-		t.Fatalf("expected 1 task, got %d", len(day.Tasks))
+	if len(day.tasks) != 1 {
+		t.Fatalf("expected 1 task, got %d", len(day.tasks))
 	}
-	task := day.Tasks[0]
-	if task.Text != "simple task" {
-		t.Errorf("expected updated task's text to be %q, but got %q", "simple task", task.Text)
+	task := day.tasks[0]
+	if task.text != "simple task" {
+		t.Errorf("expected updated task's text to be %q, but got %q", "simple task", task.text)
 	}
-	if !reflect.DeepEqual(task.Tags, []string{"haora"}) {
-		t.Errorf("expected updated task's tags to be %v, but got %v", []string{"haora"}, task.Tags)
+	if !reflect.DeepEqual(task.tags, []string{"haora"}) {
+		t.Errorf("expected updated task's tags to be %v, but got %v", []string{"haora"}, task.tags)
 	}
 }

@@ -40,14 +40,14 @@ func TestExecListCmd_oneOpenTaskForToday(t *testing.T) {
 
 	ctx.data = dayList{
 		days: []Day{
-			{Date: time.Date(2024, time.February, 22, 6, 24, 13, 0, time.Local),
-				Tasks: []Task{
-					{Start: time.Date(2024, time.February, 22, 9, 0, 0, 0, time.Local),
-						Text:    "a task",
-						IsPause: false,
-						Tags:    []string{"Haora"}},
+			{date: time.Date(2024, time.February, 22, 6, 24, 13, 0, time.Local),
+				tasks: []Task{
+					{start: time.Date(2024, time.February, 22, 9, 0, 0, 0, time.Local),
+						text:    "a task",
+						isPause: false,
+						tags:    []string{"Haora"}},
 				},
-				Finished: time.Time{}}},
+				finished: time.Time{}}},
 	}
 
 	out := executeCommand(t, "list")
@@ -57,5 +57,9 @@ func TestExecListCmd_oneOpenTaskForToday(t *testing.T) {
 		Tasks for today, 22.02.2024 (Thu)
 
 		09:00 - now      7h 32m   Haora   a task
+		          total  7h 32m
+		         breaks      0m
+		         worked  7h 32m
+		       on Haora  7h 32m
 		`)
 }

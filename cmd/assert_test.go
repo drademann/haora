@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"strings"
 	"testing"
+	"time"
 )
 
 func assertOutput(t *testing.T, out *bytes.Buffer, expected string) {
@@ -14,5 +15,12 @@ func assertOutput(t *testing.T, out *bytes.Buffer, expected string) {
 	expected = strings.ReplaceAll(expected, "\t", "")
 	if out.String() != expected {
 		t.Errorf("expected output \n%q, but got \n%q", expected, out.String())
+	}
+}
+
+func assertDuration(t *testing.T, name string, d, expected time.Duration) {
+	t.Helper()
+	if d != expected {
+		t.Errorf("expected %s duration of %v, but got %v", name, expected, d)
 	}
 }

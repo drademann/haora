@@ -6,37 +6,37 @@ import (
 )
 
 type Task struct {
-	Id      uuid.UUID
-	Start   time.Time
-	Text    string
-	IsPause bool
-	Tags    []string
+	id      uuid.UUID
+	start   time.Time
+	text    string
+	isPause bool
+	tags    []string
 }
 
 func newTask(start time.Time, text string, tags []string) Task {
 	return Task{
-		Id:      uuid.New(),
-		Start:   ctx.atWorkingDateTime(start),
-		Text:    text,
-		IsPause: false,
-		Tags:    tags,
+		id:      uuid.New(),
+		start:   ctx.atWorkingDateTime(start),
+		text:    text,
+		isPause: false,
+		tags:    tags,
 	}
 }
 
 func (t Task) with(start time.Time, text string, tags []string) Task {
 	return Task{
-		Id:    t.Id,
-		Start: ctx.atWorkingDateTime(start),
-		Text:  text,
-		Tags:  tags,
+		id:    t.id,
+		start: ctx.atWorkingDateTime(start),
+		text:  text,
+		tags:  tags,
 	}
 }
 
 var tasksByStart = func(t1, t2 Task) int {
 	switch {
-	case t1.Start.Before(t2.Start):
+	case t1.start.Before(t2.start):
 		return -1
-	case t1.Start.After(t2.Start):
+	case t1.start.After(t2.start):
 		return 1
 	default:
 		return 0

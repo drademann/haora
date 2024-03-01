@@ -20,7 +20,7 @@ func AddNewTask(start time.Time, text string, tags []string) error {
 	if err != nil {
 		if errors.Is(err, NoTask) {
 			task = newTask(start, text, tags)
-			day.Tasks = append(day.Tasks, task)
+			day.tasks = append(day.tasks, task)
 		} else {
 			return err
 		}
@@ -38,7 +38,7 @@ func AddNewTask(start time.Time, text string, tags []string) error {
 // Changes to this day won't be applied to the data model automatically.
 func (d *dayList) day(date time.Time) Day {
 	for _, day := range d.days {
-		if isSameDay(day.Date, date) {
+		if isSameDay(day.date, date) {
 			return day
 		}
 	}
@@ -49,7 +49,7 @@ func (d *dayList) day(date time.Time) Day {
 
 func (d *dayList) update(day Day) {
 	for i, e := range d.days {
-		if e.Id == day.Id {
+		if e.id == day.id {
 			d.days[i] = day
 		}
 	}

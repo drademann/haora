@@ -22,21 +22,32 @@ var listCmd = &cobra.Command{
 			return
 		}
 
-		for _, task := range day.Tasks {
-			start := task.Start.Format("15:04")
+		for _, task := range day.tasks {
+			start := task.start.Format("15:04")
 			end := "now  "
 			succ, err := day.succ(task)
 			if err == nil {
-				end = succ.Start.Format("15:04")
+				end = succ.start.Format("15:04")
 			}
-			dur := formatDuration(day.duration(task))
-			cmd.Printf("%v - %v   %v   %v   %v\n", start, end, dur, strings.Join(task.Tags, ","), task.Text)
+			dur := formatDuration(day.taskDuration(task))
+			cmd.Printf("%v - %v   %v   %v   %v\n", start, end, dur, strings.Join(task.tags, ","), task.text)
+		}
+		f := "%23s\n"
+		totalStr := fmt.Sprintf("total %v", formatDuration(day.totalDuration()))
+		cmd.Printf(f, totalStr)
+		totalBreakStr := fmt.Sprintf("breaks %v", formatDuration(day.totalBreakDuration()))
+		cmd.Printf(f, totalBreakStr)
+		totalWorkStr := fmt.Sprintf("worked %v", formatDuration(day.totalWorkDuration()))
+		cmd.Printf(f, totalWorkStr)
+		for _, tag := range day.tags() {
+			tagStr := fmt.Sprintf("on %v %v", tag, formatDuration(day.totalTagDuration(tag)))
+			cmd.Printf(f, tagStr)
 		}
 	},
 }
 
 func header(day Day) string {
-	ds := day.Date.Format("02.01.2006 (Mon)")
+	ds := day.date.Format("02.01.2006 (Mon)")
 	if day.IsToday() {
 		return fmt.Sprintf("Tasks for today, %s\n", ds)
 	}

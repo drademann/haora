@@ -1,27 +1,17 @@
 package cmd
 
 import (
-	"bytes"
 	"testing"
 	"time"
 )
 
 func TestExecListCmd_givenNoTasks(t *testing.T) {
-	now = func() time.Time {
-		return time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local)
-	}
-	defer func() { now = time.Now }()
+	mockNowAt(t, time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local))
 
 	t.Run("no days and thus no tasks for today", func(t *testing.T) {
 		ctx.data.days = nil
 
-		out := new(bytes.Buffer)
-		rootCmd.SetOut(out)
-		rootCmd.SetArgs([]string{"-d", "22.02.2024", "list"})
-
-		if err := rootCmd.Execute(); err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
+		out := executeCommand(t, "-d 22.02.2024 list")
 
 		assertOutput(t, out,
 			`
@@ -33,13 +23,7 @@ func TestExecListCmd_givenNoTasks(t *testing.T) {
 	t.Run("no tasks for other day than today", func(t *testing.T) {
 		ctx.data.days = nil
 
-		out := new(bytes.Buffer)
-		rootCmd.SetOut(out)
-		rootCmd.SetArgs([]string{"-d", "20.02.2024", "list"})
-
-		if err := rootCmd.Execute(); err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
+		out := executeCommand(t, "-d 20.02.2024 list")
 
 		assertOutput(t, out,
 			`
@@ -51,11 +35,7 @@ func TestExecListCmd_givenNoTasks(t *testing.T) {
 }
 
 func TestExecListCmd_givenTasksForToday(t *testing.T) {
-	out := new(bytes.Buffer)
-	rootCmd.SetOut(out)
-	rootCmd.SetArgs([]string{"list"})
 	*workingDateFlag = ""
-
 	mockNowAt(t, time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local))
 
 	ctx.data = dayList{
@@ -70,9 +50,7 @@ func TestExecListCmd_givenTasksForToday(t *testing.T) {
 				Finished: time.Time{}}},
 	}
 
-	if err := rootCmd.Execute(); err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
+	out := executeCommand(t, "list")
 
 	assertOutput(t, out,
 		`

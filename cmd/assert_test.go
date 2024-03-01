@@ -13,6 +13,6 @@ func assertOutput(t *testing.T, out *bytes.Buffer, expected string) {
 	}
 	expected = strings.ReplaceAll(expected, "\t", "")
 	if out.String() != expected {
-		t.Errorf("expected output %q, but got %q", expected, out.String())
+		t.Errorf("expected output \n%q, but got \n%q", expected, out.String())
 	}
 }

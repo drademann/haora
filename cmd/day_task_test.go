@@ -68,7 +68,7 @@ func TestTaskDuration(t *testing.T) {
 	}
 
 	t.Run("task with a successor", func(t *testing.T) {
-		d := day.Duration(task1)
+		d := day.duration(task1)
 
 		expected := time.Hour
 		if d != expected {
@@ -78,7 +78,7 @@ func TestTaskDuration(t *testing.T) {
 	t.Run("task without a successor should return duration until now", func(t *testing.T) {
 		mockNowAt(t, mockTime(12, 0))
 
-		d := day.Duration(task2)
+		d := day.duration(task2)
 
 		expected := 2 * time.Hour
 		if d != expected {

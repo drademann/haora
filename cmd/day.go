@@ -27,7 +27,7 @@ func (d *Day) IsEmpty() bool {
 	return len(d.Tasks) == 0
 }
 
-func (d *Day) Duration(task Task) time.Duration {
+func (d *Day) duration(task Task) time.Duration {
 	s, err := d.succ(task)
 	if errors.Is(err, NoTaskSucc) {
 		return now().Sub(task.Start)

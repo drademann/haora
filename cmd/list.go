@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"strings"
 )
 
 func init() {
@@ -22,7 +23,14 @@ var listCmd = &cobra.Command{
 		}
 
 		for _, task := range day.Tasks {
-			cmd.Printf("%v - ... %v\n", task.Start.Format("15:04"), task.Text)
+			start := task.Start.Format("15:04")
+			end := "now  "
+			succ, err := day.succ(task)
+			if err == nil {
+				end = succ.Start.Format("15:04")
+			}
+			dur := formatDuration(day.duration(task))
+			cmd.Printf("%v - %v   %v   %v   %v\n", start, end, dur, strings.Join(task.Tags, ","), task.Text)
 		}
 	},
 }

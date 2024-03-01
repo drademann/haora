@@ -34,7 +34,7 @@ func TestExecListCmd_givenNoTasks(t *testing.T) {
 	})
 }
 
-func TestExecListCmd_givenTasksForToday(t *testing.T) {
+func TestExecListCmd_oneOpenTaskForToday(t *testing.T) {
 	*workingDateFlag = ""
 	mockNowAt(t, time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local))
 
@@ -45,7 +45,7 @@ func TestExecListCmd_givenTasksForToday(t *testing.T) {
 					{Start: time.Date(2024, time.February, 22, 9, 0, 0, 0, time.Local),
 						Text:    "a task",
 						IsPause: false,
-						Tags:    []string{}},
+						Tags:    []string{"Haora"}},
 				},
 				Finished: time.Time{}}},
 	}
@@ -56,6 +56,6 @@ func TestExecListCmd_givenTasksForToday(t *testing.T) {
 		`
 		Tasks for today, 22.02.2024 (Thu)
 
-		09:00 - ... a task
+		09:00 - now      7h 32m   Haora   a task
 		`)
 }

@@ -49,7 +49,7 @@ func TestAddShouldUpdateExistingTaskAtSameTime(t *testing.T) {
 		days: []day{
 			{
 				date: mockDate("26.02.2024 00:00"),
-				tasks: []Task{
+				tasks: []task{
 					{
 						start: mockDate("26.02.2024 12:15"),
 						text:  "existing task",

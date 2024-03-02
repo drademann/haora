@@ -40,17 +40,17 @@ func TestIsToday(t *testing.T) {
 }
 
 func TestTaskAt(t *testing.T) {
-	task1 := Task{
+	task1 := task{
 		start: mockTime("10:20"),
 		text:  "existing text",
 		tags:  []string{"haora"},
 	}
-	task2 := Task{
+	task2 := task{
 		start: mockTime("12:30"),
 		text:  "lunch",
 		tags:  nil,
 	}
-	d := day{tasks: []Task{task1, task2}}
+	d := day{tasks: []task{task1, task2}}
 
 	found, err := d.taskAt(mockTime("10:20"))
 
@@ -64,7 +64,7 @@ func TestTaskAt(t *testing.T) {
 
 func TestTags(t *testing.T) {
 	d := day{
-		tasks: []Task{
+		tasks: []task{
 			{tags: []string{"T1"}},
 			{tags: []string{"T2", "T4"}},
 			{tags: []string{"T3", "T4"}},

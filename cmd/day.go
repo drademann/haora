@@ -10,7 +10,7 @@ import (
 type day struct {
 	id       uuid.UUID
 	date     time.Time
-	tasks    []Task
+	tasks    []task
 	finished time.Time
 }
 
@@ -18,7 +18,7 @@ func newDay(date time.Time) day {
 	return day{
 		id:       uuid.New(),
 		date:     date,
-		tasks:    []Task{},
+		tasks:    []task{},
 		finished: time.Time{},
 	}
 }
@@ -54,7 +54,7 @@ func (d *day) addNewTask(s time.Time, tx string, tgs []string) error {
 	return nil
 }
 
-func (d *day) addTasks(tasks ...Task) {
+func (d *day) addTasks(tasks ...task) {
 	d.tasks = append(d.tasks, tasks...)
 	slices.SortFunc(d.tasks, tasksByStart)
 }
@@ -80,7 +80,7 @@ func (d *day) totalDuration() time.Duration {
 func (d *day) totalBreakDuration() time.Duration {
 	var sum time.Duration = 0
 	for _, t := range d.tasks {
-		if t.isPause {
+		if t.isBreak {
 			sum += d.taskDuration(t)
 		}
 	}
@@ -90,7 +90,7 @@ func (d *day) totalBreakDuration() time.Duration {
 func (d *day) totalWorkDuration() time.Duration {
 	var sum time.Duration = 0
 	for _, t := range d.tasks {
-		if !t.isPause {
+		if !t.isBreak {
 			sum += d.taskDuration(t)
 		}
 	}
@@ -107,7 +107,7 @@ func (d *day) totalTagDuration(tag string) time.Duration {
 	return sum
 }
 
-func (d *day) taskDuration(task Task) time.Duration {
+func (d *day) taskDuration(task task) time.Duration {
 	s, err := d.succ(task)
 	if errors.Is(err, NoTaskSucc) {
 		if d.finished.IsZero() {
@@ -124,7 +124,7 @@ var (
 	NoTaskPred = errors.New("no preceding task")
 )
 
-func (d *day) succ(task Task) (Task, error) {
+func (d *day) succ(task task) (task, error) {
 	for i, t := range d.tasks {
 		if t.id == task.id {
 			j := i + 1
@@ -136,7 +136,7 @@ func (d *day) succ(task Task) (Task, error) {
 	return task, NoTaskSucc
 }
 
-func (d *day) pred(task Task) (Task, error) {
+func (d *day) pred(task task) (task, error) {
 	for i, t := range d.tasks {
 		if t.id == task.id {
 			j := i - 1
@@ -148,16 +148,16 @@ func (d *day) pred(task Task) (Task, error) {
 	return task, NoTaskPred
 }
 
-func (d *day) taskAt(start time.Time) (Task, error) {
+func (d *day) taskAt(start time.Time) (task, error) {
 	for _, t := range d.tasks {
 		if t.start.Hour() == start.Hour() && t.start.Minute() == start.Minute() {
 			return t, nil
 		}
 	}
-	return Task{}, NoTask
+	return task{}, NoTask
 }
 
-func (d *day) updateTask(task Task) {
+func (d *day) updateTask(task task) {
 	for i, t := range d.tasks {
 		if t.id == task.id {
 			d.tasks[i] = task

@@ -28,7 +28,7 @@ func TestNewTask(t *testing.T) {
 }
 
 func TestTasksByStart(t *testing.T) {
-	tasks := []Task{
+	tasks := []task{
 		newTask(mockTime("10:00"), "Y"),
 		newTask(mockTime("9:00"), "Z"),
 		newTask(mockTime("12:00"), "X"),

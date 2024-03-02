@@ -11,7 +11,7 @@ func TestDayDuration(t *testing.T) {
 		task1 := newTask(mockTime("9:00"), "task 1")
 		task2 := newTask(mockTime("10:00"), "task 2")
 		d := day{date: ctx.workingDate,
-			tasks:    []Task{task1, task2},
+			tasks:    []task{task1, task2},
 			finished: time.Time{},
 		}
 		mockNowAt(t, mockTime("16:00"))
@@ -24,7 +24,7 @@ func TestDayDuration(t *testing.T) {
 		task1 := newTask(mockTime("9:00"), "task 1")
 		task2 := newTask(mockTime("10:00"), "task 2")
 		d := day{date: ctx.workingDate,
-			tasks:    []Task{task1, task2},
+			tasks:    []task{task1, task2},
 			finished: mockTime("14:00"),
 		}
 		mockNowAt(t, mockTime("23:59"))
@@ -39,10 +39,10 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 		ctx.workingDate = mockTime("0:00")
 		task1 := newTask(mockTime("9:00"), "task 1")
 		lunch := newTask(mockTime("12:00"), "lunch")
-		lunch.isPause = true
+		lunch.isBreak = true
 		task2 := newTask(mockTime("12:45"), "task 2")
 		d := day{date: ctx.workingDate,
-			tasks:    []Task{task1, lunch, task2},
+			tasks:    []task{task1, lunch, task2},
 			finished: mockTime("14:00"),
 		}
 		mockNowAt(t, mockTime("23:59"))
@@ -57,13 +57,13 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 		ctx.workingDate = mockTime("0:00")
 		task1 := newTask(mockTime("10:00"), "task 1")
 		lunch := newTask(mockTime("12:00"), "lunch")
-		lunch.isPause = true
+		lunch.isBreak = true
 		task2 := newTask(mockTime("12:45"), "task 2")
 		tea := newTask(mockTime("16:00"), "tea")
-		tea.isPause = true
+		tea.isBreak = true
 		task3 := newTask(mockTime("16:15"), "task 3")
 		d := day{date: ctx.workingDate,
-			tasks:    []Task{task1, lunch, task2, tea, task3},
+			tasks:    []task{task1, lunch, task2, tea, task3},
 			finished: mockTime("17:00"),
 		}
 		mockNowAt(t, mockTime("23:59"))
@@ -78,9 +78,9 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 		ctx.workingDate = mockTime("0:00")
 		task1 := newTask(mockTime("9:00"), "task 1")
 		lunch := newTask(mockTime("12:00"), "break")
-		lunch.isPause = true
+		lunch.isBreak = true
 		d := day{date: ctx.workingDate,
-			tasks:    []Task{task1, lunch},
+			tasks:    []task{task1, lunch},
 			finished: time.Time{},
 		}
 		mockNowAt(t, mockTime("16:00"))
@@ -99,7 +99,7 @@ func TestTagDuration(t *testing.T) {
 	task2 := newTask(mockTime("12:00"), "task 2", "T1", "T2")
 	task3 := newTask(mockTime("15:00"), "task 3", "T3")
 	d := day{date: ctx.workingDate,
-		tasks:    []Task{task1, task2, task3},
+		tasks:    []task{task1, task2, task3},
 		finished: mockTime("16:00"),
 	}
 
@@ -117,7 +117,7 @@ func TestTaskDuration(t *testing.T) {
 		task1 := newTask(mockTime("9:00"), "task 1")
 		task2 := newTask(mockTime("10:00"), "task 2")
 		d := day{date: ctx.workingDate,
-			tasks:    []Task{task1, task2},
+			tasks:    []task{task1, task2},
 			finished: time.Time{},
 		}
 
@@ -129,7 +129,7 @@ func TestTaskDuration(t *testing.T) {
 		task1 := newTask(mockTime("9:00"), "task 1")
 		task2 := newTask(mockTime("10:00"), "task 2")
 		d := day{date: ctx.workingDate,
-			tasks:    []Task{task1, task2},
+			tasks:    []task{task1, task2},
 			finished: time.Time{},
 		}
 		mockNowAt(t, mockTime("12:00"))
@@ -142,7 +142,7 @@ func TestTaskDuration(t *testing.T) {
 		task1 := newTask(mockTime("9:00"), "task 1")
 		task2 := newTask(mockTime("10:00"), "task 2")
 		d := day{date: ctx.workingDate,
-			tasks:    []Task{task1, task2},
+			tasks:    []task{task1, task2},
 			finished: mockTime("12:00"),
 		}
 		mockNowAt(t, mockTime("23:59"))

@@ -12,7 +12,7 @@ func TestTaskSuccPred(t *testing.T) {
 	task2 := newTask(mockTime("10:00"), "task 2")
 	task3 := newTask(mockTime("12:00"), "task 3")
 	d := day{date: testDayDate,
-		tasks:    []Task{task1, task2, task3},
+		tasks:    []task{task1, task2, task3},
 		finished: time.Time{},
 	}
 

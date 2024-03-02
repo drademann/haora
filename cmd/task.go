@@ -5,26 +5,26 @@ import (
 	"time"
 )
 
-type Task struct {
+type task struct {
 	id      uuid.UUID
 	start   time.Time
 	text    string
-	isPause bool
+	isBreak bool
 	tags    []string
 }
 
-func newTask(s time.Time, tx string, tgs ...string) Task {
-	return Task{
+func newTask(s time.Time, tx string, tgs ...string) task {
+	return task{
 		id:      uuid.New(),
 		start:   s.Truncate(time.Minute),
 		text:    tx,
-		isPause: false,
+		isBreak: false,
 		tags:    tgs,
 	}
 }
 
-func (t Task) with(s time.Time, tx string, tgs ...string) Task {
-	return Task{
+func (t task) with(s time.Time, tx string, tgs ...string) task {
+	return task{
 		id:    t.id,
 		start: s,
 		text:  tx,
@@ -32,7 +32,7 @@ func (t Task) with(s time.Time, tx string, tgs ...string) Task {
 	}
 }
 
-var tasksByStart = func(t1, t2 Task) int {
+var tasksByStart = func(t1, t2 task) int {
 	switch {
 	case t1.start.Before(t2.start):
 		return -1

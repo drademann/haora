@@ -8,10 +8,10 @@ import (
 func TestDay(t *testing.T) {
 	existingDay := day{
 		date: mockTime("9:00"),
-		tasks: []Task{
+		tasks: []task{
 			{start: mockTime("9:00"),
 				text:    "a task",
-				isPause: false,
+				isBreak: false,
 				tags:    []string{}},
 		},
 		finished: time.Time{}}

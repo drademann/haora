@@ -2,6 +2,8 @@
 
 A CLI application programmed with Go to track working times.
 
+[![Go Build & Test](https://github.com/drademann/haora/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/drademann/haora/actions/workflows/go.yml)
+
 ## Description
 
 With different commands, the CLI allows recording working times. One record (task) consists of

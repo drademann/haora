@@ -1,27 +1,21 @@
 package cmd
 
 import (
-	"bytes"
 	"reflect"
 	"testing"
-	"time"
 )
 
-func TestAddSimpleTask(t *testing.T) {
-	buf := new(bytes.Buffer)
-	rootCmd.SetOut(buf)
-	rootCmd.SetArgs([]string{"--date", "26.2.2024", "add", "--start", "12:15", "--tags", "haora", "simple", "task"})
+func TestAddCmd_simpleTask(t *testing.T) {
+	ctx.data.days = nil
 
-	if err := rootCmd.Execute(); err != nil {
-		t.Fatal(err)
-	}
+	_ = executeCommand(t, "--date 26.2.2024 add --start 12:15 --tags haora simple task")
 
-	day := ctx.data.day(mockDate(2024, time.February, 26, 0, 0))
-	if len(day.tasks) != 1 {
-		t.Fatalf("expected 1 task, got %d", len(day.tasks))
+	d := ctx.data.day(mockDate("26.02.2024 00:00"))
+	if len(d.tasks) != 1 {
+		t.Fatalf("expected 1 task, got %d", len(d.tasks))
 	}
-	task := day.tasks[0]
-	expectedStart := mockDate(2024, time.February, 26, 12, 15)
+	task := d.tasks[0]
+	expectedStart := mockDate("26.02.2024 12:15")
 	if task.start != expectedStart {
 		t.Errorf("expected start time %v, got %v", expectedStart, task.start)
 	}
@@ -33,14 +27,31 @@ func TestAddSimpleTask(t *testing.T) {
 	}
 }
 
+func TestAddCmd_shouldAllowNowAsStartTime(t *testing.T) {
+	ctx.data.days = nil
+	mockNowAt(t, mockDate("26.02.2024 11:52"))
+
+	_ = executeCommand(t, "--date 26.02.2024 add --start now --tags haora simple task")
+
+	d := ctx.data.day(mockDate("26.02.2024 00:00"))
+	if len(d.tasks) != 1 {
+		t.Fatalf("expected 1 task, got %d", len(d.tasks))
+	}
+	task := d.tasks[0]
+	expectedStart := mockDate("26.02.2024 11:52")
+	if task.start != expectedStart {
+		t.Errorf("expected start time %v, got %v", expectedStart, task.start)
+	}
+}
+
 func TestAddShouldUpdateExistingTaskAtSameTime(t *testing.T) {
 	ctx.data = dayList{
 		days: []day{
 			{
-				date: mockDate(2024, time.February, 26, 0, 0),
+				date: mockDate("26.02.2024 00:00"),
 				tasks: []Task{
 					{
-						start: mockDate(2024, time.February, 26, 12, 15),
+						start: mockDate("26.02.2024 12:15"),
 						text:  "existing task",
 						tags:  []string{"beer"},
 					},
@@ -49,19 +60,13 @@ func TestAddShouldUpdateExistingTaskAtSameTime(t *testing.T) {
 		},
 	}
 
-	buf := new(bytes.Buffer)
-	rootCmd.SetOut(buf)
-	rootCmd.SetArgs([]string{"--date", "26.2.2024", "add", "--start", "12:15", "--tags", "haora", "simple", "task"})
+	_ = executeCommand(t, "--date 26.02.2024 add --start 12:15 --tags haora simple task")
 
-	if err := rootCmd.Execute(); err != nil {
-		t.Fatal(err)
+	d := ctx.data.day(mockDate("26.02.2024 00:00"))
+	if len(d.tasks) != 1 {
+		t.Fatalf("expected 1 task, got %d", len(d.tasks))
 	}
-
-	day := ctx.data.day(mockDate(2024, time.February, 26, 0, 0))
-	if len(day.tasks) != 1 {
-		t.Fatalf("expected 1 task, got %d", len(day.tasks))
-	}
-	task := day.tasks[0]
+	task := d.tasks[0]
 	if task.text != "simple task" {
 		t.Errorf("expected updated task's text to be %q, but got %q", "simple task", task.text)
 	}

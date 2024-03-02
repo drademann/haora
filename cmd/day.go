@@ -27,10 +27,42 @@ func (d *day) isEmpty() bool {
 	return len(d.tasks) == 0
 }
 
-func (d *day) addTasks(tasks ...Task) *day {
+func (d *day) isToday() bool {
+	return isSameDay(d.date, now())
+}
+
+// addNewTask creates a new task.
+//
+// The new task starts at the start timestamp with given text and tags.
+// The date part of the start timestamp is not used, instead the day's date is applied.
+// If a task at the specific timestamp already exists, it will be updated instead of added.
+func (d *day) addNewTask(s time.Time, tx string, tgs []string) error {
+	s = combineDateTime(d.date, s)
+	t, err := d.taskAt(s)
+	if err != nil {
+		if errors.Is(err, NoTask) {
+			t = newTask(s, tx, tgs...)
+			d.addTasks(t)
+		} else {
+			return err
+		}
+	} else {
+		t = t.with(s, tx, tgs...)
+		d.updateTask(t)
+	}
+	ctx.data.update(*d)
+	return nil
+}
+
+func (d *day) addTasks(tasks ...Task) {
 	d.tasks = append(d.tasks, tasks...)
 	slices.SortFunc(d.tasks, tasksByStart)
-	return d
+}
+
+func (d *day) finish(f time.Time) {
+	f = combineDateTime(d.date, f)
+	d.finished = f
+	ctx.data.update(*d)
 }
 
 func (d *day) totalDuration() time.Duration {
@@ -133,10 +165,6 @@ func (d *day) updateTask(task Task) {
 	}
 }
 
-func (d *day) IsToday() bool {
-	return isSameDay(d.date, now())
-}
-
 func (d *day) tags() []string {
 	set := make(map[string]struct{})
 	for _, t := range d.tasks {
@@ -144,12 +172,12 @@ func (d *day) tags() []string {
 			set[tag] = struct{}{}
 		}
 	}
-	var tags []string
+	var res []string
 	for tag := range set {
-		tags = append(tags, tag)
+		res = append(res, tag)
 	}
-	slices.Sort(tags)
-	return tags
+	slices.Sort(res)
+	return res
 }
 
 func isSameDay(date1, date2 time.Time) bool {

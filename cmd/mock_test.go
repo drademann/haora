@@ -1,39 +1,29 @@
 package cmd
 
 import (
-	uuid2 "github.com/google/uuid"
 	"testing"
 	"time"
 )
 
 // mockNowAt allows pretending another timestamp for today (now).
 // The returned function should be deferred to reestablish the original now() function.
-func mockNowAt(t *testing.T, testNow time.Time) {
+func mockNowAt(t *testing.T, tm time.Time) time.Time {
+	t.Helper()
 	now = func() time.Time {
-		return testNow
+		return tm
 	}
 	t.Cleanup(func() { now = nowFunc })
+	return tm
 }
 
-func mockDate(year int, month time.Month, day, hour, minute int) time.Time {
-	return time.Date(year, month, day, hour, minute, 0, 0, time.Local)
-}
-
-func mockTime(hour, minute int) time.Time {
-	return mockDate(2024, time.June, 21, hour, minute)
-}
-
-func mockTask(t *testing.T, start time.Time, text string, tags ...string) Task {
-	t.Helper()
-	uuid, err := uuid2.NewRandom()
+func mockDate(dateStr string) time.Time {
+	tm, err := time.Parse("02.01.2006 15:04", dateStr)
 	if err != nil {
-		t.Fatal(err)
+		panic(err)
 	}
-	return Task{
-		id:      uuid,
-		start:   start,
-		text:    text,
-		isPause: false,
-		tags:    tags,
-	}
+	return time.Date(tm.Year(), tm.Month(), tm.Day(), tm.Hour(), tm.Minute(), 0, 0, time.Local)
+}
+
+func mockTime(timeStr string) time.Time {
+	return mockDate("21.06.2024 " + timeStr)
 }

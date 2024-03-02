@@ -7,8 +7,7 @@ import (
 )
 
 func TestParseNoFlag(t *testing.T) {
-	testNow := mockDate(2024, time.February, 12, 10, 0)
-	mockNowAt(t, testNow)
+	testNow := mockNowAt(t, mockDate("12.02.2024 10:00"))
 
 	date, err := parseDateFlag("")
 	if err != nil {
@@ -22,20 +21,20 @@ func TestParseNoFlag(t *testing.T) {
 }
 
 func TestParseDateFlag(t *testing.T) {
-	mockNowAt(t, mockDate(2024, time.February, 12, 10, 0))
+	mockNowAt(t, mockDate("12.02.2024 10:00"))
 
 	testCases := []struct {
 		name     string
 		flag     string
 		expected time.Time
 	}{
-		{"full date DD.MM.YYYY", "15.02.2024", mockDate(2024, time.February, 15, 0, 0)},
-		{"full date D.M.YYYY with single digits", "1.2.2024", mockDate(2024, time.February, 1, 0, 0)},
-		{"DD.MM. should assume current year", "15.02.", mockDate(2024, time.February, 15, 0, 0)},
-		{"DD.MM should accept string without trailing point", "15.02", mockDate(2024, time.February, 15, 0, 0)},
-		{"DD. should assume current month and current year", "15.", mockDate(2024, time.February, 15, 0, 0)},
-		{"DD should accept string without trailing point", "15", mockDate(2024, time.February, 15, 0, 0)},
-		{"D should accept single digits", "8", mockDate(2024, time.February, 8, 0, 0)},
+		{"full date DD.MM.YYYY", "15.02.2024", mockDate("15.02.2024 00:00")},
+		{"full date D.M.YYYY with single digits", "1.2.2024", mockDate("01.02.2024 00:00")},
+		{"DD.MM. should assume current year", "15.02.", mockDate("15.02.2024 00:00")},
+		{"DD.MM should accept string without trailing point", "15.02", mockDate("15.02.2024 00:00")},
+		{"DD. should assume current month and current year", "15.", mockDate("15.02.2024 00:00")},
+		{"DD should accept string without trailing point", "15", mockDate("15.02.2024 00:00")},
+		{"D should accept single digits", "8", mockDate("08.02.2024 00:00")},
 	}
 
 	for _, tc := range testCases {
@@ -55,20 +54,20 @@ func TestParseDateFlag(t *testing.T) {
 }
 
 func TestWeekdayFlag(t *testing.T) {
-	mockNowAt(t, mockDate(2024, time.February, 25, 10, 0)) // sunday
+	mockNowAt(t, mockDate("25.02.2024 10:00")) // sunday
 
 	testCases := []struct {
 		flag     string
 		expected time.Time
 	}{
-		{"mo", mockDate(2024, time.February, 19, 0, 0)},
-		{"tu", mockDate(2024, time.February, 20, 0, 0)},
-		{"we", mockDate(2024, time.February, 21, 0, 0)},
-		{"th", mockDate(2024, time.February, 22, 0, 0)},
-		{"fr", mockDate(2024, time.February, 23, 0, 0)},
-		{"sa", mockDate(2024, time.February, 24, 0, 0)},
+		{"mo", mockDate("19.02.2024 00:00")},
+		{"tu", mockDate("20.02.2024 00:00")},
+		{"we", mockDate("21.02.2024 00:00")},
+		{"th", mockDate("22.02.2024 00:00")},
+		{"fr", mockDate("23.02.2024 00:00")},
+		{"sa", mockDate("24.02.2024 00:00")},
 		// does not select today, instead it returned the sunday a week ago
-		{"su", mockDate(2024, time.February, 18, 0, 0)},
+		{"su", mockDate("18.02.2024 00:00")},
 	}
 
 	for _, tc := range testCases {
@@ -88,7 +87,7 @@ func TestWeekdayFlag(t *testing.T) {
 }
 
 func TestParseDayOnly(t *testing.T) {
-	mockNowAt(t, mockDate(2024, time.February, 12, 10, 0))
+	mockNowAt(t, mockDate("12.02.2024 10:00"))
 
 	_, err := parseDateFlag("35")
 

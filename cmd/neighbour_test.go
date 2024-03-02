@@ -7,17 +7,17 @@ import (
 )
 
 func TestTaskSuccPred(t *testing.T) {
-	testDayDate := mockTime(0, 0)
-	task1 := newTask(mockTime(9, 0), "task 1", nil)
-	task2 := newTask(mockTime(10, 0), "task 2", nil)
-	task3 := newTask(mockTime(12, 0), "task 3", nil)
-	day := day{date: testDayDate,
+	testDayDate := mockTime("0:00")
+	task1 := newTask(mockTime("9:00"), "task 1")
+	task2 := newTask(mockTime("10:00"), "task 2")
+	task3 := newTask(mockTime("12:00"), "task 3")
+	d := day{date: testDayDate,
 		tasks:    []Task{task1, task2, task3},
 		finished: time.Time{},
 	}
 
 	t.Run("find successor", func(t *testing.T) {
-		s, err := day.succ(task2)
+		s, err := d.succ(task2)
 
 		if err != nil {
 			t.Fatal(err)
@@ -27,7 +27,7 @@ func TestTaskSuccPred(t *testing.T) {
 		}
 	})
 	t.Run("find no successor", func(t *testing.T) {
-		_, err := day.succ(task3)
+		_, err := d.succ(task3)
 
 		if err == nil {
 			t.Errorf("expected error, but got nil")
@@ -37,7 +37,7 @@ func TestTaskSuccPred(t *testing.T) {
 		}
 	})
 	t.Run("find predecessor", func(t *testing.T) {
-		p, err := day.pred(task2)
+		p, err := d.pred(task2)
 
 		if err != nil {
 			t.Fatal(err)
@@ -47,7 +47,7 @@ func TestTaskSuccPred(t *testing.T) {
 		}
 	})
 	t.Run("find no predecessor", func(t *testing.T) {
-		_, err := day.pred(task1)
+		_, err := d.pred(task1)
 
 		if err == nil {
 			t.Errorf("expected error, but got nil")

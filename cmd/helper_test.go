@@ -6,8 +6,16 @@ import (
 	"testing"
 )
 
+func clearAllFlags() {
+	workingDateFlag = ""
+	startFlag = ""
+	endFlag = ""
+	tagsFlag = ""
+}
+
 func executeCommand(t *testing.T, argLine string) *bytes.Buffer {
 	t.Helper()
+	clearAllFlags()
 	buf := new(bytes.Buffer)
 	rootCmd.SetOut(buf)
 	rootCmd.SetErr(buf)

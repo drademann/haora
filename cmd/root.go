@@ -6,14 +6,14 @@ import (
 )
 
 var (
-	workingDateFlag *string
+	workingDateFlag string
 )
 
 var rootCmd = &cobra.Command{
 	Use:   "haora",
 	Short: "Time tracking with Haora",
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		workingDate, err := parseDateFlag(*workingDateFlag)
+		workingDate, err := parseDateFlag(workingDateFlag)
 		if err != nil {
 			return err
 		}
@@ -28,7 +28,7 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	workingDateFlag = rootCmd.PersistentFlags().StringP("date", "d", "", "Date for the command to execute on (defaults to today)")
+	rootCmd.PersistentFlags().StringVarP(&workingDateFlag, "date", "d", "", "Date for the command to execute on (defaults to today)")
 }
 
 func Execute() {

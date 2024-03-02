@@ -7,9 +7,9 @@ import (
 
 func TestDay(t *testing.T) {
 	existingDay := day{
-		date: mockTime(9, 0),
+		date: mockTime("9:00"),
 		tasks: []Task{
-			{start: mockTime(9, 0),
+			{start: mockTime("9:00"),
 				text:    "a task",
 				isPause: false,
 				tags:    []string{}},
@@ -20,24 +20,24 @@ func TestDay(t *testing.T) {
 	}
 
 	t.Run("should return day if it exists", func(t *testing.T) {
-		date := mockTime(13, 48)
+		date := mockTime("13:48")
 
-		day := ctx.data.day(date)
+		d := ctx.data.day(date)
 
-		if !isSameDay(day.date, existingDay.date) {
-			t.Errorf("got unexpected task: %+v", day)
+		if !isSameDay(d.date, existingDay.date) {
+			t.Errorf("got unexpected task: %+v", d)
 		}
 		if len(ctx.data.days) != 1 {
 			t.Errorf("number of days should'nt have changed, but is now %d", len(ctx.data.days))
 		}
 	})
 	t.Run("should create a new day if it doesn't exist", func(t *testing.T) {
-		date := mockDate(2024, time.June, 30, 10, 0)
+		date := mockDate("30.06.2024 10:00")
 
-		day := ctx.data.day(date)
+		d := ctx.data.day(date)
 
-		if !isSameDay(day.date, date) {
-			t.Errorf("got unexpected task: %+v", day)
+		if !isSameDay(d.date, date) {
+			t.Errorf("got unexpected task: %+v", d)
 		}
 		if len(ctx.data.days) != 2 {
 			t.Errorf("number of days should have increased to 2, but is now %d", len(ctx.data.days))

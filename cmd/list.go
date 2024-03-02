@@ -49,7 +49,7 @@ var listCmd = &cobra.Command{
 
 func header(day day) string {
 	ds := day.date.Format("02.01.2006 (Mon)")
-	if day.IsToday() {
+	if day.isToday() {
 		return fmt.Sprintf("Tasks for today, %s\n", ds)
 	}
 	return fmt.Sprintf("Tasks for %s\n", ds)

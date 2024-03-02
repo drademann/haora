@@ -7,32 +7,32 @@ import (
 )
 
 func TestNewDay(t *testing.T) {
-	date := mockDate(2024, time.February, 21, 14, 58)
-	day := newDay(date)
+	date := mockDate("21.02.2024 14:58")
+	d := newDay(date)
 
-	if len(day.tasks) != 0 {
-		t.Errorf("expected new day to have no tasks, but found %d", len(day.tasks))
+	if len(d.tasks) != 0 {
+		t.Errorf("expected new day to have no tasks, but found %d", len(d.tasks))
 	}
-	if !day.finished.IsZero() {
+	if !d.finished.IsZero() {
 		t.Errorf("didn't expect new day to be finished from the beginning")
 	}
 }
 
 func TestHasNoTasks(t *testing.T) {
-	day := newDay(time.Now())
+	d := newDay(time.Now())
 
-	result := day.isEmpty()
+	result := d.isEmpty()
 
 	if !result {
-		t.Errorf("expected day to have no tasks, but it has %d", len(day.tasks))
+		t.Errorf("expected day to have no tasks, but it has %d", len(d.tasks))
 	}
 }
 
 func TestIsToday(t *testing.T) {
 	today := time.Now()
-	day := newDay(today)
+	d := newDay(today)
 
-	result := day.IsToday()
+	result := d.isToday()
 
 	if !result {
 		t.Errorf("expected day to be today, but it is not")
@@ -41,18 +41,18 @@ func TestIsToday(t *testing.T) {
 
 func TestTaskAt(t *testing.T) {
 	task1 := Task{
-		start: mockTime(10, 20),
+		start: mockTime("10:20"),
 		text:  "existing text",
 		tags:  []string{"haora"},
 	}
 	task2 := Task{
-		start: mockTime(12, 30),
+		start: mockTime("12:30"),
 		text:  "lunch",
 		tags:  nil,
 	}
-	day := day{tasks: []Task{task1, task2}}
+	d := day{tasks: []Task{task1, task2}}
 
-	found, err := day.taskAt(mockTime(10, 20))
+	found, err := d.taskAt(mockTime("10:20"))
 
 	if err != nil {
 		t.Fatal(err)
@@ -63,7 +63,7 @@ func TestTaskAt(t *testing.T) {
 }
 
 func TestTags(t *testing.T) {
-	day := day{
+	d := day{
 		tasks: []Task{
 			{tags: []string{"T1"}},
 			{tags: []string{"T2", "T4"}},
@@ -71,7 +71,7 @@ func TestTags(t *testing.T) {
 		},
 	}
 
-	tags := day.tags()
+	tags := d.tags()
 
 	expected := []string{"T1", "T2", "T3", "T4"}
 	if !reflect.DeepEqual(expected, tags) {
@@ -87,24 +87,24 @@ func TestSameDay(t *testing.T) {
 		expected bool
 	}{
 		{"dates at exact same time should return true",
-			mockDate(2024, time.February, 21, 10, 0),
-			mockDate(2024, time.February, 21, 10, 0),
+			mockDate("21.02.2024 10:00"),
+			mockDate("21.02.2024 10:00"),
 			true},
 		{"dates at same day should return true",
-			mockDate(2024, time.February, 21, 10, 0),
-			mockDate(2024, time.February, 21, 15, 22),
+			mockDate("21.02.2024 10:00"),
+			mockDate("21.02.2024 15:22"),
 			true},
 		{"dates at different days should return false",
-			mockDate(2024, time.February, 21, 10, 0),
-			mockDate(2024, time.February, 12, 10, 0),
+			mockDate("21.02.2024 10:00"),
+			mockDate("12.11.2024 10:00"),
 			false},
 		{"dates at different month should return false",
-			mockDate(2024, time.February, 21, 10, 0),
-			mockDate(2024, time.December, 21, 10, 0),
+			mockDate("21.02.2024 10:00"),
+			mockDate("21.03.2024 10:00"),
 			false},
 		{"dates at different years should return false",
-			mockDate(2024, time.February, 21, 10, 0),
-			mockDate(2025, time.February, 21, 10, 0),
+			mockDate("21.02.2023 10:00"),
+			mockDate("21.02.2024 10:00"),
 			false},
 	}
 

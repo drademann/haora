@@ -1,4 +1,4 @@
-module haora
+module github.com/drademann/haora
 
 go 1.22
 

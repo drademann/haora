@@ -1,9 +1,9 @@
 package main
 
 import (
-	"haora/cmd"
+	"github.com/drademann/haora/command"
 )
 
 func main() {
-	cmd.Execute()
+	command.Execute()
 }

@@ -3,7 +3,6 @@ package add
 import (
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/command/internal/parsing"
-	"github.com/drademann/haora/command/root"
 	"github.com/spf13/cobra"
 	"strings"
 )
@@ -18,7 +17,6 @@ func init() {
 	Command.Flags().StringVarP(&startFlag, "start", "s", "", "The start time, like 10:00, of the task")
 	Command.Flags().StringVarP(&tagsFlag, "tags", "t", "", "The comma separated tags of the task")
 	Command.Flags().BoolVar(&noTagsFlag, "no-tags", false, "Set when the new task has no tags")
-	root.Command.AddCommand(Command)
 }
 
 var Command = &cobra.Command{

@@ -4,14 +4,9 @@ import (
 	"fmt"
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/command/internal/format"
-	"github.com/drademann/haora/command/root"
 	"github.com/spf13/cobra"
 	"strings"
 )
-
-func init() {
-	root.Command.AddCommand(Command)
-}
 
 var Command = &cobra.Command{
 	Use:   "list",

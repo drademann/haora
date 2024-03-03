@@ -3,7 +3,6 @@ package finish
 import (
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/command/internal/parsing"
-	"github.com/drademann/haora/command/root"
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +12,6 @@ var (
 
 func init() {
 	Command.Flags().StringVarP(&endFlag, "end", "e", "", "The finish time, like 17:00, for the day")
-	root.Command.AddCommand(Command)
 }
 
 var Command = &cobra.Command{

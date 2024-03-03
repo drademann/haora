@@ -1,8 +1,7 @@
-package finish
+package command
 
 import (
 	"github.com/drademann/haora/app/data"
-	"github.com/drademann/haora/command/root"
 	"github.com/drademann/haora/test"
 	"testing"
 	"time"
@@ -35,7 +34,7 @@ func TestFinish(t *testing.T) {
 		t.Run(tc.argLine, func(t *testing.T) {
 			prepareTestDay()
 
-			test.ExecuteCommand(t, root.Command, tc.argLine)
+			test.ExecuteCommand(t, Root, tc.argLine)
 
 			d := data.State.DayList.Day(now)
 			if d.Finished != tc.expectedFinished {

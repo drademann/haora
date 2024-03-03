@@ -1,8 +1,13 @@
-package root
+package command
 
 import (
 	"github.com/drademann/haora/app"
 	"github.com/drademann/haora/app/data"
+	"github.com/drademann/haora/command/add"
+	"github.com/drademann/haora/command/finish"
+	"github.com/drademann/haora/command/list"
+	"github.com/drademann/haora/command/pause"
+	"github.com/drademann/haora/command/version"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -11,7 +16,7 @@ var (
 	workingDateFlag string
 )
 
-var Command = &cobra.Command{
+var Root = &cobra.Command{
 	Use:   "haora",
 	Short: "Time tracking with Haora",
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
@@ -33,23 +38,28 @@ var Command = &cobra.Command{
 }
 
 func init() {
-	Command.PersistentFlags().StringVarP(&workingDateFlag, "date", "d", "", "Date for the command to execute on (defaults to today)")
+	Root.PersistentFlags().StringVarP(&workingDateFlag, "date", "d", "", "Date for the command to execute on (defaults to today)")
+	Root.AddCommand(add.Command)
+	Root.AddCommand(finish.Command)
+	Root.AddCommand(list.Command)
+	Root.AddCommand(pause.Command)
+	Root.AddCommand(version.Command)
 }
 
 func Execute() {
 	var err error
 	if err = app.Load(); err != nil {
-		Command.PrintErrf("failed to load app data: %v\n", err)
+		Root.PrintErrf("failed to load app data: %v\n", err)
 		os.Exit(1)
 	}
 
-	if err = Command.Execute(); err != nil {
-		Command.PrintErrf("error: %v\n\n", err)
+	if err = Root.Execute(); err != nil {
+		Root.PrintErrf("error: %v\n\n", err)
 		os.Exit(1)
 	}
 
 	if err = app.Save(); err != nil {
-		Command.PrintErrf("failed to save app data: %v\n", err)
+		Root.PrintErrf("failed to save app data: %v\n", err)
 		os.Exit(1)
 	}
 }

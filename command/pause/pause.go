@@ -3,7 +3,6 @@ package pause
 import (
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/command/internal/parsing"
-	"github.com/drademann/haora/command/root"
 	"github.com/spf13/cobra"
 	"strings"
 )
@@ -14,7 +13,6 @@ var (
 
 func init() {
 	Command.Flags().StringVarP(&startFlag, "start", "s", "", "The start time, like 12:00, of the pause")
-	root.Command.AddCommand(Command)
 }
 
 var Command = &cobra.Command{

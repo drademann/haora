@@ -6,7 +6,7 @@ import (
 )
 
 func TestFormatDuration(t *testing.T) {
-	tests := []struct {
+	testCases := []struct {
 		expected string
 		duration time.Duration
 		name     string
@@ -18,11 +18,33 @@ func TestFormatDuration(t *testing.T) {
 		{" 1h  0m", 1 * time.Hour, "1 hour padded"},
 		{"10h 42m", 10*time.Hour + 42*time.Minute, "a long time"},
 	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			output := Duration(test.duration)
-			if output != test.expected {
-				t.Errorf("expected %q, but got %q", test.expected, output)
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			output := Duration(tc.duration)
+			if output != tc.expected {
+				t.Errorf("expected %q, got %q", tc.expected, output)
+			}
+		})
+	}
+}
+
+func TestFormatDurationDecimal(t *testing.T) {
+	testCases := []struct {
+		expected string
+		duration time.Duration
+	}{
+		{"0.00h", 0 * time.Second},
+		{"0.02h", 59 * time.Second},
+		{"0.17h", 10 * time.Minute},
+		{"0.50h", 30 * time.Minute},
+		{"1.00h", 1 * time.Hour},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.expected, func(t *testing.T) {
+			output := DurationDecimal(tc.duration)
+			if output != tc.expected {
+				t.Errorf("expected %v, got %v", tc.expected, output)
 			}
 		})
 	}

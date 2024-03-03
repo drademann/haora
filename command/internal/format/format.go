@@ -2,6 +2,7 @@ package format
 
 import (
 	"fmt"
+	"math"
 	"time"
 )
 
@@ -17,4 +18,9 @@ func Duration(d time.Duration) string {
 	}
 	mStr = fmt.Sprintf("%dm", m)
 	return fmt.Sprintf("%3v %3v", hStr, mStr)
+}
+
+func DurationDecimal(d time.Duration) string {
+	v := math.Round(d.Hours()*100.0) / 100.0
+	return fmt.Sprintf("%3.2fh", v)
 }

@@ -1,6 +1,7 @@
 package list
 
 import (
+	"errors"
 	"fmt"
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/command/internal/format"
@@ -11,29 +12,31 @@ import (
 var Command = &cobra.Command{
 	Use:   "list",
 	Short: "List the recorded tasks of the selected day",
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		day := data.State.WorkingDay()
 
 		cmd.Println(header(day))
 		if day.IsEmpty() {
 			cmd.Println(noTasks())
-			return
+			return nil
 		}
 
 		for _, task := range day.Tasks {
 			start := task.Start.Format("15:04")
-			end := " now "
+			var end string
 			succ, err := day.Succ(task)
 			if err == nil {
 				end = succ.Start.Format("15:04")
+			} else {
+				if errors.Is(err, data.NoTaskSucc) && day.IsFinished() {
+					end = day.Finished.Format("15:04")
+				} else {
+					end = " now "
+				}
 			}
 			dur := format.Duration(day.TaskDuration(task))
 			if task.IsPause {
-				text := "//"
-				if task.Text != "" {
-					text += " " + task.Text
-				}
-				cmd.Printf("%v - %v   %v   %v\n", start, end, dur, text)
+				cmd.Printf("      |         %v   %v\n", dur, task.Text)
 			} else {
 				cmd.Printf("%v - %v   %v   %v%v\n", start, end, dur, task.Text, tags(task.Tags))
 			}
@@ -47,9 +50,12 @@ var Command = &cobra.Command{
 		totalWorkStr := fmt.Sprintf("worked  %v", format.Duration(day.TotalWorkDuration()))
 		cmd.Printf(f, totalWorkStr)
 		for _, tag := range day.Tags() {
-			tagStr := fmt.Sprintf("on %v  %v", tag, format.Duration(day.TotalTagDuration(tag)))
-			cmd.Printf(f, tagStr)
+			tagDur := day.TotalTagDuration(tag)
+			tagStr := fmt.Sprintf("on %v  %v", tag, format.Duration(tagDur))
+			tagStr = fmt.Sprintf("%23s", tagStr) + fmt.Sprintf("  (%v)\n", format.DurationDecimal(tagDur))
+			cmd.Printf(tagStr)
 		}
+		return nil
 	},
 }
 

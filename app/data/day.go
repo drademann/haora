@@ -32,6 +32,10 @@ func (d *Day) IsToday() bool {
 	return isSameDay(d.Date, datetime.Now())
 }
 
+func (d *Day) IsFinished() bool {
+	return !d.Finished.IsZero()
+}
+
 // AddNewTask creates a new task.
 //
 // The new task starts at the start timestamp with given text and tags.

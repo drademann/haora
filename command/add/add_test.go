@@ -6,44 +6,67 @@ import (
 	"github.com/drademann/haora/test"
 	"reflect"
 	"testing"
+	"time"
 )
 
-func TestAddCmd_simpleTask(t *testing.T) {
-	data.State.DayList.Days = nil
+func TestAddCmd(t *testing.T) {
+	now := test.MockNowAt(t, test.MockDate("26.02.2024 13:37"))
 
-	_ = test.ExecuteCommand(t, command.Root, "--date 26.2.2024 add --start 12:15 --tags haora simple task")
+	prepareTestData := func() {
+		data.State.DayList.Days = nil
+	}
 
-	d := data.State.DayList.Day(test.MockDate("26.02.2024 00:00"))
-	if len(d.Tasks) != 1 {
-		t.Fatalf("expected 1 task, got %d", len(d.Tasks))
+	testCases := []struct {
+		argLine       string
+		expectedStart time.Time
+		expectedText  string
+		expectedTags  []string
+	}{
+		{
+			"--date 26.2.2024 add --start 12:15 --tags haora simple task",
+			test.MockDate("26.02.2024 12:15"),
+			"simple task",
+			[]string{"haora"},
+		},
+		{
+			"--date 26.2.2024 add -s now --tags haora nowadays",
+			now,
+			"nowadays",
+			[]string{"haora"},
+		},
+		{
+			"--date 26.2.2024 add -s now haora programming",
+			now,
+			"programming",
+			[]string{"haora"},
+		},
+		{
+			"--date 26.2.2024 add -s now --no-tags haora programming",
+			now,
+			"haora programming",
+			nil,
+		},
 	}
-	task := d.Tasks[0]
-	expectedStart := test.MockDate("26.02.2024 12:15")
-	if task.Start != expectedStart {
-		t.Errorf("expected start time %v, got %v", expectedStart, task.Start)
-	}
-	if task.Text != "simple task" {
-		t.Errorf("expected text 'simple task', got %s", task.Text)
-	}
-	if len(task.Tags) != 1 || task.Tags[0] != "haora" {
-		t.Errorf("expected tags ['haora'], got %v", task.Tags)
-	}
-}
 
-func TestAddCmd_shouldAllowNowAsStartTime(t *testing.T) {
-	data.State.DayList.Days = nil
-	test.MockNowAt(t, test.MockDate("26.02.2024 11:52"))
+	for _, tc := range testCases {
+		prepareTestData()
 
-	_ = test.ExecuteCommand(t, command.Root, "--date 26.02.2024 add --start now --tags haora simple task")
+		test.ExecuteCommand(t, command.Root, tc.argLine)
 
-	d := data.State.DayList.Day(test.MockDate("26.02.2024 00:00"))
-	if len(d.Tasks) != 1 {
-		t.Fatalf("expected 1 task, got %d", len(d.Tasks))
-	}
-	task := d.Tasks[0]
-	expectedStart := test.MockDate("26.02.2024 11:52")
-	if task.Start != expectedStart {
-		t.Errorf("expected start time %v, got %v", expectedStart, task.Start)
+		d := data.State.DayList.Day(tc.expectedStart)
+		if len(d.Tasks) != 1 {
+			t.Fatalf("expected 1 task, got %d", len(d.Tasks))
+		}
+		task := d.Tasks[0]
+		if task.Start != tc.expectedStart {
+			t.Errorf("expected start time %v, got %v", tc.expectedStart, task.Start)
+		}
+		if task.Text != tc.expectedText {
+			t.Errorf("expected text %q, got %q", tc.expectedText, task.Text)
+		}
+		if !reflect.DeepEqual(task.Tags, tc.expectedTags) {
+			t.Errorf("expected tags %v, got %v", tc.expectedTags, task.Tags)
+		}
 	}
 }
 
@@ -63,7 +86,7 @@ func TestAddShouldUpdateExistingTaskAtSameTime(t *testing.T) {
 		},
 	}
 
-	_ = test.ExecuteCommand(t, command.Root, "--date 26.02.2024 add --start 12:15 --tags haora simple task")
+	test.ExecuteCommand(t, command.Root, "--date 26.02.2024 add --start 12:15 --tags haora simple task")
 
 	d := data.State.DayList.Day(test.MockDate("26.02.2024 00:00"))
 	if len(d.Tasks) != 1 {

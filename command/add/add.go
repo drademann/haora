@@ -9,13 +9,15 @@ import (
 )
 
 var (
-	startFlag string
-	tagsFlag  string
+	startFlag  string
+	tagsFlag   string
+	noTagsFlag bool
 )
 
 func init() {
 	add.Flags().StringVarP(&startFlag, "start", "s", "", "The start time, like 10:00, of the task")
 	add.Flags().StringVarP(&tagsFlag, "tags", "t", "", "The comma separated tags of the task")
+	add.Flags().BoolVar(&noTagsFlag, "no-tags", false, "Set when the new task has no tags")
 	command.Root.AddCommand(add)
 }
 
@@ -27,14 +29,18 @@ var add = &cobra.Command{
 		if err != nil {
 			return err
 		}
+		var tags []string
+		if !noTagsFlag {
+			tags, args = parseTags(args)
+		}
 		text := strings.Join(args, " ")
-		tags, args := parseTags(args)
 		d := data.State.WorkingDay()
 		return d.AddNewTask(time, text, tags)
 	},
 	PostRun: func(cmd *cobra.Command, args []string) { // reset flag so tests can rerun!
 		startFlag = ""
 		tagsFlag = ""
+		noTagsFlag = false
 	},
 }
 

@@ -27,5 +27,5 @@ func Time(flag string, args []string) (time.Time, []string, error) {
 		}
 		return t, args[1:], nil
 	}
-	return time.Time{}, args, errors.New("no task starting time found")
+	return time.Time{}, args, errors.New("no time found")
 }

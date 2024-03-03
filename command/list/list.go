@@ -28,18 +28,26 @@ var Command = &cobra.Command{
 				end = succ.Start.Format("15:04")
 			}
 			dur := format.Duration(day.TaskDuration(task))
-			cmd.Printf("%v - %v   %v   %v%v\n", start, end, dur, task.Text, tags(task.Tags))
+			if task.IsPause {
+				text := "//"
+				if task.Text != "" {
+					text += " " + task.Text
+				}
+				cmd.Printf("%v - %v   %v   %v\n", start, end, dur, text)
+			} else {
+				cmd.Printf("%v - %v   %v   %v%v\n", start, end, dur, task.Text, tags(task.Tags))
+			}
 		}
 		cmd.Println()
 		f := "%23s\n"
-		totalStr := fmt.Sprintf("total %v", format.Duration(day.TotalDuration()))
+		totalStr := fmt.Sprintf("total  %v", format.Duration(day.TotalDuration()))
 		cmd.Printf(f, totalStr)
-		totalBreakStr := fmt.Sprintf("breaks %v", format.Duration(day.TotalBreakDuration()))
+		totalBreakStr := fmt.Sprintf("breaks  %v", format.Duration(day.TotalBreakDuration()))
 		cmd.Printf(f, totalBreakStr)
-		totalWorkStr := fmt.Sprintf("worked %v", format.Duration(day.TotalWorkDuration()))
+		totalWorkStr := fmt.Sprintf("worked  %v", format.Duration(day.TotalWorkDuration()))
 		cmd.Printf(f, totalWorkStr)
 		for _, tag := range day.Tags() {
-			tagStr := fmt.Sprintf("on %v %v", tag, format.Duration(day.TotalTagDuration(tag)))
+			tagStr := fmt.Sprintf("on %v  %v", tag, format.Duration(day.TotalTagDuration(tag)))
 			cmd.Printf(f, tagStr)
 		}
 	},

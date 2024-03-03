@@ -1,13 +1,11 @@
 package add
 
 import (
-	"errors"
 	"github.com/drademann/haora/app/data"
-	"github.com/drademann/haora/app/datetime"
 	"github.com/drademann/haora/command"
+	"github.com/drademann/haora/command/internal/parsing"
 	"github.com/spf13/cobra"
 	"strings"
-	"time"
 )
 
 var (
@@ -25,7 +23,7 @@ var add = &cobra.Command{
 	Use:   "add",
 	Short: "Add a task to a day",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		time, args, err := parseStartTime(args)
+		time, args, err := parsing.Time(startFlag, args)
 		if err != nil {
 			return err
 		}
@@ -38,30 +36,6 @@ var add = &cobra.Command{
 		startFlag = ""
 		tagsFlag = ""
 	},
-}
-
-func parseStartTime(args []string) (time.Time, []string, error) {
-	if startFlag != "" {
-		if startFlag == "now" {
-			return datetime.Now(), args, nil
-		}
-		t, err := time.Parse("15:04", startFlag)
-		if err != nil {
-			return time.Time{}, args, err
-		}
-		return t, args, nil
-	}
-	if len(args) > 0 {
-		if args[0] == "now" {
-			return datetime.Now(), args[1:], nil
-		}
-		t, err := time.Parse("15:04", args[0])
-		if err != nil {
-			return time.Time{}, args, err
-		}
-		return t, args[1:], nil
-	}
-	return time.Time{}, args, errors.New("no task starting time found")
 }
 
 func parseTags(args []string) ([]string, []string) {

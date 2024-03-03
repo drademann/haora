@@ -12,7 +12,7 @@ func TestDay(t *testing.T) {
 		Tasks: []Task{
 			{Start: test.MockTime("9:00"),
 				Text:    "a task",
-				IsBreak: false,
+				IsPause: false,
 				Tags:    []string{}},
 		},
 		Finished: time.Time{}}

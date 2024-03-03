@@ -9,7 +9,7 @@ type Task struct {
 	Id      uuid.UUID
 	Start   time.Time
 	Text    string
-	IsBreak bool
+	IsPause bool
 	Tags    []string
 }
 
@@ -18,8 +18,18 @@ func NewTask(s time.Time, tx string, tgs ...string) Task {
 		Id:      uuid.New(),
 		Start:   s.Truncate(time.Minute),
 		Text:    tx,
-		IsBreak: false,
+		IsPause: false,
 		Tags:    tgs,
+	}
+}
+
+func NewPause(s time.Time, tx string) Task {
+	return Task{
+		Id:      uuid.New(),
+		Start:   s.Truncate(time.Minute),
+		Text:    tx,
+		IsPause: true,
+		Tags:    nil,
 	}
 }
 

@@ -38,7 +38,7 @@ func TestTaskSuccPred(t *testing.T) {
 		}
 	})
 	t.Run("find predecessor", func(t *testing.T) {
-		p, err := d.pred(task2)
+		p, err := d.Pred(task2)
 
 		if err != nil {
 			t.Fatal(err)
@@ -48,7 +48,7 @@ func TestTaskSuccPred(t *testing.T) {
 		}
 	})
 	t.Run("find no predecessor", func(t *testing.T) {
-		_, err := d.pred(task1)
+		_, err := d.Pred(task1)
 
 		if err == nil {
 			t.Errorf("expected error, but got nil")

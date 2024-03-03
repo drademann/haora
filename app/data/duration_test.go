@@ -40,7 +40,7 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 		State.WorkingDate = test.MockTime("0:00")
 		task1 := NewTask(test.MockTime("9:00"), "task 1")
 		lunch := NewTask(test.MockTime("12:00"), "lunch")
-		lunch.IsBreak = true
+		lunch.IsPause = true
 		task2 := NewTask(test.MockTime("12:45"), "task 2")
 		d := Day{Date: State.WorkingDate,
 			Tasks:    []Task{task1, lunch, task2},
@@ -58,10 +58,10 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 		State.WorkingDate = test.MockTime("0:00")
 		task1 := NewTask(test.MockTime("10:00"), "task 1")
 		lunch := NewTask(test.MockTime("12:00"), "lunch")
-		lunch.IsBreak = true
+		lunch.IsPause = true
 		task2 := NewTask(test.MockTime("12:45"), "task 2")
 		tea := NewTask(test.MockTime("16:00"), "tea")
-		tea.IsBreak = true
+		tea.IsPause = true
 		task3 := NewTask(test.MockTime("16:15"), "task 3")
 		d := Day{Date: State.WorkingDate,
 			Tasks:    []Task{task1, lunch, task2, tea, task3},
@@ -79,7 +79,7 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 		State.WorkingDate = test.MockTime("0:00")
 		task1 := NewTask(test.MockTime("9:00"), "task 1")
 		lunch := NewTask(test.MockTime("12:00"), "break")
-		lunch.IsBreak = true
+		lunch.IsPause = true
 		d := Day{Date: State.WorkingDate,
 			Tasks:    []Task{task1, lunch},
 			Finished: time.Time{},

@@ -55,6 +55,24 @@ func (d *Day) AddNewTask(s time.Time, tx string, tgs []string) error {
 	return nil
 }
 
+func (d *Day) AddNewPause(s time.Time, tx string) error {
+	s = datetime.Combine(d.Date, s)
+	p, err := d.taskAt(s)
+	if err != nil {
+		if errors.Is(err, NoTask) {
+			p = NewPause(s, tx)
+			d.AddTasks(p)
+		} else {
+			return err
+		}
+	} else {
+		p = p.with(s, tx)
+		d.updateTask(p)
+	}
+	State.DayList.update(*d)
+	return nil
+}
+
 func (d *Day) AddTasks(tasks ...Task) {
 	d.Tasks = append(d.Tasks, tasks...)
 	slices.SortFunc(d.Tasks, tasksByStart)
@@ -81,7 +99,7 @@ func (d *Day) TotalDuration() time.Duration {
 func (d *Day) TotalBreakDuration() time.Duration {
 	var sum time.Duration = 0
 	for _, t := range d.Tasks {
-		if t.IsBreak {
+		if t.IsPause {
 			sum += d.TaskDuration(t)
 		}
 	}
@@ -91,7 +109,7 @@ func (d *Day) TotalBreakDuration() time.Duration {
 func (d *Day) TotalWorkDuration() time.Duration {
 	var sum time.Duration = 0
 	for _, t := range d.Tasks {
-		if !t.IsBreak {
+		if !t.IsPause {
 			sum += d.TaskDuration(t)
 		}
 	}
@@ -137,7 +155,7 @@ func (d *Day) Succ(task Task) (Task, error) {
 	return task, NoTaskSucc
 }
 
-func (d *Day) pred(task Task) (Task, error) {
+func (d *Day) Pred(task Task) (Task, error) {
 	for i, t := range d.Tasks {
 		if t.Id == task.Id {
 			j := i - 1

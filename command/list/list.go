@@ -10,10 +10,10 @@ import (
 )
 
 func init() {
-	command.Root.AddCommand(list)
+	command.Root.AddCommand(listCmd)
 }
 
-var list = &cobra.Command{
+var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List the recorded tasks of the selected day",
 	Run: func(cmd *cobra.Command, args []string) {

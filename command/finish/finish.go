@@ -12,11 +12,11 @@ var (
 )
 
 func init() {
-	finish.Flags().StringVarP(&endFlag, "end", "e", "", "The finish time, like 17:00, for the day")
-	command.Root.AddCommand(finish)
+	finishCmd.Flags().StringVarP(&endFlag, "end", "e", "", "The finish time, like 17:00, for the day")
+	command.Root.AddCommand(finishCmd)
 }
 
-var finish = &cobra.Command{
+var finishCmd = &cobra.Command{
 	Use:   "finish",
 	Short: "Mark the day as done",
 	RunE: func(cmd *cobra.Command, args []string) error {

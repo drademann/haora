@@ -13,11 +13,11 @@ var (
 )
 
 func init() {
-	pause.Flags().StringVarP(&startFlag, "start", "s", "", "The start time, like 12:00, of the pause")
-	command.Root.AddCommand(pause)
+	pauseCmd.Flags().StringVarP(&startFlag, "start", "s", "", "The start time, like 12:00, of the pause")
+	command.Root.AddCommand(pauseCmd)
 }
 
-var pause = &cobra.Command{
+var pauseCmd = &cobra.Command{
 	Use:   "pause",
 	Short: "Add a pause to a day",
 	RunE: func(cmd *cobra.Command, args []string) error {

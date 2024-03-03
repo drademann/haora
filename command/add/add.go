@@ -15,13 +15,13 @@ var (
 )
 
 func init() {
-	add.Flags().StringVarP(&startFlag, "start", "s", "", "The start time, like 10:00, of the task")
-	add.Flags().StringVarP(&tagsFlag, "tags", "t", "", "The comma separated tags of the task")
-	add.Flags().BoolVar(&noTagsFlag, "no-tags", false, "Set when the new task has no tags")
-	command.Root.AddCommand(add)
+	addCmd.Flags().StringVarP(&startFlag, "start", "s", "", "The start time, like 10:00, of the task")
+	addCmd.Flags().StringVarP(&tagsFlag, "tags", "t", "", "The comma separated tags of the task")
+	addCmd.Flags().BoolVar(&noTagsFlag, "no-tags", false, "Set when the new task has no tags")
+	command.Root.AddCommand(addCmd)
 }
 
-var add = &cobra.Command{
+var addCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Add a task to a day",
 	RunE: func(cmd *cobra.Command, args []string) error {

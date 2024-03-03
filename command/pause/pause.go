@@ -2,8 +2,8 @@ package pause
 
 import (
 	"github.com/drademann/haora/app/data"
-	"github.com/drademann/haora/command"
 	"github.com/drademann/haora/command/internal/parsing"
+	"github.com/drademann/haora/command/root"
 	"github.com/spf13/cobra"
 	"strings"
 )
@@ -13,11 +13,11 @@ var (
 )
 
 func init() {
-	pauseCmd.Flags().StringVarP(&startFlag, "start", "s", "", "The start time, like 12:00, of the pause")
-	command.Root.AddCommand(pauseCmd)
+	Command.Flags().StringVarP(&startFlag, "start", "s", "", "The start time, like 12:00, of the pause")
+	root.Command.AddCommand(Command)
 }
 
-var pauseCmd = &cobra.Command{
+var Command = &cobra.Command{
 	Use:   "pause",
 	Short: "Add a pause to a day",
 	RunE: func(cmd *cobra.Command, args []string) error {

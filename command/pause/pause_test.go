@@ -2,7 +2,7 @@ package pause
 
 import (
 	"github.com/drademann/haora/app/data"
-	"github.com/drademann/haora/command"
+	"github.com/drademann/haora/command/root"
 	"github.com/drademann/haora/test"
 	"testing"
 	"time"
@@ -37,7 +37,7 @@ func TestPause(t *testing.T) {
 		t.Run(tc.argLine, func(t *testing.T) {
 			prepareTestDay()
 
-			test.ExecuteCommand(t, command.Root, tc.argLine)
+			test.ExecuteCommand(t, root.Command, tc.argLine)
 
 			if len(data.State.DayList.Days) != 1 {
 				t.Fatalf("expected still 1 day in the day list, got %d", len(data.State.DayList.Days))
@@ -74,7 +74,7 @@ func TestPauseUpdate(t *testing.T) {
 	)
 	data.State.DayList = data.DayListType{Days: []data.Day{d}}
 
-	test.ExecuteCommand(t, command.Root, "pause 12:00 breakfast")
+	test.ExecuteCommand(t, root.Command, "pause 12:00 breakfast")
 
 	day := data.State.DayList.Day(now)
 	if len(day.Tasks) != 2 {

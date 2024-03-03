@@ -2,8 +2,8 @@ package finish
 
 import (
 	"github.com/drademann/haora/app/data"
-	"github.com/drademann/haora/command"
 	"github.com/drademann/haora/command/internal/parsing"
+	"github.com/drademann/haora/command/root"
 	"github.com/spf13/cobra"
 )
 
@@ -12,11 +12,11 @@ var (
 )
 
 func init() {
-	finishCmd.Flags().StringVarP(&endFlag, "end", "e", "", "The finish time, like 17:00, for the day")
-	command.Root.AddCommand(finishCmd)
+	Command.Flags().StringVarP(&endFlag, "end", "e", "", "The finish time, like 17:00, for the day")
+	root.Command.AddCommand(Command)
 }
 
-var finishCmd = &cobra.Command{
+var Command = &cobra.Command{
 	Use:   "finish",
 	Short: "Mark the day as done",
 	RunE: func(cmd *cobra.Command, args []string) error {

@@ -1,4 +1,4 @@
-package command
+package root
 
 import (
 	"github.com/drademann/haora/app"
@@ -11,7 +11,7 @@ var (
 	workingDateFlag string
 )
 
-var Root = &cobra.Command{
+var Command = &cobra.Command{
 	Use:   "haora",
 	Short: "Time tracking with Haora",
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
@@ -33,23 +33,23 @@ var Root = &cobra.Command{
 }
 
 func init() {
-	Root.PersistentFlags().StringVarP(&workingDateFlag, "date", "d", "", "Date for the command to execute on (defaults to today)")
+	Command.PersistentFlags().StringVarP(&workingDateFlag, "date", "d", "", "Date for the command to execute on (defaults to today)")
 }
 
 func Execute() {
 	var err error
 	if err = app.Load(); err != nil {
-		Root.PrintErrf("failed to load app data: %v\n", err)
+		Command.PrintErrf("failed to load app data: %v\n", err)
 		os.Exit(1)
 	}
 
-	if err = Root.Execute(); err != nil {
-		Root.PrintErrf("error: %v\n\n", err)
+	if err = Command.Execute(); err != nil {
+		Command.PrintErrf("error: %v\n\n", err)
 		os.Exit(1)
 	}
 
 	if err = app.Save(); err != nil {
-		Root.PrintErrf("failed to save app data: %v\n", err)
+		Command.PrintErrf("failed to save app data: %v\n", err)
 		os.Exit(1)
 	}
 }

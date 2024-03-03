@@ -2,7 +2,7 @@ package add
 
 import (
 	"github.com/drademann/haora/app/data"
-	"github.com/drademann/haora/command"
+	"github.com/drademann/haora/command/root"
 	"github.com/drademann/haora/test"
 	"reflect"
 	"testing"
@@ -51,7 +51,7 @@ func TestAddCmd(t *testing.T) {
 	for _, tc := range testCases {
 		prepareTestData()
 
-		test.ExecuteCommand(t, command.Root, tc.argLine)
+		test.ExecuteCommand(t, root.Command, tc.argLine)
 
 		d := data.State.DayList.Day(tc.expectedStart)
 		if len(d.Tasks) != 1 {
@@ -86,7 +86,7 @@ func TestAddShouldUpdateExistingTaskAtSameTime(t *testing.T) {
 		},
 	}
 
-	test.ExecuteCommand(t, command.Root, "--date 26.02.2024 add --start 12:15 --tags haora simple task")
+	test.ExecuteCommand(t, root.Command, "--date 26.02.2024 add --start 12:15 --tags haora simple task")
 
 	d := data.State.DayList.Day(test.MockDate("26.02.2024 00:00"))
 	if len(d.Tasks) != 1 {

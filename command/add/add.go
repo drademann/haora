@@ -2,8 +2,8 @@ package add
 
 import (
 	"github.com/drademann/haora/app/data"
-	"github.com/drademann/haora/command"
 	"github.com/drademann/haora/command/internal/parsing"
+	"github.com/drademann/haora/command/root"
 	"github.com/spf13/cobra"
 	"strings"
 )
@@ -15,13 +15,13 @@ var (
 )
 
 func init() {
-	addCmd.Flags().StringVarP(&startFlag, "start", "s", "", "The start time, like 10:00, of the task")
-	addCmd.Flags().StringVarP(&tagsFlag, "tags", "t", "", "The comma separated tags of the task")
-	addCmd.Flags().BoolVar(&noTagsFlag, "no-tags", false, "Set when the new task has no tags")
-	command.Root.AddCommand(addCmd)
+	Command.Flags().StringVarP(&startFlag, "start", "s", "", "The start time, like 10:00, of the task")
+	Command.Flags().StringVarP(&tagsFlag, "tags", "t", "", "The comma separated tags of the task")
+	Command.Flags().BoolVar(&noTagsFlag, "no-tags", false, "Set when the new task has no tags")
+	root.Command.AddCommand(Command)
 }
 
-var addCmd = &cobra.Command{
+var Command = &cobra.Command{
 	Use:   "add",
 	Short: "Add a task to a day",
 	RunE: func(cmd *cobra.Command, args []string) error {

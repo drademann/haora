@@ -2,7 +2,7 @@ package list
 
 import (
 	"github.com/drademann/haora/app/data"
-	"github.com/drademann/haora/command"
+	"github.com/drademann/haora/command/root"
 	"github.com/drademann/haora/test"
 	"testing"
 	"time"
@@ -14,7 +14,7 @@ func TestExecListCmd_givenNoTasks(t *testing.T) {
 	t.Run("no days and thus no tasks for today", func(t *testing.T) {
 		data.State.DayList.Days = nil
 
-		out := test.ExecuteCommand(t, command.Root, "-d 22.02.2024 list")
+		out := test.ExecuteCommand(t, root.Command, "-d 22.02.2024 list")
 
 		test.AssertOutput(t, out,
 			`
@@ -26,7 +26,7 @@ func TestExecListCmd_givenNoTasks(t *testing.T) {
 	t.Run("no tasks for other day than today", func(t *testing.T) {
 		data.State.DayList.Days = nil
 
-		out := test.ExecuteCommand(t, command.Root, "-d 20.02.2024 list")
+		out := test.ExecuteCommand(t, root.Command, "-d 20.02.2024 list")
 
 		test.AssertOutput(t, out,
 			`
@@ -44,7 +44,7 @@ func TestExecListCmd_oneOpenTaskForToday(t *testing.T) {
 
 	test.MockNowAt(t, test.MockDate("22.02.2024 16:32"))
 
-	out := test.ExecuteCommand(t, command.Root, "list")
+	out := test.ExecuteCommand(t, root.Command, "list")
 
 	test.AssertOutput(t, out,
 		`
@@ -69,7 +69,7 @@ func TestExecListCmd_multipleTasksLastOpen(t *testing.T) {
 
 	test.MockNowAt(t, test.MockDate("22.02.2024 16:32"))
 
-	out := test.ExecuteCommand(t, command.Root, "list")
+	out := test.ExecuteCommand(t, root.Command, "list")
 
 	test.AssertOutput(t, out,
 		`

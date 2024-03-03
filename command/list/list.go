@@ -3,17 +3,17 @@ package list
 import (
 	"fmt"
 	"github.com/drademann/haora/app/data"
-	"github.com/drademann/haora/command"
 	"github.com/drademann/haora/command/internal/format"
+	"github.com/drademann/haora/command/root"
 	"github.com/spf13/cobra"
 	"strings"
 )
 
 func init() {
-	command.Root.AddCommand(listCmd)
+	root.Command.AddCommand(Command)
 }
 
-var listCmd = &cobra.Command{
+var Command = &cobra.Command{
 	Use:   "list",
 	Short: "List the recorded tasks of the selected day",
 	Run: func(cmd *cobra.Command, args []string) {

@@ -71,7 +71,7 @@ func Save() error {
 }
 
 func write(w io.Writer) error {
-	bytes, err := json.Marshal(nonEmptyDays(data.State.DayList.Days))
+	bytes, err := json.MarshalIndent(nonEmptyDays(data.State.DayList.Days), "", "  ")
 	if err != nil {
 		return err
 	}

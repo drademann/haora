@@ -52,9 +52,9 @@ func TestListCmd_oneOpenTaskForToday(t *testing.T) {
 		09:00 -  now     7h 32m   a task #Haora
 		
 		         total   7h 32m
-		        breaks       0m
+		        paused       0m
 		        worked   7h 32m
-		      on Haora   7h 32m  (7.53h)
+		      on Haora   7h 32m
 		`)
 }
 
@@ -78,9 +78,9 @@ func TestListCmd_multipleTasksLastOpen(t *testing.T) {
 		10:00 -  now     6h 32m   fixing bugs
 
 		         total   7h 32m
-		        breaks       0m
+		        paused       0m
 		        worked   7h 32m
-		      on Haora   1h  0m  (1.00h)
+		      on Haora   1h  0m
 		`)
 }
 
@@ -106,9 +106,9 @@ func TestListCmd_withPause(t *testing.T) {
 		13:00 -  now     3h 32m   fixing bugs
 
 		         total   7h 32m
-		        breaks      45m
+		        paused      45m
 		        worked   6h 47m
-		      on Haora   3h 15m  (3.25h)
+		      on Haora   3h 15m
 		`)
 }
 
@@ -135,8 +135,8 @@ func TestListCmd_withFinished(t *testing.T) {
 		13:00 - 17:00    4h  0m   fixing bugs
 
 		         total   8h  0m
-		        breaks      45m
+		        paused      45m
 		        worked   7h 15m
-		      on Haora   3h 15m  (3.25h)
+		      on Haora   3h 15m
 		`)
 }

@@ -45,15 +45,13 @@ var Command = &cobra.Command{
 		f := "%23s\n"
 		totalStr := fmt.Sprintf("total  %v", format.Duration(day.TotalDuration()))
 		cmd.Printf(f, totalStr)
-		totalBreakStr := fmt.Sprintf("breaks  %v", format.Duration(day.TotalBreakDuration()))
+		totalBreakStr := fmt.Sprintf("paused  %v", format.Duration(day.TotalBreakDuration()))
 		cmd.Printf(f, totalBreakStr)
 		totalWorkStr := fmt.Sprintf("worked  %v", format.Duration(day.TotalWorkDuration()))
 		cmd.Printf(f, totalWorkStr)
 		for _, tag := range day.Tags() {
-			tagDur := day.TotalTagDuration(tag)
-			tagStr := fmt.Sprintf("on %v  %v", tag, format.Duration(tagDur))
-			tagStr = fmt.Sprintf("%23s", tagStr) + fmt.Sprintf("  (%v)\n", format.DurationDecimal(tagDur))
-			cmd.Printf(tagStr)
+			tagStr := fmt.Sprintf("on %v  %v", tag, format.Duration(day.TotalTagDuration(tag)))
+			cmd.Printf(f, tagStr)
 		}
 		return nil
 	},

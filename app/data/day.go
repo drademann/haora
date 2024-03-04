@@ -5,6 +5,7 @@ import (
 	"github.com/drademann/haora/app/datetime"
 	"github.com/google/uuid"
 	"slices"
+	"strings"
 	"time"
 )
 
@@ -180,14 +181,6 @@ func (d *Day) taskAt(start time.Time) (Task, error) {
 	return Task{}, NoTask
 }
 
-func (d *Day) updateTask(task Task) {
-	for i, t := range d.Tasks {
-		if t.Id == task.Id {
-			d.Tasks[i] = task
-		}
-	}
-}
-
 func (d *Day) Tags() []string {
 	set := make(map[string]struct{})
 	for _, t := range d.Tasks {
@@ -201,6 +194,23 @@ func (d *Day) Tags() []string {
 	}
 	slices.Sort(res)
 	return res
+}
+
+func (d *Day) updateTask(task Task) {
+	for i, t := range d.Tasks {
+		if t.Id == task.Id {
+			d.Tasks[i] = task
+		}
+	}
+}
+
+func (d *Day) sanitize() Day {
+	for _, t := range d.Tasks {
+		for j := range t.Tags {
+			t.Tags[j] = strings.ToLower(strings.TrimSpace(t.Tags[j]))
+		}
+	}
+	return *d
 }
 
 func isSameDay(date1, date2 time.Time) bool {

@@ -54,7 +54,6 @@ func TestListCmd_oneOpenTaskForToday(t *testing.T) {
 		         total   7h 32m
 		        paused       0m
 		        worked   7h 32m
-		      on Haora   7h 32m
 		`)
 }
 
@@ -80,7 +79,6 @@ func TestListCmd_multipleTasksLastOpen(t *testing.T) {
 		         total   7h 32m
 		        paused       0m
 		        worked   7h 32m
-		      on Haora   1h  0m
 		`)
 }
 
@@ -108,7 +106,6 @@ func TestListCmd_withPause(t *testing.T) {
 		         total   7h 32m
 		        paused      45m
 		        worked   6h 47m
-		      on Haora   3h 15m
 		`)
 }
 
@@ -137,6 +134,5 @@ func TestListCmd_withFinished(t *testing.T) {
 		         total   8h  0m
 		        paused      45m
 		        worked   7h 15m
-		      on Haora   3h 15m
 		`)
 }

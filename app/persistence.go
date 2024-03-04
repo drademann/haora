@@ -71,7 +71,7 @@ func Save() error {
 }
 
 func write(w io.Writer) error {
-	bytes, err := json.MarshalIndent(nonEmptyDays(data.State.DayList.Days), "", "  ")
+	bytes, err := json.MarshalIndent(data.State.SanitizedDays(), "", "  ")
 	if err != nil {
 		return err
 	}
@@ -80,16 +80,6 @@ func write(w io.Writer) error {
 		return err
 	}
 	return nil
-}
-
-func nonEmptyDays(days []data.Day) []data.Day {
-	var filtered = make([]data.Day, 0)
-	for _, day := range days {
-		if !day.IsEmpty() {
-			filtered = append(filtered, day)
-		}
-	}
-	return filtered
 }
 
 func ensureDataDirExists() error {

@@ -22,3 +22,13 @@ func InitState(workingDate time.Time) {
 func (s *StateType) WorkingDay() Day {
 	return s.DayList.Day(s.WorkingDate)
 }
+
+func (s *StateType) SanitizedDays() []Day {
+	var r = make([]Day, 0)
+	for _, d := range s.DayList.Days {
+		if !d.IsEmpty() { // ignore days without any task
+			r = append(r, d.sanitize())
+		}
+	}
+	return r
+}

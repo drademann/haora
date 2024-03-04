@@ -22,5 +22,10 @@ func Duration(d time.Duration) string {
 
 func DurationDecimal(d time.Duration) string {
 	v := math.Round(d.Hours()*100.0) / 100.0
-	return fmt.Sprintf("%3.2fh", v)
+	return fmt.Sprintf("%5.2fh", v)
+}
+
+func DurationDecimalRounded(d time.Duration, r time.Duration) string {
+	v := d.Round(r)
+	return DurationDecimal(v)
 }

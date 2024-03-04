@@ -33,16 +33,40 @@ func TestFormatDurationDecimal(t *testing.T) {
 		expected string
 		duration time.Duration
 	}{
-		{"0.00h", 0 * time.Second},
-		{"0.02h", 59 * time.Second},
-		{"0.17h", 10 * time.Minute},
-		{"0.50h", 30 * time.Minute},
-		{"1.00h", 1 * time.Hour},
+		{" 0.00h", 0 * time.Second},
+		{" 0.02h", 59 * time.Second},
+		{" 0.17h", 10 * time.Minute},
+		{" 0.50h", 30 * time.Minute},
+		{" 1.00h", 1 * time.Hour},
+		{"12.00h", 12 * time.Hour},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.expected, func(t *testing.T) {
 			output := DurationDecimal(tc.duration)
+			if output != tc.expected {
+				t.Errorf("expected %v, got %v", tc.expected, output)
+			}
+		})
+	}
+}
+
+func TestFormatDurationDecimalRounded(t *testing.T) {
+	testCases := []struct {
+		expected string
+		duration time.Duration
+	}{
+		{" 0.00h", 0 * time.Second},
+		{" 0.00h", 59 * time.Second},
+		{" 0.25h", 10 * time.Minute},
+		{" 0.50h", 30 * time.Minute},
+		{" 0.75h", 1*time.Hour - 13*time.Minute},
+		{"12.50h", 12*time.Hour + 24*time.Minute},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.expected, func(t *testing.T) {
+			output := DurationDecimalRounded(tc.duration, 15*time.Minute)
 			if output != tc.expected {
 				t.Errorf("expected %v, got %v", tc.expected, output)
 			}

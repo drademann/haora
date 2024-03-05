@@ -2,13 +2,14 @@ package command
 
 import (
 	"github.com/drademann/haora/app/data"
+	"github.com/drademann/haora/app/datetime"
 	"github.com/drademann/haora/test"
 	"testing"
 	"time"
 )
 
 func TestListCmd_givenNoTasks(t *testing.T) {
-	test.MockNowAt(t, time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local))
+	datetime.MockNowAt(t, time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local))
 
 	t.Run("no days and thus no tasks for today", func(t *testing.T) {
 		data.State.DayList.Days = nil
@@ -41,7 +42,7 @@ func TestListCmd_oneOpenTaskForToday(t *testing.T) {
 	d.AddTasks(data.NewTask(test.MockDate("22.02.2024 9:00"), "a task", "Haora"))
 	data.State.DayList = data.DayListType{Days: []data.Day{d}}
 
-	test.MockNowAt(t, test.MockDate("22.02.2024 16:32"))
+	datetime.MockNowAt(t, test.MockDate("22.02.2024 16:32"))
 
 	out := test.ExecuteCommand(t, Root, "list")
 
@@ -65,7 +66,7 @@ func TestListCmd_multipleTasksLastOpen(t *testing.T) {
 	)
 	data.State.DayList = data.DayListType{Days: []data.Day{d}}
 
-	test.MockNowAt(t, test.MockDate("22.02.2024 16:32"))
+	datetime.MockNowAt(t, test.MockDate("22.02.2024 16:32"))
 
 	out := test.ExecuteCommand(t, Root, "list")
 
@@ -83,7 +84,7 @@ func TestListCmd_multipleTasksLastOpen(t *testing.T) {
 }
 
 func TestListCmd_withPause(t *testing.T) {
-	test.MockNowAt(t, test.MockDate("22.02.2024 16:32"))
+	datetime.MockNowAt(t, test.MockDate("22.02.2024 16:32"))
 
 	d := data.Day{Date: test.MockDate("22.02.2024 00:00")}
 	d.AddTasks(
@@ -110,7 +111,7 @@ func TestListCmd_withPause(t *testing.T) {
 }
 
 func TestListCmd_withFinished(t *testing.T) {
-	test.MockNowAt(t, test.MockDate("22.02.2024 16:32"))
+	datetime.MockNowAt(t, test.MockDate("22.02.2024 16:32"))
 
 	d := data.Day{Date: test.MockDate("22.02.2024 00:00")}
 	d.AddTasks(

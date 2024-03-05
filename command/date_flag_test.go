@@ -3,13 +3,14 @@ package command
 import (
 	"fmt"
 	"github.com/drademann/haora/app/data"
+	"github.com/drademann/haora/app/datetime"
 	"github.com/drademann/haora/test"
 	"testing"
 	"time"
 )
 
 func TestParseNoFlag(t *testing.T) {
-	testNow := test.MockNowAt(t, test.MockDate("12.02.2024 10:00"))
+	testNow := datetime.MockNowAt(t, test.MockDate("12.02.2024 10:00"))
 
 	date, err := parseDateFlag("")
 	if err != nil {
@@ -23,7 +24,7 @@ func TestParseNoFlag(t *testing.T) {
 }
 
 func TestParseDateFlag(t *testing.T) {
-	test.MockNowAt(t, test.MockDate("12.02.2024 10:00"))
+	datetime.MockNowAt(t, test.MockDate("12.02.2024 10:00"))
 
 	testCases := []struct {
 		name     string
@@ -56,7 +57,7 @@ func TestParseDateFlag(t *testing.T) {
 }
 
 func TestWeekdayFlag(t *testing.T) {
-	test.MockNowAt(t, test.MockDate("25.02.2024 10:00")) // sunday
+	datetime.MockNowAt(t, test.MockDate("25.02.2024 10:00")) // sunday
 
 	testCases := []struct {
 		flag     string
@@ -89,7 +90,7 @@ func TestWeekdayFlag(t *testing.T) {
 }
 
 func TestParseDayOnly(t *testing.T) {
-	test.MockNowAt(t, test.MockDate("12.02.2024 10:00"))
+	datetime.MockNowAt(t, test.MockDate("12.02.2024 10:00"))
 
 	_, err := parseDateFlag("35")
 

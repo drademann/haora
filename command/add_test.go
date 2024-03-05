@@ -2,6 +2,7 @@ package command
 
 import (
 	"github.com/drademann/haora/app/data"
+	"github.com/drademann/haora/app/datetime"
 	"github.com/drademann/haora/test"
 	"reflect"
 	"testing"
@@ -9,7 +10,7 @@ import (
 )
 
 func TestAddCmd(t *testing.T) {
-	now := test.MockNowAt(t, test.MockDate("26.02.2024 13:37"))
+	now := datetime.MockNowAt(t, test.MockDate("26.02.2024 13:37"))
 
 	prepareTestData := func() {
 		data.State.DayList.Days = nil

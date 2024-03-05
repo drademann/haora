@@ -1,6 +1,7 @@
 package data
 
 import (
+	"github.com/drademann/haora/app/datetime"
 	"github.com/drademann/haora/test"
 	"testing"
 	"time"
@@ -15,7 +16,7 @@ func TestDayDuration(t *testing.T) {
 			Tasks:    []Task{task1, task2},
 			Finished: time.Time{},
 		}
-		test.MockNowAt(t, test.MockTime("16:00"))
+		datetime.MockNowAt(t, test.MockTime("16:00"))
 
 		dur := d.TotalDuration()
 		test.AssertDuration(t, "total", dur, 7*time.Hour)
@@ -28,7 +29,7 @@ func TestDayDuration(t *testing.T) {
 			Tasks:    []Task{task1, task2},
 			Finished: test.MockTime("14:00"),
 		}
-		test.MockNowAt(t, test.MockTime("23:59"))
+		datetime.MockNowAt(t, test.MockTime("23:59"))
 
 		dur := d.TotalDuration()
 		test.AssertDuration(t, "total", dur, 5*time.Hour)
@@ -46,7 +47,7 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 			Tasks:    []Task{task1, lunch, task2},
 			Finished: test.MockTime("14:00"),
 		}
-		test.MockNowAt(t, test.MockTime("23:59"))
+		datetime.MockNowAt(t, test.MockTime("23:59"))
 
 		b := d.TotalBreakDuration()
 		test.AssertDuration(t, "break", b, 45*time.Minute)
@@ -67,7 +68,7 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 			Tasks:    []Task{task1, lunch, task2, tea, task3},
 			Finished: test.MockTime("17:00"),
 		}
-		test.MockNowAt(t, test.MockTime("23:59"))
+		datetime.MockNowAt(t, test.MockTime("23:59"))
 
 		b := d.TotalBreakDuration()
 		test.AssertDuration(t, "break", b, 1*time.Hour)
@@ -84,7 +85,7 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 			Tasks:    []Task{task1, lunch},
 			Finished: time.Time{},
 		}
-		test.MockNowAt(t, test.MockTime("16:00"))
+		datetime.MockNowAt(t, test.MockTime("16:00"))
 
 		b := d.TotalBreakDuration()
 		test.AssertDuration(t, "break", b, 4*time.Hour)
@@ -133,7 +134,7 @@ func TestTaskDuration(t *testing.T) {
 			Tasks:    []Task{task1, task2},
 			Finished: time.Time{},
 		}
-		test.MockNowAt(t, test.MockTime("12:00"))
+		datetime.MockNowAt(t, test.MockTime("12:00"))
 
 		dur := d.TaskDuration(task2)
 		test.AssertDuration(t, "task", dur, 2*time.Hour)
@@ -146,7 +147,7 @@ func TestTaskDuration(t *testing.T) {
 			Tasks:    []Task{task1, task2},
 			Finished: test.MockTime("12:00"),
 		}
-		test.MockNowAt(t, test.MockTime("23:59"))
+		datetime.MockNowAt(t, test.MockTime("23:59"))
 
 		dur := d.TaskDuration(task2)
 		test.AssertDuration(t, "task", dur, 2*time.Hour)

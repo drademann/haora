@@ -7,10 +7,12 @@ import (
 
 var (
 	tagsFlag bool
+	weekFlag bool
 )
 
 func init() {
 	Command.Flags().BoolVar(&tagsFlag, "tags", false, "Show durations per tag")
+	Command.Flags().BoolVar(&weekFlag, "week", false, "Show week summary")
 }
 
 var Command = &cobra.Command{
@@ -20,6 +22,9 @@ var Command = &cobra.Command{
 		d := data.State.WorkingDay()
 		if tagsFlag {
 			return printTags(d, cmd)
+		}
+		if weekFlag {
+			return printWeek(d, cmd)
 		}
 		return printDefault(d, cmd)
 	},

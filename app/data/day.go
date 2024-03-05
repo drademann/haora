@@ -83,6 +83,20 @@ func (d *Day) AddTasks(tasks ...Task) {
 	slices.SortFunc(d.Tasks, tasksByStart)
 }
 
+func (d *Day) Start() time.Time {
+	if d.IsEmpty() {
+		panic("check Day.IsEmpty before trying to get start time")
+	}
+	return d.Tasks[0].Start
+}
+
+func (d *Day) End() time.Time {
+	if d.Finished.IsZero() {
+		return datetime.Now()
+	}
+	return d.Finished
+}
+
 func (d *Day) Finish(f time.Time) {
 	f = datetime.Combine(d.Date, f)
 	d.Finished = f
@@ -90,15 +104,10 @@ func (d *Day) Finish(f time.Time) {
 }
 
 func (d *Day) TotalDuration() time.Duration {
-	if len(d.Tasks) == 0 {
+	if d.IsEmpty() {
 		return 0
 	}
-	start := d.Tasks[0].Start
-	end := datetime.Now()
-	if !d.Finished.IsZero() {
-		end = d.Finished
-	}
-	return end.Sub(start)
+	return d.End().Sub(d.Start())
 }
 
 func (d *Day) TotalBreakDuration() time.Duration {

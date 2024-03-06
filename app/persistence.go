@@ -8,13 +8,6 @@ import (
 	"path/filepath"
 )
 
-const (
-	dataDir  = ".haora"
-	dataFile = "workbook"
-)
-
-var userHomeDir = os.UserHomeDir
-
 func Load() error {
 	if err := ensureDataDirExists(); err != nil {
 		return err
@@ -23,7 +16,7 @@ func Load() error {
 	if err != nil {
 		return err
 	}
-	filePath := filepath.Join(homeDir, dataDir, dataFile)
+	filePath := filepath.Join(homeDir, haoraDir, dataFile)
 	file, err := os.Open(filePath)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -58,7 +51,7 @@ func Save() error {
 	if err != nil {
 		return err
 	}
-	filePath := filepath.Join(homeDir, dataDir, dataFile)
+	filePath := filepath.Join(homeDir, haoraDir, dataFile)
 	file, err := os.OpenFile(filePath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0600)
 	if err != nil {
 		return err
@@ -87,7 +80,7 @@ func ensureDataDirExists() error {
 	if err != nil {
 		return err
 	}
-	dirPath := filepath.Join(homeDir, dataDir)
+	dirPath := filepath.Join(homeDir, haoraDir)
 	_, err = os.Stat(dirPath)
 	if os.IsNotExist(err) {
 		errDir := os.MkdirAll(dirPath, 0700)

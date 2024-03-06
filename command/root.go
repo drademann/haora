@@ -48,6 +48,11 @@ func init() {
 
 func Execute() {
 	var err error
+	if err = app.LoadConfig(); err != nil {
+		Root.PrintErrf("failed to load app config: %v\n", err)
+		os.Exit(1)
+	}
+
 	if err = app.Load(); err != nil {
 		Root.PrintErrf("failed to load app data: %v\n", err)
 		os.Exit(1)

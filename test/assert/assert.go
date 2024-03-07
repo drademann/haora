@@ -1,4 +1,4 @@
-package test
+package assert
 
 import (
 	"bytes"
@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func AssertOutput(t *testing.T, out *bytes.Buffer, expected string) {
+func Output(t *testing.T, out *bytes.Buffer, expected string) {
 	t.Helper()
 	if strings.HasPrefix(expected, "\n") {
 		expected = expected[1:]
@@ -18,7 +18,7 @@ func AssertOutput(t *testing.T, out *bytes.Buffer, expected string) {
 	}
 }
 
-func AssertDuration(t *testing.T, name string, d, expected time.Duration) {
+func Duration(t *testing.T, name string, d, expected time.Duration) {
 	t.Helper()
 	if d != expected {
 		t.Errorf("expected %s duration of %v, but got %v", name, expected, d)

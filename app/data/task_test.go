@@ -30,9 +30,9 @@ func TestNewTask(t *testing.T) {
 
 func TestTasksByStart(t *testing.T) {
 	tasks := []Task{
-		NewTask(test.MockTime("10:00"), "Y"),
-		NewTask(test.MockTime("9:00"), "Z"),
-		NewTask(test.MockTime("12:00"), "X"),
+		NewTask(test.Time("10:00"), "Y"),
+		NewTask(test.Time("9:00"), "Z"),
+		NewTask(test.Time("12:00"), "X"),
 	}
 
 	slices.SortFunc(tasks, tasksByStart)

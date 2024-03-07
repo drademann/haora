@@ -14,10 +14,10 @@ func NowFunc() time.Time {
 	return time.Now().Truncate(time.Minute)
 }
 
-// MockNowAt allows pretending another timestamp for today (now).
+// AssumeForTestNowAt allows pretending another timestamp for today (now).
 // The returned function should be deferred to reestablish the original now() function.
 // Should not be called from production code!
-func MockNowAt(t *testing.T, tm time.Time) time.Time {
+func AssumeForTestNowAt(t *testing.T, tm time.Time) time.Time {
 	t.Helper()
 	Now = func() time.Time {
 		return tm

@@ -9,12 +9,12 @@ import (
 )
 
 func TestFinish(t *testing.T) {
-	now := test.MockDate("22.02.2024 16:32")
-	datetime.MockNowAt(t, now)
+	now := test.Date("22.02.2024 16:32")
+	datetime.AssumeForTestNowAt(t, now)
 
 	prepareTestDay := func() {
-		d := data.NewDay(test.MockDate("22.02.2024 00:00"))
-		d.AddTasks(data.NewTask(test.MockDate("22.02.2024 9:00"), "a task", "Haora"))
+		d := data.NewDay(test.Date("22.02.2024 00:00"))
+		d.AddTasks(data.NewTask(test.Date("22.02.2024 9:00"), "a task", "Haora"))
 		if !d.Finished.IsZero() {
 			t.Fatal("day to test should not be finished already")
 		}
@@ -26,9 +26,9 @@ func TestFinish(t *testing.T) {
 		expectedFinished time.Time
 	}{
 		{"finish now", now},
-		{"finish 18:00", test.MockDate("22.02.2024 18:00")},
+		{"finish 18:00", test.Date("22.02.2024 18:00")},
 		{"finish -e now", now},
-		{"finish -e 18:00", test.MockDate("22.02.2024 18:00")},
+		{"finish -e 18:00", test.Date("22.02.2024 18:00")},
 	}
 
 	for _, tc := range testCases {

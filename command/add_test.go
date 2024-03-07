@@ -10,7 +10,7 @@ import (
 )
 
 func TestAddCmd(t *testing.T) {
-	now := datetime.MockNowAt(t, test.MockDate("26.02.2024 13:37"))
+	now := datetime.AssumeForTestNowAt(t, test.Date("26.02.2024 13:37"))
 
 	prepareTestData := func() {
 		data.State.DayList.Days = nil
@@ -24,7 +24,7 @@ func TestAddCmd(t *testing.T) {
 	}{
 		{
 			"--date 26.2.2024 add --start 12:15 --tags haora simple task",
-			test.MockDate("26.02.2024 12:15"),
+			test.Date("26.02.2024 12:15"),
 			"simple task",
 			[]string{"haora"},
 		},
@@ -74,10 +74,10 @@ func TestAddShouldUpdateExistingTaskAtSameTime(t *testing.T) {
 	data.State.DayList = data.DayListType{
 		Days: []data.Day{
 			{
-				Date: test.MockDate("26.02.2024 00:00"),
+				Date: test.Date("26.02.2024 00:00"),
 				Tasks: []data.Task{
 					{
-						Start: test.MockDate("26.02.2024 12:15"),
+						Start: test.Date("26.02.2024 12:15"),
 						Text:  "existing task",
 						Tags:  []string{"beer"},
 					},
@@ -88,7 +88,7 @@ func TestAddShouldUpdateExistingTaskAtSameTime(t *testing.T) {
 
 	test.ExecuteCommand(t, Root, "--date 26.02.2024 add --start 12:15 --tags haora simple task")
 
-	d := data.State.DayList.Day(test.MockDate("26.02.2024 00:00"))
+	d := data.State.DayList.Day(test.Date("26.02.2024 00:00"))
 	if len(d.Tasks) != 1 {
 		t.Fatalf("expected 1 task, got %d", len(d.Tasks))
 	}

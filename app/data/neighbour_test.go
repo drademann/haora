@@ -8,10 +8,10 @@ import (
 )
 
 func TestTaskSuccPred(t *testing.T) {
-	testDayDate := test.MockTime("0:00")
-	task1 := NewTask(test.MockTime("9:00"), "task 1")
-	task2 := NewTask(test.MockTime("10:00"), "task 2")
-	task3 := NewTask(test.MockTime("12:00"), "task 3")
+	testDayDate := test.Time("0:00")
+	task1 := NewTask(test.Time("9:00"), "task 1")
+	task2 := NewTask(test.Time("10:00"), "task 2")
+	task3 := NewTask(test.Time("12:00"), "task 3")
 	d := Day{Date: testDayDate,
 		Tasks:    []Task{task1, task2, task3},
 		Finished: time.Time{},

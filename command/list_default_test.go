@@ -4,19 +4,20 @@ import (
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
 	"github.com/drademann/haora/test"
+	"github.com/drademann/haora/test/assert"
 	"testing"
 	"time"
 )
 
 func TestListCmd_givenNoTasks(t *testing.T) {
-	datetime.MockNowAt(t, time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local))
+	datetime.AssumeForTestNowAt(t, time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local))
 
 	t.Run("no days and thus no tasks for today", func(t *testing.T) {
 		data.State.DayList.Days = nil
 
 		out := test.ExecuteCommand(t, Root, "-d 22.02.2024 list")
 
-		test.AssertOutput(t, out,
+		assert.Output(t, out,
 			`
 			Tasks for today, 22.02.2024 (Thu)
 
@@ -28,7 +29,7 @@ func TestListCmd_givenNoTasks(t *testing.T) {
 
 		out := test.ExecuteCommand(t, Root, "-d 20.02.2024 list")
 
-		test.AssertOutput(t, out,
+		assert.Output(t, out,
 			`
 			Tasks for 20.02.2024 (Tue)
 			
@@ -38,15 +39,15 @@ func TestListCmd_givenNoTasks(t *testing.T) {
 }
 
 func TestListCmd_oneOpenTaskForToday(t *testing.T) {
-	d := data.Day{Date: test.MockDate("22.02.2024 00:00")}
-	d.AddTasks(data.NewTask(test.MockDate("22.02.2024 9:00"), "a task", "Haora"))
+	d := data.Day{Date: test.Date("22.02.2024 00:00")}
+	d.AddTasks(data.NewTask(test.Date("22.02.2024 9:00"), "a task", "Haora"))
 	data.State.DayList = data.DayListType{Days: []data.Day{d}}
 
-	datetime.MockNowAt(t, test.MockDate("22.02.2024 16:32"))
+	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 
 	out := test.ExecuteCommand(t, Root, "list")
 
-	test.AssertOutput(t, out,
+	assert.Output(t, out,
 		`
 		Tasks for today, 22.02.2024 (Thu)
 
@@ -59,18 +60,18 @@ func TestListCmd_oneOpenTaskForToday(t *testing.T) {
 }
 
 func TestListCmd_multipleTasksLastOpen(t *testing.T) {
-	d := data.Day{Date: test.MockDate("22.02.2024 00:00")}
+	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTasks(
-		data.NewTask(test.MockDate("22.02.2024 9:00"), "some programming", "Haora"),
-		data.NewTask(test.MockDate("22.02.2024 10:00"), "fixing bugs"),
+		data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"),
+		data.NewTask(test.Date("22.02.2024 10:00"), "fixing bugs"),
 	)
 	data.State.DayList = data.DayListType{Days: []data.Day{d}}
 
-	datetime.MockNowAt(t, test.MockDate("22.02.2024 16:32"))
+	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 
 	out := test.ExecuteCommand(t, Root, "list")
 
-	test.AssertOutput(t, out,
+	assert.Output(t, out,
 		`
 		Tasks for today, 22.02.2024 (Thu)
 
@@ -84,19 +85,19 @@ func TestListCmd_multipleTasksLastOpen(t *testing.T) {
 }
 
 func TestListCmd_withPause(t *testing.T) {
-	datetime.MockNowAt(t, test.MockDate("22.02.2024 16:32"))
+	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 
-	d := data.Day{Date: test.MockDate("22.02.2024 00:00")}
+	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTasks(
-		data.NewTask(test.MockDate("22.02.2024 9:00"), "some programming", "Haora"),
-		data.NewPause(test.MockDate("22.02.2024 12:15"), ""),
-		data.NewTask(test.MockDate("22.02.2024 13:00"), "fixing bugs"),
+		data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"),
+		data.NewPause(test.Date("22.02.2024 12:15"), ""),
+		data.NewTask(test.Date("22.02.2024 13:00"), "fixing bugs"),
 	)
 	data.State.DayList = data.DayListType{Days: []data.Day{d}}
 
 	out := test.ExecuteCommand(t, Root, "list")
 
-	test.AssertOutput(t, out,
+	assert.Output(t, out,
 		`
 		Tasks for today, 22.02.2024 (Thu)
 
@@ -111,20 +112,20 @@ func TestListCmd_withPause(t *testing.T) {
 }
 
 func TestListCmd_withFinished(t *testing.T) {
-	datetime.MockNowAt(t, test.MockDate("22.02.2024 16:32"))
+	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 
-	d := data.Day{Date: test.MockDate("22.02.2024 00:00")}
+	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTasks(
-		data.NewTask(test.MockDate("22.02.2024 9:00"), "some programming", "Haora"),
-		data.NewPause(test.MockDate("22.02.2024 12:15"), "lunch"),
-		data.NewTask(test.MockDate("22.02.2024 13:00"), "fixing bugs"),
+		data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"),
+		data.NewPause(test.Date("22.02.2024 12:15"), "lunch"),
+		data.NewTask(test.Date("22.02.2024 13:00"), "fixing bugs"),
 	)
-	d.Finished = test.MockDate("22.02.2024 17:00")
+	d.Finished = test.Date("22.02.2024 17:00")
 	data.State.DayList = data.DayListType{Days: []data.Day{d}}
 
 	out := test.ExecuteCommand(t, Root, "list")
 
-	test.AssertOutput(t, out,
+	assert.Output(t, out,
 		`
 		Tasks for today, 22.02.2024 (Thu)
 

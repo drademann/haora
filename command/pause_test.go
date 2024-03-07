@@ -9,12 +9,12 @@ import (
 )
 
 func TestPause(t *testing.T) {
-	now := test.MockDate("03.03.2024 17:27")
-	datetime.MockNowAt(t, now)
+	now := test.Date("03.03.2024 17:27")
+	datetime.AssumeForTestNowAt(t, now)
 
 	prepareTestDay := func() {
-		d := data.NewDay(test.MockDate("03.03.2024 00:00"))
-		d.AddTasks(data.NewTask(test.MockDate("03.03.2024 9:00"), "a task", "Haora"))
+		d := data.NewDay(test.Date("03.03.2024 00:00"))
+		d.AddTasks(data.NewTask(test.Date("03.03.2024 9:00"), "a task", "Haora"))
 		data.State.DayList = data.DayListType{Days: []data.Day{d}}
 	}
 
@@ -23,14 +23,14 @@ func TestPause(t *testing.T) {
 		expectedStart time.Time
 		expectedText  string
 	}{
-		{"pause now", test.MockDate("03.03.2024 17:27"), ""},
-		{"pause now lunch with friends", test.MockDate("03.03.2024 17:27"), "lunch with friends"},
-		{"pause 12:15", test.MockDate("03.03.2024 12:15"), ""},
-		{"pause 12:15 lunch", test.MockDate("03.03.2024 12:15"), "lunch"},
-		{"pause -s now", test.MockDate("03.03.2024 17:27"), ""},
-		{"pause -s now nice dinner", test.MockDate("03.03.2024 17:27"), "nice dinner"},
-		{"pause -s 12:15", test.MockDate("03.03.2024 12:15"), ""},
-		{"pause -s 12:15 break", test.MockDate("03.03.2024 12:15"), "break"},
+		{"pause now", test.Date("03.03.2024 17:27"), ""},
+		{"pause now lunch with friends", test.Date("03.03.2024 17:27"), "lunch with friends"},
+		{"pause 12:15", test.Date("03.03.2024 12:15"), ""},
+		{"pause 12:15 lunch", test.Date("03.03.2024 12:15"), "lunch"},
+		{"pause -s now", test.Date("03.03.2024 17:27"), ""},
+		{"pause -s now nice dinner", test.Date("03.03.2024 17:27"), "nice dinner"},
+		{"pause -s 12:15", test.Date("03.03.2024 12:15"), ""},
+		{"pause -s 12:15 break", test.Date("03.03.2024 12:15"), "break"},
 	}
 
 	for _, tc := range testCases {
@@ -64,13 +64,13 @@ func TestPause(t *testing.T) {
 }
 
 func TestPauseUpdate(t *testing.T) {
-	now := test.MockDate("03.03.2024 17:27")
-	datetime.MockNowAt(t, now)
+	now := test.Date("03.03.2024 17:27")
+	datetime.AssumeForTestNowAt(t, now)
 
-	d := data.NewDay(test.MockDate("03.03.2024 00:00"))
+	d := data.NewDay(test.Date("03.03.2024 00:00"))
 	d.AddTasks(
-		data.NewTask(test.MockDate("03.03.2024 9:00"), "a task", "Haora"),
-		data.NewPause(test.MockDate("03.03.2024 12:00"), "lunch"),
+		data.NewTask(test.Date("03.03.2024 9:00"), "a task", "Haora"),
+		data.NewPause(test.Date("03.03.2024 12:00"), "lunch"),
 	)
 	data.State.DayList = data.DayListType{Days: []data.Day{d}}
 

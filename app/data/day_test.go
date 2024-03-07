@@ -8,7 +8,7 @@ import (
 )
 
 func TestNewDay(t *testing.T) {
-	date := test.MockDate("21.02.2024 14:58")
+	date := test.Date("21.02.2024 14:58")
 	d := NewDay(date)
 
 	if len(d.Tasks) != 0 {
@@ -42,18 +42,18 @@ func TestIsToday(t *testing.T) {
 
 func TestTaskAt(t *testing.T) {
 	task1 := Task{
-		Start: test.MockTime("10:20"),
+		Start: test.Time("10:20"),
 		Text:  "existing text",
 		Tags:  []string{"haora"},
 	}
 	task2 := Task{
-		Start: test.MockTime("12:30"),
+		Start: test.Time("12:30"),
 		Text:  "lunch",
 		Tags:  nil,
 	}
 	d := Day{Tasks: []Task{task1, task2}}
 
-	found, err := d.taskAt(test.MockTime("10:20"))
+	found, err := d.taskAt(test.Time("10:20"))
 
 	if err != nil {
 		t.Fatal(err)
@@ -88,24 +88,24 @@ func TestSameDay(t *testing.T) {
 		expected bool
 	}{
 		{"dates at exact same time should return true",
-			test.MockDate("21.02.2024 10:00"),
-			test.MockDate("21.02.2024 10:00"),
+			test.Date("21.02.2024 10:00"),
+			test.Date("21.02.2024 10:00"),
 			true},
 		{"dates at same day should return true",
-			test.MockDate("21.02.2024 10:00"),
-			test.MockDate("21.02.2024 15:22"),
+			test.Date("21.02.2024 10:00"),
+			test.Date("21.02.2024 15:22"),
 			true},
 		{"dates at different days should return false",
-			test.MockDate("21.02.2024 10:00"),
-			test.MockDate("12.11.2024 10:00"),
+			test.Date("21.02.2024 10:00"),
+			test.Date("12.11.2024 10:00"),
 			false},
 		{"dates at different month should return false",
-			test.MockDate("21.02.2024 10:00"),
-			test.MockDate("21.03.2024 10:00"),
+			test.Date("21.02.2024 10:00"),
+			test.Date("21.03.2024 10:00"),
 			false},
 		{"dates at different years should return false",
-			test.MockDate("21.02.2023 10:00"),
-			test.MockDate("21.02.2024 10:00"),
+			test.Date("21.02.2023 10:00"),
+			test.Date("21.02.2024 10:00"),
 			false},
 	}
 

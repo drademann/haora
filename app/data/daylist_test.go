@@ -8,9 +8,9 @@ import (
 
 func TestDay(t *testing.T) {
 	existingDay := Day{
-		Date: test.MockTime("9:00"),
+		Date: test.Time("9:00"),
 		Tasks: []Task{
-			{Start: test.MockTime("9:00"),
+			{Start: test.Time("9:00"),
 				Text:    "a task",
 				IsPause: false,
 				Tags:    []string{}},
@@ -21,7 +21,7 @@ func TestDay(t *testing.T) {
 	}
 
 	t.Run("should return day if it exists", func(t *testing.T) {
-		date := test.MockTime("13:48")
+		date := test.Time("13:48")
 
 		d := State.DayList.Day(date)
 
@@ -33,7 +33,7 @@ func TestDay(t *testing.T) {
 		}
 	})
 	t.Run("should create a new day if it doesn't exist", func(t *testing.T) {
-		date := test.MockDate("30.06.2024 10:00")
+		date := test.Date("30.06.2024 10:00")
 
 		d := State.DayList.Day(date)
 

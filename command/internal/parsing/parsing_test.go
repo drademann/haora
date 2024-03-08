@@ -8,7 +8,7 @@ import (
 )
 
 func TestTime(t *testing.T) {
-	datetime.MockNowAt(t, test.MockTime("14:42"))
+	datetime.AssumeForTestNowAt(t, test.Time("14:42"))
 
 	testCases := []struct {
 		name       string

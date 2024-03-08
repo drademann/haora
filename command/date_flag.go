@@ -12,7 +12,7 @@ import (
 
 var (
 	// RE for parsing dates like 02.01.2006 or 02.01. or 02. ...
-	re = regexp.MustCompile(`(\d+)(?:\.(\d+)(?:\.(\d+)?)?)?`)
+	dateFlagRE = regexp.MustCompile(`(\d+)(?:\.(\d+)(?:\.(\d+)?)?)?`)
 	// weekdays for selecting the preceding weekday
 	weekdays = map[string]time.Weekday{
 		"mo": time.Monday,
@@ -46,7 +46,7 @@ func parseDateFlag(workingDateFlag string) (time.Time, error) {
 
 func tryDateString(workingDateFlag string) (time.Time, error) {
 	var err error
-	groups := re.FindStringSubmatch(workingDateFlag)
+	groups := dateFlagRE.FindStringSubmatch(workingDateFlag)
 	if len(groups) == 0 {
 		return time.Time{}, errors.New("no date string match")
 	}

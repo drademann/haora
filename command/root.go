@@ -48,12 +48,12 @@ func init() {
 
 func Execute() {
 	var err error
-	if err = app.LoadConfig(); err != nil {
+	if err = app.Load(); err != nil {
 		Root.PrintErrf("failed to load app config: %v\n", err)
 		os.Exit(1)
 	}
 
-	if err = app.Load(); err != nil {
+	if err = data.Load(); err != nil {
 		Root.PrintErrf("failed to load app data: %v\n", err)
 		os.Exit(1)
 	}
@@ -63,7 +63,7 @@ func Execute() {
 		os.Exit(1)
 	}
 
-	if err = app.Save(); err != nil {
+	if err = data.Save(); err != nil {
 		Root.PrintErrf("failed to save app data: %v\n", err)
 		os.Exit(1)
 	}

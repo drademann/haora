@@ -1,26 +1,30 @@
-package app
+package data
 
 import (
 	"encoding/json"
-	"github.com/drademann/haora/app/data"
+	"github.com/drademann/haora/app"
 	"io"
 	"os"
 	"path/filepath"
+)
+
+const (
+	filename = "workbook.json"
 )
 
 func Load() error {
 	if err := ensureDataDirExists(); err != nil {
 		return err
 	}
-	homeDir, err := userHomeDir()
+	homeDir, err := app.UserHomeDir()
 	if err != nil {
 		return err
 	}
-	filePath := filepath.Join(homeDir, haoraDir, dataFile)
+	filePath := filepath.Join(homeDir, app.HaoraDir, filename)
 	file, err := os.Open(filePath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			data.State.DayList = data.DayListType{}
+			State.DayList = DayListType{}
 			return nil
 		}
 		return err
@@ -37,7 +41,7 @@ func read(r io.Reader) error {
 	if err != nil {
 		return err
 	}
-	if err = json.Unmarshal(bytes, &data.State.DayList.Days); err != nil {
+	if err = json.Unmarshal(bytes, &State.DayList.Days); err != nil {
 		return err
 	}
 	return nil
@@ -47,11 +51,11 @@ func Save() error {
 	if err := ensureDataDirExists(); err != nil {
 		return err
 	}
-	homeDir, err := userHomeDir()
+	homeDir, err := app.UserHomeDir()
 	if err != nil {
 		return err
 	}
-	filePath := filepath.Join(homeDir, haoraDir, dataFile)
+	filePath := filepath.Join(homeDir, app.HaoraDir, filename)
 	file, err := os.OpenFile(filePath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0600)
 	if err != nil {
 		return err
@@ -64,7 +68,7 @@ func Save() error {
 }
 
 func write(w io.Writer) error {
-	bytes, err := json.MarshalIndent(data.State.SanitizedDays(), "", "  ")
+	bytes, err := json.MarshalIndent(State.SanitizedDays(), "", "  ")
 	if err != nil {
 		return err
 	}
@@ -76,11 +80,11 @@ func write(w io.Writer) error {
 }
 
 func ensureDataDirExists() error {
-	homeDir, err := userHomeDir()
+	homeDir, err := app.UserHomeDir()
 	if err != nil {
 		return err
 	}
-	dirPath := filepath.Join(homeDir, haoraDir)
+	dirPath := filepath.Join(homeDir, app.HaoraDir)
 	_, err = os.Stat(dirPath)
 	if os.IsNotExist(err) {
 		errDir := os.MkdirAll(dirPath, 0700)

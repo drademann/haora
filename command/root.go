@@ -1,7 +1,7 @@
 package command
 
 import (
-	"github.com/drademann/haora/app/config"
+	"github.com/drademann/haora/app"
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/command/add"
 	"github.com/drademann/haora/command/finish"
@@ -48,7 +48,7 @@ func init() {
 
 func Execute() {
 	var err error
-	if err = config.Load(); err != nil {
+	if err = app.Load(); err != nil {
 		Root.PrintErrf("failed to load app config: %v\n", err)
 		os.Exit(1)
 	}

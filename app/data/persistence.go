@@ -2,7 +2,7 @@ package data
 
 import (
 	"encoding/json"
-	"github.com/drademann/haora/app/config"
+	"github.com/drademann/haora/app"
 	"io"
 	"os"
 	"path/filepath"
@@ -16,11 +16,11 @@ func Load() error {
 	if err := ensureDataDirExists(); err != nil {
 		return err
 	}
-	homeDir, err := config.UserHomeDir()
+	homeDir, err := app.UserHomeDir()
 	if err != nil {
 		return err
 	}
-	filePath := filepath.Join(homeDir, config.HaoraDir, filename)
+	filePath := filepath.Join(homeDir, app.HaoraDir, filename)
 	file, err := os.Open(filePath)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -51,11 +51,11 @@ func Save() error {
 	if err := ensureDataDirExists(); err != nil {
 		return err
 	}
-	homeDir, err := config.UserHomeDir()
+	homeDir, err := app.UserHomeDir()
 	if err != nil {
 		return err
 	}
-	filePath := filepath.Join(homeDir, config.HaoraDir, filename)
+	filePath := filepath.Join(homeDir, app.HaoraDir, filename)
 	file, err := os.OpenFile(filePath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0600)
 	if err != nil {
 		return err
@@ -80,11 +80,11 @@ func write(w io.Writer) error {
 }
 
 func ensureDataDirExists() error {
-	homeDir, err := config.UserHomeDir()
+	homeDir, err := app.UserHomeDir()
 	if err != nil {
 		return err
 	}
-	dirPath := filepath.Join(homeDir, config.HaoraDir)
+	dirPath := filepath.Join(homeDir, app.HaoraDir)
 	_, err = os.Stat(dirPath)
 	if os.IsNotExist(err) {
 		errDir := os.MkdirAll(dirPath, 0700)

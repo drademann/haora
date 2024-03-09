@@ -7,7 +7,6 @@ import (
 	"github.com/drademann/haora/command/internal/format"
 	"github.com/spf13/cobra"
 	"strings"
-	"time"
 )
 
 func printDefault(d data.Day, cmd *cobra.Command) error {
@@ -66,11 +65,4 @@ func printDefault(d data.Day, cmd *cobra.Command) error {
 		cmd.Printf("        worked  %v   (%s %v)\n", format.Duration(d.TotalWorkDuration()), sign(overtime), format.DurationShort(overtime))
 	}
 	return nil
-}
-
-func sign(d time.Duration) string {
-	if d < 0 {
-		return "-"
-	}
-	return "+"
 }

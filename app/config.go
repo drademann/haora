@@ -37,6 +37,14 @@ func Duration(durStr string) (time.Duration, error) {
 	return time.ParseDuration(durStr)
 }
 
+func DurationPerWeek() (time.Duration, error) {
+	durationPerWeek, err := Duration(Config.Times.DurationPerWeek)
+	if err != nil {
+		return 0, err
+	}
+	return durationPerWeek, nil
+}
+
 func DurationPerDay() (time.Duration, error) {
 	durationPerWeek, err := Duration(Config.Times.DurationPerWeek)
 	if err != nil {

@@ -10,22 +10,24 @@ import (
 
 func printWeek(d data.Day, cmd *cobra.Command) error {
 	date := datetime.FindWeekday(d.Date, datetime.Previous, time.Monday)
-	var total time.Duration
-	for i := 0; i < 7; i++ {
-		d = data.State.DayList.Day(date)
-		dateStr := d.Date.Format("Mon 02.01.2006")
-		if d.IsEmpty() {
+	week := data.CollectWeek(date)
+	for _, day := range week.Days {
+		dateStr := day.Date.Format("Mon 02.01.2006")
+		if day.IsEmpty() {
 			cmd.Printf("%s   -\n", dateStr)
 		} else {
-			startStr := d.Start().Format("15:04")
-			endStr := d.End().Format("15:04")
-			dur := d.TotalWorkDuration()
+			startStr := day.Start().Format("15:04")
+			endStr := day.End().Format("15:04")
+			dur := day.TotalWorkDuration()
 			durStr := format.Duration(dur)
 			cmd.Printf("%s   %s - %s  worked %s\n", dateStr, startStr, endStr, durStr)
-			total += dur
 		}
-		date = date.Add(24 * time.Hour)
 	}
-	cmd.Printf("\n                          total worked %s\n", format.Duration(total))
+	overtime, err := week.TotalOvertimeDuration()
+	if err != nil || overtime == 0 {
+		cmd.Printf("\n                          total worked %s\n", format.Duration(week.TotalWorkDuration()))
+	} else {
+		cmd.Printf("\n                          total worked %s   (%s %v)\n", format.Duration(week.TotalWorkDuration()), sign(overtime), format.DurationShort(overtime))
+	}
 	return nil
 }

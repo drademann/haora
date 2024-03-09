@@ -3,6 +3,7 @@ package list
 import (
 	"github.com/drademann/haora/app/data"
 	"github.com/spf13/cobra"
+	"time"
 )
 
 var (
@@ -31,4 +32,11 @@ var Command = &cobra.Command{
 	PostRun: func(cmd *cobra.Command, args []string) {
 		tagsFlag = false
 	},
+}
+
+func sign(d time.Duration) string {
+	if d < 0 {
+		return "-"
+	}
+	return "+"
 }

@@ -114,4 +114,34 @@ To explicitly set a finish time.
 
 ### version
 
-Prints the current version of Haora.
+Print the current version of Haora.
+
+## Configuration
+
+Haora uses a configuration file read from `~/.haora/config.json`.
+This JSON file has the following format:
+
+```json
+{
+  "times": {
+    "DurationPerWeek": "40h",
+    "DaysPerWeek": 5
+  }
+}
+```
+
+When the file is not present, the default values are used.
+
+### Duration per Week
+
+Sets the desired number of working hours per week.
+Minutes may be added as well, like `"38h 30m"`.
+
+Default: `"40h"`
+
+### Days per Week
+
+Sets the number of workdays in a week.
+This determines the desired number of working hours per day.
+
+Default: `5`

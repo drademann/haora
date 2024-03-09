@@ -16,13 +16,27 @@ With different commands, the CLI allows recording working times. One record (tas
 
 ### `--date` `-d`
 
-Set the date any following command will work with. If this flag is not specified, Haora will assume today.
+Set the date any following command will work with.
+If this flag is not specified, Haora will assume today.
+Different date formats are allowed:
 
-// TODO describe allowed date formats
+| Format                  | Description                                                                                | Example                    |
+|-------------------------|--------------------------------------------------------------------------------------------|----------------------------|
+| DD.MM.YYYY<br/>DD.MM.YY | a specific date                                                                            | 9.3.2024<br/>24.12.2023    |
+| DD.MM.<br/>DD.MM        | a date within the current year                                                             | 9.3.<br/>24.12             |
+| DD.<br/>DD              | a day within the current month and year                                                    | 9.<br/>24                  |
+| WW                      | the previous weekday<br>(selects the first date prior to today<br/>with the given weekday) | mo, tu, we, th, fr, sa, su |
 
 ## Commands
 
-### `list`
+Commands that take a timestamp as argument accept different formats:
+
+| Format | Description              | Example        |
+|--------|--------------------------|----------------|
+| HH:MM  | timestamp with semicolon | 10:30<br/>9:42 |
+| HHMM   | without semicolon        | 1030<br/>942   |
+
+### list
 
 The `list` command lists previously recorded tasks.
 
@@ -30,20 +44,74 @@ The `list` command lists previously recorded tasks.
 $ haora list
 ```
 
-// TODO show output
+#### Flags
 
-### `add`
+`--tags`
 
-// TODO describe add
+List the working hours per tag.
 
-### `break`
+`--week`
 
-// TODO describe break
+List the start and end timestamps of a week.
+The week always starts at the previous monday compared to the given date.
 
-### `finish`
+### add
 
-// TODO describe finish
+The `add` command adds another task to the selected day.
+The simplest way is to use the command without any flag:
 
-### `version`
+```shell
+$ haora add 10:00 haora some programming
+```
 
-// TODO describe version
+This will add a task
+
+- at 10:00
+- with the text "some programming"
+- and the tag "haora"
+
+Using a timestamp that is already set on another task will update that task.
+
+#### Flags
+
+`--start 10:00` or `-s 10:00`
+
+To explicitly set a starting timestamp for the task.
+
+`--tags "haora,go"`
+
+Specific flag to set multiple tags.
+
+### pause
+
+The `pause` command adds a pause to the selected day.
+
+```shell
+$ haora pause 12:00 Lunch
+```
+
+No tags are used for a pause, but a text may be set.
+
+#### Flags
+
+`--start 12:00` or `-s 12:00`
+
+To explicitly set a starting timestamp for the pause.
+
+### finish
+
+Closes the day and sets a finish timestamp.
+
+```shell
+$ haora finish 17:00
+```
+
+#### Flags
+
+`--end 17:00` or `-e 17:00`
+
+To explicitly set a finish time.
+
+### version
+
+Prints the current version of Haora.

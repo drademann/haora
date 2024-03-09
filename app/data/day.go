@@ -2,6 +2,7 @@ package data
 
 import (
 	"errors"
+	"github.com/drademann/haora/app"
 	"github.com/drademann/haora/app/datetime"
 	"github.com/google/uuid"
 	"slices"
@@ -128,6 +129,14 @@ func (d *Day) TotalWorkDuration() time.Duration {
 		}
 	}
 	return sum
+}
+
+func (d *Day) OvertimeDuration() (time.Duration, error) {
+	durationPerDay, err := app.DurationPerDay()
+	if err != nil {
+		return 0, err
+	}
+	return d.TotalWorkDuration() - durationPerDay, nil
 }
 
 func (d *Day) TotalTagDuration(tag string) time.Duration {

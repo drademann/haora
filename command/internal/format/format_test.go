@@ -28,6 +28,29 @@ func TestFormatDuration(t *testing.T) {
 	}
 }
 
+func TestFormatDurationShort(t *testing.T) {
+	testCases := []struct {
+		expected string
+		duration time.Duration
+		name     string
+	}{
+		{"", 0 * time.Second, "no duration"},
+		{"", 59 * time.Second, "almost a minute"},
+		{" 1m", 1 * time.Minute, "1 minute"},
+		{"59m", 59 * time.Minute, "59 minutes"},
+		{" 1h", 1 * time.Hour, "1 hour"},
+		{"10h 42m", 10*time.Hour + 42*time.Minute, "a long time"},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			output := DurationShort(tc.duration)
+			if output != tc.expected {
+				t.Errorf("expected %q, got %q", tc.expected, output)
+			}
+		})
+	}
+}
+
 func TestFormatDurationDecimal(t *testing.T) {
 	testCases := []struct {
 		expected string

@@ -7,6 +7,7 @@ import (
 	"github.com/drademann/haora/command/internal/format"
 	"github.com/spf13/cobra"
 	"strings"
+	"time"
 )
 
 func printDefault(d data.Day, cmd *cobra.Command) error {
@@ -56,12 +57,20 @@ func printDefault(d data.Day, cmd *cobra.Command) error {
 		}
 	}
 	cmd.Println()
-	f := "%23s\n"
-	totalStr := fmt.Sprintf("total  %v", format.Duration(d.TotalDuration()))
-	cmd.Printf(f, totalStr)
-	totalBreakStr := fmt.Sprintf("paused  %v", format.Duration(d.TotalBreakDuration()))
-	cmd.Printf(f, totalBreakStr)
-	totalWorkStr := fmt.Sprintf("worked  %v", format.Duration(d.TotalWorkDuration()))
-	cmd.Printf(f, totalWorkStr)
+	cmd.Printf("         total  %v\n", format.Duration(d.TotalDuration()))
+	cmd.Printf("        paused  %v\n", format.Duration(d.TotalBreakDuration()))
+	overtime, err := d.OvertimeDuration()
+	if err != nil || overtime == 0 {
+		cmd.Printf("        worked  %v\n", format.Duration(d.TotalWorkDuration()))
+	} else {
+		cmd.Printf("        worked  %v   (%s %v)\n", format.Duration(d.TotalWorkDuration()), sign(overtime), format.DurationShort(overtime))
+	}
 	return nil
+}
+
+func sign(d time.Duration) string {
+	if d < 0 {
+		return "-"
+	}
+	return "+"
 }

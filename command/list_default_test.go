@@ -1,6 +1,7 @@
 package command
 
 import (
+	"github.com/drademann/haora/app"
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
 	"github.com/drademann/haora/test"
@@ -39,11 +40,13 @@ func TestListCmd_givenNoTasks(t *testing.T) {
 }
 
 func TestListCmd_oneOpenTaskForToday(t *testing.T) {
+	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
+	app.Config.Times.DurationPerWeek = "35h"
+	app.Config.Times.DaysPerWeek = 5
+
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTasks(data.NewTask(test.Date("22.02.2024 9:00"), "a task", "Haora"))
 	data.State.DayList = data.DayListType{Days: []data.Day{d}}
-
-	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 
 	out := test.ExecuteCommand(t, Root, "list")
 
@@ -55,19 +58,21 @@ func TestListCmd_oneOpenTaskForToday(t *testing.T) {
 		
 		         total   7h 32m
 		        paused       0m
-		        worked   7h 32m
+		        worked   7h 32m   (+ 32m)
 		`)
 }
 
 func TestListCmd_multipleTasksLastOpen(t *testing.T) {
+	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
+	app.Config.Times.DurationPerWeek = "40h"
+	app.Config.Times.DaysPerWeek = 5
+
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTasks(
 		data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"),
 		data.NewTask(test.Date("22.02.2024 10:00"), "fixing bugs"),
 	)
 	data.State.DayList = data.DayListType{Days: []data.Day{d}}
-
-	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 
 	out := test.ExecuteCommand(t, Root, "list")
 
@@ -80,12 +85,14 @@ func TestListCmd_multipleTasksLastOpen(t *testing.T) {
 
 		         total   7h 32m
 		        paused       0m
-		        worked   7h 32m
+		        worked   7h 32m   (- 28m)
 		`)
 }
 
 func TestListCmd_withPause(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
+	app.Config.Times.DurationPerWeek = "40h"
+	app.Config.Times.DaysPerWeek = 5
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTasks(
@@ -107,12 +114,14 @@ func TestListCmd_withPause(t *testing.T) {
 
 		         total   7h 32m
 		        paused      45m
-		        worked   6h 47m
+		        worked   6h 47m   (-  1h 13m)
 		`)
 }
 
 func TestListCmd_withFinished(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
+	app.Config.Times.DurationPerWeek = "36h 15m"
+	app.Config.Times.DaysPerWeek = 5
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTasks(

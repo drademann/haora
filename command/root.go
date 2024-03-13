@@ -40,7 +40,7 @@ var Root = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		data.InitState(workingDate)
+		data.State.WorkingDate = workingDate
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {

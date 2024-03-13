@@ -30,11 +30,11 @@ func TestFinish(t *testing.T) {
 
 	prepareTestDay := func() {
 		d := data.NewDay(test.Date("22.02.2024 00:00"))
-		d.AddTasks(data.NewTask(test.Date("22.02.2024 9:00"), "a task", "Haora"))
+		d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "a task", "Haora"))
 		if !d.Finished.IsZero() {
 			t.Fatal("day to test should not be finished already")
 		}
-		data.State.DayList = data.DayListType{Days: []data.Day{d}}
+		data.State.DayList = &data.DayListType{Days: []*data.Day{d}}
 	}
 
 	testCases := []struct {

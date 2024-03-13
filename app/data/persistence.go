@@ -40,7 +40,7 @@ func Load() error {
 	file, err := os.Open(filePath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			State.DayList = DayListType{}
+			State.DayList = &DayListType{}
 			return nil
 		}
 		return err

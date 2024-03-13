@@ -29,22 +29,22 @@ func TestTaskSuccPred(t *testing.T) {
 	task2 := NewTask(test.Time("10:00"), "task 2")
 	task3 := NewTask(test.Time("12:00"), "task 3")
 	d := Day{Date: testDayDate,
-		Tasks:    []Task{task1, task2, task3},
+		Tasks:    []*Task{task1, task2, task3},
 		Finished: time.Time{},
 	}
 
 	t.Run("find successor", func(t *testing.T) {
-		s, err := d.Succ(task2)
+		s, err := d.Succ(*task2)
 
 		if err != nil {
 			t.Fatal(err)
 		}
-		if s.Id != task3.Id {
+		if s.Start != task3.Start {
 			t.Errorf("expected successor to be %q, but got %q", task3.Text, s.Text)
 		}
 	})
 	t.Run("find no successor", func(t *testing.T) {
-		_, err := d.Succ(task3)
+		_, err := d.Succ(*task3)
 
 		if err == nil {
 			t.Errorf("expected error, but got nil")
@@ -54,17 +54,17 @@ func TestTaskSuccPred(t *testing.T) {
 		}
 	})
 	t.Run("find predecessor", func(t *testing.T) {
-		p, err := d.Pred(task2)
+		p, err := d.Pred(*task2)
 
 		if err != nil {
 			t.Fatal(err)
 		}
-		if p.Id != task1.Id {
+		if p.Start != task1.Start {
 			t.Errorf("expected predecessor to be %q, but got %q", task1.Text, p.Text)
 		}
 	})
 	t.Run("find no predecessor", func(t *testing.T) {
-		_, err := d.Pred(task1)
+		_, err := d.Pred(*task1)
 
 		if err == nil {
 			t.Errorf("expected error, but got nil")

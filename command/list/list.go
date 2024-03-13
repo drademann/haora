@@ -39,12 +39,12 @@ var Command = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		d := data.State.WorkingDay()
 		if tagsFlag {
-			return printTags(d, cmd)
+			return printTags(*d, cmd)
 		}
 		if weekFlag {
-			return printWeek(d, cmd)
+			return printWeek(*d, cmd)
 		}
-		return printDefault(d, cmd)
+		return printDefault(*d, cmd)
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
 		tagsFlag = false

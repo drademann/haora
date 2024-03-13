@@ -18,34 +18,24 @@ package data
 
 import (
 	"github.com/drademann/haora/test"
-	"github.com/google/uuid"
 	"slices"
 	"testing"
 	"time"
 )
 
 func TestNewTask(t *testing.T) {
-	t.Run("should set a random id", func(t *testing.T) {
-		task := NewTask(time.Now(), "a task")
+	task := NewTask(time.Now(), "a task")
 
-		if err := uuid.Validate(task.Id.String()); err != nil {
-			t.Errorf("expected task id to be a valid UUID, but got %q", task.Id)
-		}
-	})
-	t.Run("should ensure that tasks starting time has its seconds and nanoseconds truncated", func(t *testing.T) {
-		task := NewTask(time.Now(), "a task")
-
-		if task.Start.Second() != 0 {
-			t.Errorf("expected task start time seconds to be 0, but got %d", task.Start.Second())
-		}
-		if task.Start.Nanosecond() != 0 {
-			t.Errorf("expected task start time nanoseconds to be 0, but got %d", task.Start.Nanosecond())
-		}
-	})
+	if task.Start.Second() != 0 {
+		t.Errorf("expected task start time seconds to be 0, but got %d", task.Start.Second())
+	}
+	if task.Start.Nanosecond() != 0 {
+		t.Errorf("expected task start time nanoseconds to be 0, but got %d", task.Start.Nanosecond())
+	}
 }
 
 func TestTasksByStart(t *testing.T) {
-	tasks := []Task{
+	tasks := []*Task{
 		NewTask(test.Time("10:00"), "Y"),
 		NewTask(test.Time("9:00"), "Z"),
 		NewTask(test.Time("12:00"), "X"),

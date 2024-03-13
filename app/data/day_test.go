@@ -67,21 +67,21 @@ func TestTaskAt(t *testing.T) {
 		Text:  "lunch",
 		Tags:  nil,
 	}
-	d := Day{Tasks: []Task{task1, task2}}
+	d := Day{Tasks: []*Task{&task1, &task2}}
 
 	found, err := d.taskAt(test.Time("10:20"))
 
 	if err != nil {
 		t.Fatal(err)
 	}
-	if found.Id != task1.Id {
+	if found.Start != task1.Start {
 		t.Errorf("expected found task to be task1, but got %v", found)
 	}
 }
 
 func TestTags(t *testing.T) {
 	d := Day{
-		Tasks: []Task{
+		Tasks: []*Task{
 			{Tags: []string{"T1"}},
 			{Tags: []string{"T2", "T4"}},
 			{Tags: []string{"T3", "T4"}},

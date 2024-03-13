@@ -61,8 +61,8 @@ func TestListCmd_oneOpenTaskForToday(t *testing.T) {
 	app.Config.Times.DaysPerWeek = 5
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
-	d.AddTasks(data.NewTask(test.Date("22.02.2024 9:00"), "a task", "Haora"))
-	data.State.DayList = data.DayListType{Days: []data.Day{d}}
+	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "a task", "Haora"))
+	data.State.DayList = &data.DayListType{Days: []*data.Day{&d}}
 
 	out := test.ExecuteCommand(t, Root, "list")
 
@@ -84,11 +84,9 @@ func TestListCmd_multipleTasksLastOpen(t *testing.T) {
 	app.Config.Times.DaysPerWeek = 5
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
-	d.AddTasks(
-		data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"),
-		data.NewTask(test.Date("22.02.2024 10:00"), "fixing bugs"),
-	)
-	data.State.DayList = data.DayListType{Days: []data.Day{d}}
+	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"))
+	d.AddTask(data.NewTask(test.Date("22.02.2024 10:00"), "fixing bugs"))
+	data.State.DayList = &data.DayListType{Days: []*data.Day{&d}}
 
 	out := test.ExecuteCommand(t, Root, "list")
 
@@ -111,12 +109,10 @@ func TestListCmd_withPause(t *testing.T) {
 	app.Config.Times.DaysPerWeek = 5
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
-	d.AddTasks(
-		data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"),
-		data.NewPause(test.Date("22.02.2024 12:15"), ""),
-		data.NewTask(test.Date("22.02.2024 13:00"), "fixing bugs"),
-	)
-	data.State.DayList = data.DayListType{Days: []data.Day{d}}
+	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"))
+	d.AddTask(data.NewPause(test.Date("22.02.2024 12:15"), ""))
+	d.AddTask(data.NewTask(test.Date("22.02.2024 13:00"), "fixing bugs"))
+	data.State.DayList = &data.DayListType{Days: []*data.Day{&d}}
 
 	out := test.ExecuteCommand(t, Root, "list")
 
@@ -140,13 +136,12 @@ func TestListCmd_withFinished(t *testing.T) {
 	app.Config.Times.DaysPerWeek = 5
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
-	d.AddTasks(
-		data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"),
-		data.NewPause(test.Date("22.02.2024 12:15"), "lunch"),
-		data.NewTask(test.Date("22.02.2024 13:00"), "fixing bugs"),
-	)
+
+	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"))
+	d.AddTask(data.NewPause(test.Date("22.02.2024 12:15"), "lunch"))
+	d.AddTask(data.NewTask(test.Date("22.02.2024 13:00"), "fixing bugs"))
 	d.Finished = test.Date("22.02.2024 17:00")
-	data.State.DayList = data.DayListType{Days: []data.Day{d}}
+	data.State.DayList = &data.DayListType{Days: []*data.Day{&d}}
 
 	out := test.ExecuteCommand(t, Root, "list")
 

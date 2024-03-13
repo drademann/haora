@@ -25,15 +25,16 @@ import (
 func TestDay(t *testing.T) {
 	existingDay := Day{
 		Date: test.Time("9:00"),
-		Tasks: []Task{
+		Tasks: []*Task{
 			{Start: test.Time("9:00"),
 				Text:    "a task",
 				IsPause: false,
 				Tags:    []string{}},
 		},
 		Finished: time.Time{}}
-	State.DayList = DayListType{
-		Days: []Day{existingDay},
+	State = &StateType{}
+	State.DayList = &DayListType{
+		Days: []*Day{&existingDay},
 	}
 
 	t.Run("should return day if it exists", func(t *testing.T) {

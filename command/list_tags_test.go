@@ -56,12 +56,10 @@ func TestListTagsCmd_givenNoTasks(t *testing.T) {
 
 func TestListTagsCmd(t *testing.T) {
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
-	d.AddTasks(
-		data.NewTask(test.Date("22.02.2024 9:00"), "a task", "haora"),
-		data.NewTask(test.Date("22.02.2024 12:00"), "a task", "learning"),
-		data.NewTask(test.Date("22.02.2024 15:00"), "a task", "go", "learning"),
-	)
-	data.State.DayList = data.DayListType{Days: []data.Day{d}}
+	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "a task", "haora"))
+	d.AddTask(data.NewTask(test.Date("22.02.2024 12:00"), "a task", "learning"))
+	d.AddTask(data.NewTask(test.Date("22.02.2024 15:00"), "a task", "go", "learning"))
+	data.State.DayList = &data.DayListType{Days: []*data.Day{&d}}
 
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 

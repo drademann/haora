@@ -30,8 +30,8 @@ func TestPause(t *testing.T) {
 
 	prepareTestDay := func() {
 		d := data.NewDay(test.Date("03.03.2024 00:00"))
-		d.AddTasks(data.NewTask(test.Date("03.03.2024 9:00"), "a task", "Haora"))
-		data.State.DayList = data.DayListType{Days: []data.Day{d}}
+		d.AddTask(data.NewTask(test.Date("03.03.2024 9:00"), "a task", "Haora"))
+		data.State.DayList = &data.DayListType{Days: []*data.Day{d}}
 	}
 
 	testCases := []struct {
@@ -84,11 +84,9 @@ func TestPauseUpdate(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, now)
 
 	d := data.NewDay(test.Date("03.03.2024 00:00"))
-	d.AddTasks(
-		data.NewTask(test.Date("03.03.2024 9:00"), "a task", "Haora"),
-		data.NewPause(test.Date("03.03.2024 12:00"), "lunch"),
-	)
-	data.State.DayList = data.DayListType{Days: []data.Day{d}}
+	d.AddTask(data.NewTask(test.Date("03.03.2024 9:00"), "a task", "Haora"))
+	d.AddTask(data.NewPause(test.Date("03.03.2024 12:00"), "lunch"))
+	data.State.DayList = &data.DayListType{Days: []*data.Day{d}}
 
 	test.ExecuteCommand(t, Root, "pause 12:00 breakfast")
 

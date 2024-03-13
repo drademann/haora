@@ -29,7 +29,7 @@ func CollectWeek(start time.Time) Week {
 	var week Week
 	var date = start
 	for i := 0; i < 7; i++ {
-		week.Days[i] = State.DayList.Day(date)
+		week.Days[i] = *State.DayList.Day(date)
 		date = date.Add(24 * time.Hour)
 	}
 	return week

@@ -54,7 +54,7 @@ func printDefault(d data.Day, cmd *cobra.Command) error {
 	for _, task := range d.Tasks {
 		start := task.Start.Format("15:04")
 		var end string
-		succ, err := d.Succ(task)
+		succ, err := d.Succ(*task)
 		if err == nil {
 			end = succ.Start.Format("15:04")
 		} else {
@@ -64,7 +64,7 @@ func printDefault(d data.Day, cmd *cobra.Command) error {
 				end = " now "
 			}
 		}
-		dur := format.Duration(d.TaskDuration(task))
+		dur := format.Duration(d.TaskDuration(*task))
 		if task.IsPause {
 			cmd.Printf("      |         %v   %v\n", dur, task.Text)
 		} else {

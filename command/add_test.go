@@ -29,6 +29,9 @@ func TestAddCmd(t *testing.T) {
 	now := datetime.AssumeForTestNowAt(t, test.Date("26.02.2024 13:37"))
 
 	prepareTestData := func() {
+		data.State = &data.StateType{
+			DayList: &data.DayListType{},
+		}
 		data.State.DayList.Days = nil
 	}
 
@@ -87,11 +90,11 @@ func TestAddCmd(t *testing.T) {
 }
 
 func TestAddShouldUpdateExistingTaskAtSameTime(t *testing.T) {
-	data.State.DayList = data.DayListType{
-		Days: []data.Day{
+	data.State.DayList = &data.DayListType{
+		Days: []*data.Day{
 			{
 				Date: test.Date("26.02.2024 00:00"),
-				Tasks: []data.Task{
+				Tasks: []*data.Task{
 					{
 						Start: test.Date("26.02.2024 12:15"),
 						Text:  "existing task",

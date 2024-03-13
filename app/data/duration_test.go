@@ -30,7 +30,7 @@ func TestDayDuration(t *testing.T) {
 		task1 := NewTask(test.Time("9:00"), "task 1")
 		task2 := NewTask(test.Time("10:00"), "task 2")
 		d := Day{Date: State.WorkingDate,
-			Tasks:    []Task{task1, task2},
+			Tasks:    []*Task{task1, task2},
 			Finished: time.Time{},
 		}
 		datetime.AssumeForTestNowAt(t, test.Time("16:00"))
@@ -43,7 +43,7 @@ func TestDayDuration(t *testing.T) {
 		task1 := NewTask(test.Time("9:00"), "task 1")
 		task2 := NewTask(test.Time("10:00"), "task 2")
 		d := Day{Date: State.WorkingDate,
-			Tasks:    []Task{task1, task2},
+			Tasks:    []*Task{task1, task2},
 			Finished: test.Time("14:00"),
 		}
 		datetime.AssumeForTestNowAt(t, test.Time("23:59"))
@@ -61,7 +61,7 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 		lunch.IsPause = true
 		task2 := NewTask(test.Time("12:45"), "task 2")
 		d := Day{Date: State.WorkingDate,
-			Tasks:    []Task{task1, lunch, task2},
+			Tasks:    []*Task{task1, lunch, task2},
 			Finished: test.Time("14:00"),
 		}
 		datetime.AssumeForTestNowAt(t, test.Time("23:59"))
@@ -82,7 +82,7 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 		tea.IsPause = true
 		task3 := NewTask(test.Time("16:15"), "task 3")
 		d := Day{Date: State.WorkingDate,
-			Tasks:    []Task{task1, lunch, task2, tea, task3},
+			Tasks:    []*Task{task1, lunch, task2, tea, task3},
 			Finished: test.Time("17:00"),
 		}
 		datetime.AssumeForTestNowAt(t, test.Time("23:59"))
@@ -99,7 +99,7 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 		lunch := NewTask(test.Time("12:00"), "break")
 		lunch.IsPause = true
 		d := Day{Date: State.WorkingDate,
-			Tasks:    []Task{task1, lunch},
+			Tasks:    []*Task{task1, lunch},
 			Finished: time.Time{},
 		}
 		datetime.AssumeForTestNowAt(t, test.Time("16:00"))
@@ -118,7 +118,7 @@ func TestTagDuration(t *testing.T) {
 	task2 := NewTask(test.Time("12:00"), "task 2", "T1", "T2")
 	task3 := NewTask(test.Time("15:00"), "task 3", "T3")
 	d := Day{Date: State.WorkingDate,
-		Tasks:    []Task{task1, task2, task3},
+		Tasks:    []*Task{task1, task2, task3},
 		Finished: test.Time("16:00"),
 	}
 
@@ -136,11 +136,11 @@ func TestTaskDuration(t *testing.T) {
 		task1 := NewTask(test.Time("9:00"), "task 1")
 		task2 := NewTask(test.Time("10:00"), "task 2")
 		d := Day{Date: State.WorkingDate,
-			Tasks:    []Task{task1, task2},
+			Tasks:    []*Task{task1, task2},
 			Finished: time.Time{},
 		}
 
-		dur := d.TaskDuration(task1)
+		dur := d.TaskDuration(*task1)
 		assert.Duration(t, "task", dur, 1*time.Hour)
 	})
 	t.Run("task without a successor should return duration until now", func(t *testing.T) {
@@ -148,12 +148,12 @@ func TestTaskDuration(t *testing.T) {
 		task1 := NewTask(test.Time("9:00"), "task 1")
 		task2 := NewTask(test.Time("10:00"), "task 2")
 		d := Day{Date: State.WorkingDate,
-			Tasks:    []Task{task1, task2},
+			Tasks:    []*Task{task1, task2},
 			Finished: time.Time{},
 		}
 		datetime.AssumeForTestNowAt(t, test.Time("12:00"))
 
-		dur := d.TaskDuration(task2)
+		dur := d.TaskDuration(*task2)
 		assert.Duration(t, "task", dur, 2*time.Hour)
 	})
 	t.Run("given day is finished should use this as end timestamp", func(t *testing.T) {
@@ -161,12 +161,12 @@ func TestTaskDuration(t *testing.T) {
 		task1 := NewTask(test.Time("9:00"), "task 1")
 		task2 := NewTask(test.Time("10:00"), "task 2")
 		d := Day{Date: State.WorkingDate,
-			Tasks:    []Task{task1, task2},
+			Tasks:    []*Task{task1, task2},
 			Finished: test.Time("12:00"),
 		}
 		datetime.AssumeForTestNowAt(t, test.Time("23:59"))
 
-		dur := d.TaskDuration(task2)
+		dur := d.TaskDuration(*task2)
 		assert.Duration(t, "task", dur, 2*time.Hour)
 	})
 }

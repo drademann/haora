@@ -17,7 +17,7 @@
 package command
 
 import (
-	"github.com/drademann/haora/app"
+	"github.com/drademann/haora/app/config"
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
 	"github.com/drademann/haora/test"
@@ -57,8 +57,8 @@ func TestListCmd_givenNoTasks(t *testing.T) {
 
 func TestListCmd_oneOpenTaskForToday(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
-	app.Config.Times.DurationPerWeek = "35h"
-	app.Config.Times.DaysPerWeek = 5
+	config.SetDurationPerWeek(t, 35*time.Hour)
+	config.SetDaysPerWeek(t, 5)
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "a task", "Haora"))
@@ -80,8 +80,8 @@ func TestListCmd_oneOpenTaskForToday(t *testing.T) {
 
 func TestListCmd_multipleTasksLastOpen(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
-	app.Config.Times.DurationPerWeek = "40h"
-	app.Config.Times.DaysPerWeek = 5
+	config.SetDurationPerWeek(t, 40*time.Hour)
+	config.SetDaysPerWeek(t, 5)
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"))
@@ -105,8 +105,8 @@ func TestListCmd_multipleTasksLastOpen(t *testing.T) {
 
 func TestListCmd_withPause(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
-	app.Config.Times.DurationPerWeek = "40h"
-	app.Config.Times.DaysPerWeek = 5
+	config.SetDurationPerWeek(t, 40*time.Hour)
+	config.SetDaysPerWeek(t, 5)
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"))
@@ -132,8 +132,8 @@ func TestListCmd_withPause(t *testing.T) {
 
 func TestListCmd_withFinished(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
-	app.Config.Times.DurationPerWeek = "36h 15m"
-	app.Config.Times.DaysPerWeek = 5
+	config.SetDurationPerWeek(t, 36*time.Hour+15*time.Minute)
+	config.SetDaysPerWeek(t, 5)
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 

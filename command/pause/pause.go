@@ -33,7 +33,7 @@ func init() {
 
 var Command = &cobra.Command{
 	Use:   "pause",
-	Short: "adds a pause to a day",
+	Short: "Adds a pause to a day",
 	Long: `Adds a new pause to a day.
 
 The command accepts the first arg as timestamp, and any following as text (optional), like

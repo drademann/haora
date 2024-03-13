@@ -39,8 +39,8 @@ func printWeek(d data.Day, cmd *cobra.Command) error {
 			cmd.Printf("%s   %s - %s  worked %s\n", dateStr, startStr, endStr, durStr)
 		}
 	}
-	overtime, err := week.TotalOvertimeDuration()
-	if err != nil || overtime == 0 {
+	overtime, exist := week.TotalOvertimeDuration()
+	if !exist || overtime == 0 {
 		cmd.Printf("\n                          total worked %s\n", format.Duration(week.TotalWorkDuration()))
 	} else {
 		cmd.Printf("\n                          total worked %s   (%s %v)\n", format.Duration(week.TotalWorkDuration()), sign(overtime), format.DurationShort(overtime))

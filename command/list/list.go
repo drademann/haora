@@ -34,7 +34,7 @@ func init() {
 
 var Command = &cobra.Command{
 	Use:   "list",
-	Short: "list the recorded tasks of a day",
+	Short: "List the recorded tasks of a day",
 	Long:  `Provides a list of all tasks of a day, including their duration. A summary with total pause and working times is displayed at the end.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		d := data.State.WorkingDay()

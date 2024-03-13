@@ -17,7 +17,7 @@
 package command
 
 import (
-	"github.com/drademann/haora/app"
+	"github.com/drademann/haora/app/config"
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
 	"github.com/drademann/haora/test"
@@ -28,8 +28,8 @@ import (
 
 func TestListWeekCmd_givenNoTasks(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local))
-	app.Config.Times.DurationPerWeek = "40h"
-	app.Config.Times.DaysPerWeek = 5
+	config.SetDurationPerWeek(t, 40*time.Hour)
+	config.SetDaysPerWeek(t, 5)
 
 	data.State.DayList.Days = nil
 

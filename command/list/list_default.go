@@ -74,8 +74,8 @@ func printDefault(d data.Day, cmd *cobra.Command) error {
 	cmd.Println()
 	cmd.Printf("         total  %v\n", format.Duration(d.TotalDuration()))
 	cmd.Printf("        paused  %v\n", format.Duration(d.TotalBreakDuration()))
-	overtime, err := d.OvertimeDuration()
-	if err != nil || overtime == 0 {
+	overtime, exist := d.OvertimeDuration()
+	if !exist || overtime == 0 {
 		cmd.Printf("        worked  %v\n", format.Duration(d.TotalWorkDuration()))
 	} else {
 		cmd.Printf("        worked  %v   (%s %v)\n", format.Duration(d.TotalWorkDuration()), sign(overtime), format.DurationShort(overtime))

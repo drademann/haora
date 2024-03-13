@@ -18,7 +18,7 @@ package data
 
 import (
 	"errors"
-	"github.com/drademann/haora/app"
+	"github.com/drademann/haora/app/config"
 	"github.com/drademann/haora/app/datetime"
 	"slices"
 	"strings"
@@ -142,12 +142,12 @@ func (d *Day) TotalWorkDuration() time.Duration {
 	return sum
 }
 
-func (d *Day) OvertimeDuration() (time.Duration, error) {
-	durationPerDay, err := app.DurationPerDay()
-	if err != nil {
-		return 0, err
+func (d *Day) OvertimeDuration() (time.Duration, bool) {
+	durationPerDay, exist := config.DurationPerDay()
+	if !exist {
+		return 0, false
 	}
-	return d.TotalWorkDuration() - durationPerDay, nil
+	return d.TotalWorkDuration() - durationPerDay, true
 }
 
 func (d *Day) TotalTagDuration(tag string) time.Duration {

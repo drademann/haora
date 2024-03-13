@@ -17,7 +17,7 @@
 package data
 
 import (
-	"github.com/drademann/haora/app"
+	"github.com/drademann/haora/app/config"
 	"time"
 )
 
@@ -43,10 +43,10 @@ func (w Week) TotalWorkDuration() time.Duration {
 	return total
 }
 
-func (w Week) TotalOvertimeDuration() (time.Duration, error) {
-	durationPerWeek, err := app.DurationPerWeek()
-	if err != nil {
-		return 0, err
+func (w Week) TotalOvertimeDuration() (time.Duration, bool) {
+	durationPerWeek, exist := config.DurationPerWeek()
+	if !exist {
+		return 0, false
 	}
-	return w.TotalWorkDuration() - durationPerWeek, nil
+	return w.TotalWorkDuration() - durationPerWeek, true
 }

@@ -32,7 +32,7 @@ func init() {
 
 var Command = &cobra.Command{
 	Use:   "finish",
-	Short: "mark the day as done",
+	Short: "Mark the day as done",
 	Long: `Marks the day as done by setting its final end timestamp. 
 The command accepts the first arg as timestamp:
 

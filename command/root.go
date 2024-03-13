@@ -17,7 +17,7 @@
 package command
 
 import (
-	"github.com/drademann/haora/app"
+	"github.com/drademann/haora/app/config"
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/command/add"
 	"github.com/drademann/haora/command/finish"
@@ -54,7 +54,8 @@ var Root = &cobra.Command{
 }
 
 func init() {
-	Root.PersistentFlags().StringVarP(&workingDateFlag, "date", "d", "", "Date for the command to execute on (defaults to today)")
+	cobra.OnInitialize(config.InitViper)
+	Root.PersistentFlags().StringVarP(&workingDateFlag, "date", "d", "", "date for the command to execute on (defaults to today)")
 	Root.AddCommand(add.Command)
 	Root.AddCommand(finish.Command)
 	Root.AddCommand(list.Command)
@@ -64,11 +65,6 @@ func init() {
 
 func Execute() {
 	var err error
-	if err = app.Load(); err != nil {
-		Root.PrintErrf("failed to load app config: %v\n", err)
-		os.Exit(1)
-	}
-
 	if err = data.Load(); err != nil {
 		Root.PrintErrf("failed to load app data: %v\n", err)
 		os.Exit(1)

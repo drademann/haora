@@ -118,16 +118,13 @@ Print the current version of Haora.
 
 ## Configuration
 
-Haora uses a configuration file read from `~/.haora/config.json`.
+Haora uses a configuration file read from `~/.haora/config.yaml`.
 This JSON file has the following format:
 
-```json
-{
-  "times": {
-    "DurationPerWeek": "40h",
-    "DaysPerWeek": 5
-  }
-}
+```yaml
+times:
+  durationPerWeek: "32h"
+  daysPerWeek: 5
 ```
 
 When the file is not present, the default values are used.

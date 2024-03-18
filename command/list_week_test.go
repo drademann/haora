@@ -75,6 +75,28 @@ func TestListWeekCmd(t *testing.T) {
 		`)
 }
 
+func TestListWeekCmd_givenTodayIsMonday_shouldStartOneWeekBack(t *testing.T) {
+	datetime.AssumeForTestNowAt(t, test.Date("18.03.2024 16:32"))
+
+	d := data.Day{Date: test.Date("22.02.2024 00:00")}
+	data.State.DayList = &data.DayListType{Days: []*data.Day{&d}}
+
+	out := test.ExecuteCommand(t, Root, "-d mo list --week")
+
+	assert.Output(t, out,
+		`
+		Mon 11.03.2024   -
+		Tue 12.03.2024   -
+		Wed 13.03.2024   -
+		Thu 14.03.2024   -
+		Fri 15.03.2024   -
+		Sat 16.03.2024   -
+		Sun 17.03.2024   -
+		
+		                          total worked      0m   (- 40h)
+		`)
+}
+
 func TestListWeekCmd_withTotalDuration(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 

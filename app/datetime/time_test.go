@@ -45,11 +45,11 @@ func TestFindWeekday(t *testing.T) {
 	}
 }
 
-func TestFindWeekday_shouldNotFindToday(t *testing.T) {
+func TestFindWeekday_shouldFindToday(t *testing.T) {
 	d := FindWeekday(test.Date("05.03.2024 10:42"), Previous, time.Tuesday)
 
 	got := d.Format("02.01.2006")
-	want := "27.02.2024"
+	want := "05.03.2024"
 	if got != want {
 		t.Errorf("expected %s, got %s", want, got)
 	}

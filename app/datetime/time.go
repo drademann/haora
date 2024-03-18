@@ -54,10 +54,10 @@ const (
 )
 
 func FindWeekday(date time.Time, dir Direction, weekday time.Weekday) time.Time {
-	step := time.Duration(dir * 24)
-	date = date.Add(step * time.Hour)
 	if date.Weekday() == weekday {
 		return date
 	}
+	step := time.Duration(dir * 24)
+	date = date.Add(step * time.Hour)
 	return FindWeekday(date, dir, weekday)
 }

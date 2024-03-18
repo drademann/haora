@@ -66,7 +66,7 @@ func TestListWeekCmd(t *testing.T) {
 		Mon 19.02.2024   -
 		Tue 20.02.2024   -
 		Wed 21.02.2024   -
-		Thu 22.02.2024   09:00 - 17:00  worked  7h 15m
+		Thu 22.02.2024   09:00 - 17:00  worked  7h 15m   (- 45m)
 		Fri 23.02.2024   -
 		Sat 24.02.2024   -
 		Sun 25.02.2024   -
@@ -121,8 +121,8 @@ func TestListWeekCmd_withTotalDuration(t *testing.T) {
 		Mon 19.02.2024   -
 		Tue 20.02.2024   -
 		Wed 21.02.2024   -
-		Thu 22.02.2024   09:00 - 17:00  worked  7h 15m
-		Fri 23.02.2024   10:30 - 15:00  worked  4h 15m
+		Thu 22.02.2024   09:00 - 17:00  worked  7h 15m   (- 45m)
+		Fri 23.02.2024   10:30 - 15:00  worked  4h 15m   (-  3h 45m)
 		Sat 24.02.2024   -
 		Sun 25.02.2024   -
 		

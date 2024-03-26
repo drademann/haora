@@ -17,6 +17,7 @@
 package command
 
 import (
+	"fmt"
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
 	"github.com/drademann/haora/test"
@@ -63,14 +64,20 @@ func TestListTagsCmd(t *testing.T) {
 
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 
-	out := test.ExecuteCommand(t, Root, "list --tags")
+	flagCases := []string{"--tags", "-t"}
+	for _, fc := range flagCases {
+		command := fmt.Sprintf("list %s", fc)
+		t.Run(command, func(t *testing.T) {
+			out := test.ExecuteCommand(t, Root, command)
 
-	assert.Output(t, out,
-		`
-		Tag summary for today, 22.02.2024 (Thu)
-
-		 1h 32m   1.53h   1.50h   #go
-		 3h  0m   3.00h   3.00h   #haora
-		 4h 32m   4.53h   4.50h   #learning
-		`)
+			assert.Output(t, out,
+				`
+				Tag summary for today, 22.02.2024 (Thu)
+		
+				 1h 32m   1.53h   1.50h   #go
+				 3h  0m   3.00h   3.00h   #haora
+				 4h 32m   4.53h   4.50h   #learning
+				`)
+		})
+	}
 }

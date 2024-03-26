@@ -17,6 +17,7 @@
 package command
 
 import (
+	"fmt"
 	"github.com/drademann/haora/app/config"
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
@@ -114,18 +115,24 @@ func TestListWeekCmd_withTotalDuration(t *testing.T) {
 
 	data.State.DayList = &data.DayListType{Days: []*data.Day{&d1, &d2}}
 
-	out := test.ExecuteCommand(t, Root, "list --week")
+	flagCases := []string{"--week", "-w"}
+	for _, fc := range flagCases {
+		command := fmt.Sprintf("list %s", fc)
+		t.Run(command, func(t *testing.T) {
+			out := test.ExecuteCommand(t, Root, command)
 
-	assert.Output(t, out,
-		`
-		Mon 19.02.2024   -
-		Tue 20.02.2024   -
-		Wed 21.02.2024   -
-		Thu 22.02.2024   09:00 - 17:00  worked  7h 15m   (- 45m)
-		Fri 23.02.2024   10:30 - 15:00  worked  4h 15m   (-  3h 45m)
-		Sat 24.02.2024   -
-		Sun 25.02.2024   -
-		
-		                          total worked 11h 30m   (- 28h 30m)
-		`)
+			assert.Output(t, out,
+				`
+				Mon 19.02.2024   -
+				Tue 20.02.2024   -
+				Wed 21.02.2024   -
+				Thu 22.02.2024   09:00 - 17:00  worked  7h 15m   (- 45m)
+				Fri 23.02.2024   10:30 - 15:00  worked  4h 15m   (-  3h 45m)
+				Sat 24.02.2024   -
+				Sun 25.02.2024   -
+				
+				                          total worked 11h 30m   (- 28h 30m)
+				`)
+		})
+	}
 }

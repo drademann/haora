@@ -28,8 +28,8 @@ var (
 )
 
 func init() {
-	Command.Flags().BoolVar(&tagsFlag, "tags", false, "shows durations per tag")
-	Command.Flags().BoolVar(&weekFlag, "week", false, "shows week summary")
+	Command.Flags().BoolVarP(&tagsFlag, "tags", "t", false, "shows durations per tag")
+	Command.Flags().BoolVarP(&weekFlag, "week", "w", false, "shows week summary")
 }
 
 var Command = &cobra.Command{

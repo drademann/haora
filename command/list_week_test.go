@@ -76,6 +76,31 @@ func TestListWeekCmd(t *testing.T) {
 		`)
 }
 
+func TestListWeekCmd_givenDayIsOpen_shouldDisplayNowAsEndTime(t *testing.T) {
+	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
+
+	d := data.Day{Date: test.Date("22.02.2024 00:00")}
+	d.AddTask(data.NewTask(test.Date("22.02.2024 09:00"), "task 1"))
+	d.AddTask(data.NewPause(test.Date("22.02.2024 12:00"), "lunch"))
+	d.AddTask(data.NewTask(test.Date("22.02.2024 12:45"), "task 2"))
+	defer data.MockLoadSave(&data.DayList{Days: []*data.Day{&d}})()
+
+	out := test.ExecuteCommand(t, Root, "list --week")
+
+	assert.Output(t, out,
+		`
+		Mon 19.02.2024   -
+		Tue 20.02.2024   -
+		Wed 21.02.2024   -
+		Thu 22.02.2024   09:00 -  now   worked  6h 47m   (-  1h 13m)
+		Fri 23.02.2024   -
+		Sat 24.02.2024   -
+		Sun 25.02.2024   -
+		
+		                          total worked  6h 47m   (- 33h 13m)
+		`)
+}
+
 func TestListWeekCmd_givenTodayIsMonday_shouldStartOneWeekBack(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("18.03.2024 16:32"))
 

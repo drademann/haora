@@ -33,7 +33,12 @@ func printWeek(cmd *cobra.Command, workingDate time.Time, dayList *data.DayList)
 			cmd.Printf("%s   -\n", dateStr)
 		} else {
 			startStr := day.Start().Format("15:04")
-			endStr := day.End().Format("15:04")
+			var endStr string
+			if day.IsFinished() {
+				endStr = day.End().Format("15:04")
+			} else {
+				endStr = " now "
+			}
 			dur := day.TotalWorkDuration()
 			durStr := format.Duration(dur)
 			overtime, exist := day.OvertimeDuration()

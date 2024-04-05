@@ -103,6 +103,57 @@ func TestListCmd_multipleTasksLastOpen(t *testing.T) {
 		`)
 }
 
+func TestListCmd_multipleTasksLastInFuture(t *testing.T) {
+	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
+	config.SetDurationPerWeek(t, 40*time.Hour)
+	config.SetDaysPerWeek(t, 5)
+
+	d := data.Day{Date: test.Date("22.02.2024 00:00")}
+	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"))
+	d.AddTask(data.NewTask(test.Date("22.02.2024 17:00"), "fixing bugs"))
+	defer data.MockLoadSave(&data.DayList{Days: []*data.Day{&d}})()
+
+	out := test.ExecuteCommand(t, Root, "list")
+
+	assert.Output(t, out,
+		`
+		Tasks for today, 22.02.2024 (Thu)
+
+		09:00 - 17:00    8h  0m   some programming #Haora
+		17:00 -  now         0m   fixing bugs
+
+		         total   8h  0m
+		        paused       0m
+		        worked   8h  0m
+		`)
+}
+
+func TestListCmd_multipleTasksLastInFuture_andFinishedInFuture(t *testing.T) {
+	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
+	config.SetDurationPerWeek(t, 40*time.Hour)
+	config.SetDaysPerWeek(t, 5)
+
+	d := data.Day{Date: test.Date("22.02.2024 00:00")}
+	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"))
+	d.AddTask(data.NewTask(test.Date("22.02.2024 17:00"), "fixing bugs"))
+	d.Finished = test.Date("22.02.2024 18:00")
+	defer data.MockLoadSave(&data.DayList{Days: []*data.Day{&d}})()
+
+	out := test.ExecuteCommand(t, Root, "list")
+
+	assert.Output(t, out,
+		`
+		Tasks for today, 22.02.2024 (Thu)
+
+		09:00 - 17:00    8h  0m   some programming #Haora
+		17:00 - 18:00    1h  0m   fixing bugs
+
+		         total   9h  0m
+		        paused       0m
+		        worked   9h  0m   (+  1h)
+		`)
+}
+
 func TestListCmd_withPause(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 	config.SetDurationPerWeek(t, 40*time.Hour)

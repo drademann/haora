@@ -116,10 +116,11 @@ func (d *Day) Finish(f time.Time) {
 }
 
 func (d *Day) TotalDuration() time.Duration {
-	if d.IsEmpty() {
-		return 0
+	var total time.Duration
+	for _, task := range d.Tasks {
+		total += d.TaskDuration(*task)
 	}
-	return d.End().Sub(d.Start())
+	return total
 }
 
 func (d *Day) TotalBreakDuration() time.Duration {
@@ -163,10 +164,14 @@ func (d *Day) TotalTagDuration(tag string) time.Duration {
 func (d *Day) TaskDuration(task Task) time.Duration {
 	s, err := d.Succ(task)
 	if errors.Is(err, NoTaskSucc) {
-		if d.Finished.IsZero() {
+		switch {
+		case !d.IsFinished() && task.Start.After(datetime.Now()):
+			return 0
+		case !d.IsFinished():
 			return datetime.Now().Sub(task.Start)
+		default:
+			return d.Finished.Sub(task.Start)
 		}
-		return d.Finished.Sub(task.Start)
 	}
 	return s.Start.Sub(task.Start)
 }

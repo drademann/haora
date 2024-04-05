@@ -18,7 +18,6 @@ package command
 
 import (
 	"github.com/drademann/haora/app/config"
-	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/command/add"
 	"github.com/drademann/haora/command/finish"
 	"github.com/drademann/haora/command/list"
@@ -31,18 +30,6 @@ import (
 var Root = &cobra.Command{
 	Use:   "haora",
 	Short: "Time tracking with Haora",
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		workingDateFlag, err := cmd.Flags().GetString("date")
-		if err != nil {
-			return err
-		}
-		workingDate, err := parseDateFlag(workingDateFlag)
-		if err != nil {
-			return err
-		}
-		data.State.WorkingDate = workingDate
-		return nil
-	},
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Println("The Haora CLI. Choose your command ...")
 	},
@@ -65,18 +52,8 @@ func init() {
 
 func Execute() {
 	var err error
-	if err = data.Load(); err != nil {
-		Root.PrintErrf("failed to load app data: %v\n", err)
-		os.Exit(1)
-	}
-
 	if err = Root.Execute(); err != nil {
 		Root.PrintErrf("error: %v\n\n", err)
-		os.Exit(1)
-	}
-
-	if err = data.Save(); err != nil {
-		Root.PrintErrf("failed to save app data: %v\n", err)
 		os.Exit(1)
 	}
 }

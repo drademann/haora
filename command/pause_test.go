@@ -28,10 +28,10 @@ func TestPause(t *testing.T) {
 	now := test.Date("03.03.2024 17:27")
 	datetime.AssumeForTestNowAt(t, now)
 
-	prepareTestDay := func() {
+	prepareTestDay := func() *data.DayList {
 		d := data.NewDay(test.Date("03.03.2024 00:00"))
 		d.AddTask(data.NewTask(test.Date("03.03.2024 9:00"), "a task", "Haora"))
-		data.State.DayList = &data.DayListType{Days: []*data.Day{d}}
+		return &data.DayList{Days: []*data.Day{d}}
 	}
 
 	testCases := []struct {
@@ -51,14 +51,15 @@ func TestPause(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.argLine, func(t *testing.T) {
-			prepareTestDay()
+			dayList := prepareTestDay()
+			defer data.MockLoadSave(dayList)()
 
 			test.ExecuteCommand(t, Root, tc.argLine)
 
-			if len(data.State.DayList.Days) != 1 {
-				t.Fatalf("expected still 1 day in the day list, got %d", len(data.State.DayList.Days))
+			if len(dayList.Days) != 1 {
+				t.Fatalf("expected still 1 day in the day list, got %d", len(dayList.Days))
 			}
-			day := data.State.DayList.Day(now)
+			day := dayList.Day(now)
 			if len(day.Tasks) != 2 {
 				t.Fatalf("expected 2 tasks in the day, got %d", len(day.Tasks))
 			}
@@ -86,11 +87,12 @@ func TestPauseUpdate(t *testing.T) {
 	d := data.NewDay(test.Date("03.03.2024 00:00"))
 	d.AddTask(data.NewTask(test.Date("03.03.2024 9:00"), "a task", "Haora"))
 	d.AddTask(data.NewPause(test.Date("03.03.2024 12:00"), "lunch"))
-	data.State.DayList = &data.DayListType{Days: []*data.Day{d}}
+	dayList := &data.DayList{Days: []*data.Day{d}}
+	defer data.MockLoadSave(dayList)()
 
 	test.ExecuteCommand(t, Root, "pause 12:00 breakfast")
 
-	day := data.State.DayList.Day(now)
+	day := dayList.Day(now)
 	if len(day.Tasks) != 2 {
 		t.Fatalf("expected 2 tasks in the day, got %d", len(day.Tasks)) // should update existing pause
 	}

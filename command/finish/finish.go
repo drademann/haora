@@ -20,6 +20,7 @@ import (
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/command/internal/parsing"
 	"github.com/spf13/cobra"
+	"time"
 )
 
 func init() {
@@ -34,23 +35,40 @@ The command accepts the first arg as timestamp:
 
 $ haora finish 17:00`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		workingDateFlag, err := cmd.Flags().GetString("date")
+		if err != nil {
+			return err
+		}
 		endFlag, err := cmd.Flags().GetString("end")
 		if err != nil {
 			return err
 		}
-		return finishAction(endFlag, args)
+
+		dayList, err := data.Load()
+		if err != nil {
+			return err
+		}
+		workingDate, err := parsing.WorkingDate(workingDateFlag)
+		if err != nil {
+			return err
+		}
+
+		if err := finishAction(workingDate, dayList, endFlag, args); err != nil {
+			return err
+		}
+		return data.Save(dayList)
 	},
 	PostRun: func(cmd *cobra.Command, args []string) { // reset flag so tests can rerun!
 		_ = cmd.Flags().Set("end", "")
 	},
 }
 
-func finishAction(endFlag string, args []string) error {
-	time, _, err := parsing.Time(endFlag, args)
+func finishAction(workingDate time.Time, dayList *data.DayList, endFlag string, args []string) error {
+	endTime, _, err := parsing.Time(endFlag, args)
 	if err != nil {
 		return err
 	}
-	day := data.State.WorkingDay()
-	day.Finish(time)
+	day := dayList.Day(workingDate)
+	day.Finish(endTime)
 	return nil
 }

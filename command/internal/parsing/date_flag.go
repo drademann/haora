@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-package command
+package parsing
 
 import (
 	"errors"
@@ -41,7 +41,7 @@ var (
 	}
 )
 
-func parseDateFlag(workingDateFlag string) (time.Time, error) {
+func WorkingDate(workingDateFlag string) (time.Time, error) {
 	// no date flag given
 	if workingDateFlag == "" {
 		return datetime.Now(), nil

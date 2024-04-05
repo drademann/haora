@@ -21,6 +21,7 @@ import (
 	"github.com/drademann/haora/command/internal/parsing"
 	"github.com/spf13/cobra"
 	"strings"
+	"time"
 )
 
 func init() {
@@ -38,6 +39,10 @@ The default and simplest to use format for the add command is
 
 $ haora add [time] [single tag] [text...]`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		workingDateFlag, err := cmd.Flags().GetString("date")
+		if err != nil {
+			return err
+		}
 		startFlag, err := cmd.Flags().GetString("start")
 		if err != nil {
 			return err
@@ -50,7 +55,20 @@ $ haora add [time] [single tag] [text...]`,
 		if err != nil {
 			return err
 		}
-		return addAction(startFlag, tagsFlag, noTagsFlag, args)
+
+		dayList, err := data.Load()
+		if err != nil {
+			return err
+		}
+		workingDate, err := parsing.WorkingDate(workingDateFlag)
+		if err != nil {
+			return err
+		}
+
+		if err := addAction(workingDate, dayList, startFlag, tagsFlag, noTagsFlag, args); err != nil {
+			return err
+		}
+		return data.Save(dayList)
 	},
 	PostRun: func(cmd *cobra.Command, args []string) { // reset flag so tests can rerun!
 		_ = cmd.Flags().Set("start", "")
@@ -59,8 +77,8 @@ $ haora add [time] [single tag] [text...]`,
 	},
 }
 
-func addAction(startFlag, tagsFlag string, noTagsFlag bool, args []string) error {
-	time, args, err := parsing.Time(startFlag, args)
+func addAction(workingDate time.Time, dayList *data.DayList, startFlag, tagsFlag string, noTagsFlag bool, args []string) error {
+	startTime, args, err := parsing.Time(startFlag, args)
 	var tags []string
 	if !noTagsFlag {
 		tags, args, err = parseTags(tagsFlag, args)
@@ -69,8 +87,8 @@ func addAction(startFlag, tagsFlag string, noTagsFlag bool, args []string) error
 		}
 	}
 	text := strings.Join(args, " ")
-	d := data.State.WorkingDay()
-	return d.AddNewTask(time, text, tags)
+	day := dayList.Day(workingDate)
+	return day.AddNewTask(startTime, text, tags)
 }
 
 func parseTags(tagsFlag string, args []string) ([]string, []string, error) {

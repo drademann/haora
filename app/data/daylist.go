@@ -20,7 +20,7 @@ import (
 	"time"
 )
 
-type DayListType struct {
+type DayList struct {
 	Days []*Day
 }
 
@@ -28,13 +28,33 @@ type DayListType struct {
 //
 // The returned struct is a copy of the day.
 // Changes to this day won't be applied to the data model automatically.
-func (d *DayListType) Day(date time.Time) *Day {
-	for _, day := range d.Days {
+func (dl *DayList) Day(date time.Time) *Day {
+	for _, day := range dl.Days {
 		if isSameDay(day.Date, date) {
 			return day
 		}
 	}
 	day := NewDay(date)
-	d.Days = append(d.Days, day)
+	dl.Days = append(dl.Days, day)
 	return day
+}
+
+func (dl *DayList) Week(start time.Time) Week {
+	var week Week
+	var date = start
+	for i := 0; i < 7; i++ {
+		week.Days[i] = *dl.Day(date)
+		date = date.Add(24 * time.Hour)
+	}
+	return week
+}
+
+func (dl *DayList) SanitizedDays() []*Day {
+	var r = make([]*Day, 0)
+	for _, d := range dl.Days {
+		if !d.IsEmpty() { // ignore days without any task
+			r = append(r, d.sanitize())
+		}
+	}
+	return r
 }

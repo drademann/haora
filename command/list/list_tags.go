@@ -24,7 +24,9 @@ import (
 	"time"
 )
 
-func printTags(d data.Day, cmd *cobra.Command) error {
+func printTags(cmd *cobra.Command, workingDate time.Time, dayList *data.DayList) error {
+	d := dayList.Day(workingDate)
+
 	headerStr := func(day data.Day) string {
 		ds := day.Date.Format("02.01.2006 (Mon)")
 		if day.IsToday() {
@@ -32,7 +34,7 @@ func printTags(d data.Day, cmd *cobra.Command) error {
 		}
 		return fmt.Sprintf("Tag summary for %s\n", ds)
 	}
-	cmd.Println(headerStr(d))
+	cmd.Println(headerStr(*d))
 
 	if d.IsEmpty() {
 		cmd.Println("no tags found")

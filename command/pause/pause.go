@@ -21,6 +21,7 @@ import (
 	"github.com/drademann/haora/command/internal/parsing"
 	"github.com/spf13/cobra"
 	"strings"
+	"time"
 )
 
 func init() {
@@ -36,23 +37,40 @@ The command accepts the first arg as timestamp, and any following as text (optio
 
 $ haora pause 12:00 Lunch`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		workingDateFlag, err := cmd.Flags().GetString("date")
+		if err != nil {
+			return err
+		}
 		startFlag, err := cmd.Flags().GetString("start")
 		if err != nil {
 			return err
 		}
-		return pauseAction(startFlag, args)
+
+		dayList, err := data.Load()
+		if err != nil {
+			return err
+		}
+		workingDate, err := parsing.WorkingDate(workingDateFlag)
+		if err != nil {
+			return err
+		}
+
+		if err := pauseAction(workingDate, dayList, startFlag, args); err != nil {
+			return err
+		}
+		return data.Save(dayList)
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
 		_ = cmd.Flags().Set("start", "")
 	},
 }
 
-func pauseAction(startFlag string, args []string) error {
-	time, args, err := parsing.Time(startFlag, args)
+func pauseAction(workingDate time.Time, dayList *data.DayList, startFlag string, args []string) error {
+	pauseTime, args, err := parsing.Time(startFlag, args)
 	if err != nil {
 		return err
 	}
 	text := strings.Join(args, " ")
-	d := data.State.WorkingDay()
-	return d.AddNewPause(time, text)
+	day := dayList.Day(workingDate)
+	return day.AddNewPause(pauseTime, text)
 }

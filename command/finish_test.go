@@ -28,13 +28,13 @@ func TestFinish(t *testing.T) {
 	now := test.Date("22.02.2024 16:32")
 	datetime.AssumeForTestNowAt(t, now)
 
-	prepareTestDay := func() {
+	prepareTestDay := func() *data.DayList {
 		d := data.NewDay(test.Date("22.02.2024 00:00"))
 		d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "a task", "Haora"))
 		if !d.Finished.IsZero() {
 			t.Fatal("day to test should not be finished already")
 		}
-		data.State.DayList = &data.DayListType{Days: []*data.Day{d}}
+		return &data.DayList{Days: []*data.Day{d}}
 	}
 
 	testCases := []struct {
@@ -49,11 +49,12 @@ func TestFinish(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.argLine, func(t *testing.T) {
-			prepareTestDay()
+			dayList := prepareTestDay()
+			defer data.MockLoadSave(dayList)()
 
 			test.ExecuteCommand(t, Root, tc.argLine)
 
-			d := data.State.DayList.Day(now)
+			d := dayList.Day(now)
 			if d.Finished != tc.expectedFinished {
 				t.Errorf("expected finished time %v, but got %v", tc.expectedFinished, d.Finished)
 			}

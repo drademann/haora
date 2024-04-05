@@ -14,11 +14,10 @@
 // limitations under the License.
 //
 
-package command
+package parsing
 
 import (
 	"fmt"
-	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
 	"github.com/drademann/haora/test"
 	"testing"
@@ -28,7 +27,7 @@ import (
 func TestParseNoFlag(t *testing.T) {
 	testNow := datetime.AssumeForTestNowAt(t, test.Date("12.02.2024 10:00"))
 
-	date, err := parseDateFlag("")
+	date, err := WorkingDate("")
 	if err != nil {
 		t.Fatalf("unexpected error %v", err)
 	}
@@ -58,9 +57,7 @@ func TestParseDateFlag(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			data.State.WorkingDate = time.Time{}
-
-			date, err := parseDateFlag(tc.flag)
+			date, err := WorkingDate(tc.flag)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -91,9 +88,7 @@ func TestWeekdayFlag(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("flag starting with %q", tc.flag), func(t *testing.T) {
-			data.State.WorkingDate = time.Time{}
-
-			date, err := parseDateFlag(tc.flag)
+			date, err := WorkingDate(tc.flag)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -108,7 +103,7 @@ func TestWeekdayFlag(t *testing.T) {
 func TestParseDayOnly(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("12.02.2024 10:00"))
 
-	_, err := parseDateFlag("35")
+	_, err := WorkingDate("35")
 
 	if err == nil {
 		t.Errorf("expected error, but got nil")

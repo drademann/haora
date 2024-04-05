@@ -23,6 +23,38 @@ import (
 )
 
 func TestDay(t *testing.T) {
+	t.Run("should return day if it exists", func(t *testing.T) {
+		dayList, existingDay := dayListForTesting()
+
+		date := test.Time("13:48")
+		d := dayList.Day(date)
+
+		if !isSameDay(d.Date, existingDay.Date) {
+			t.Errorf("got unexpected task: %+v", d)
+		}
+		if len(dayList.Days) != 1 {
+			t.Errorf("number of days should'nt have changed, but is now %d", len(dayList.Days))
+		}
+	})
+	t.Run("should create a new day if it doesn't exist", func(t *testing.T) {
+		dayList, _ := dayListForTesting()
+
+		date := test.Date("30.06.2024 10:00")
+		d := dayList.Day(date)
+
+		if !isSameDay(d.Date, date) {
+			t.Errorf("got unexpected task: %+v", d)
+		}
+		if len(dayList.Days) != 2 {
+			t.Errorf("number of days should have increased to 2, but is now %d", len(dayList.Days))
+		}
+		if _ = dayList.Day(date); len(dayList.Days) != 2 {
+			t.Errorf("number of days shouldn't have increased calling the same date a second time")
+		}
+	})
+}
+
+func dayListForTesting() (*DayList, Day) {
 	existingDay := Day{
 		Date: test.Time("9:00"),
 		Tasks: []*Task{
@@ -32,36 +64,7 @@ func TestDay(t *testing.T) {
 				Tags:    []string{}},
 		},
 		Finished: time.Time{}}
-	State = &StateType{}
-	State.DayList = &DayListType{
+	return &DayList{
 		Days: []*Day{&existingDay},
-	}
-
-	t.Run("should return day if it exists", func(t *testing.T) {
-		date := test.Time("13:48")
-
-		d := State.DayList.Day(date)
-
-		if !isSameDay(d.Date, existingDay.Date) {
-			t.Errorf("got unexpected task: %+v", d)
-		}
-		if len(State.DayList.Days) != 1 {
-			t.Errorf("number of days should'nt have changed, but is now %d", len(State.DayList.Days))
-		}
-	})
-	t.Run("should create a new day if it doesn't exist", func(t *testing.T) {
-		date := test.Date("30.06.2024 10:00")
-
-		d := State.DayList.Day(date)
-
-		if !isSameDay(d.Date, date) {
-			t.Errorf("got unexpected task: %+v", d)
-		}
-		if len(State.DayList.Days) != 2 {
-			t.Errorf("number of days should have increased to 2, but is now %d", len(State.DayList.Days))
-		}
-		if _ = State.DayList.Day(date); len(State.DayList.Days) != 2 {
-			t.Errorf("number of days shouldn't have increased calling the same date a second time")
-		}
-	})
+	}, existingDay
 }

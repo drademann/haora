@@ -18,6 +18,7 @@ package list
 
 import (
 	"github.com/drademann/haora/app/data"
+	"github.com/drademann/haora/command/internal/parsing"
 	"github.com/spf13/cobra"
 	"time"
 )
@@ -32,14 +33,26 @@ var Command = &cobra.Command{
 	Short: "List the recorded tasks of a day",
 	Long:  `Provides a list of all tasks of a day, including their duration. A summary with total pause and working times is displayed at the end.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		d := data.State.WorkingDay()
+		workingDateFlag, err := cmd.Flags().GetString("date")
+		if err != nil {
+			return err
+		}
+
+		dayList, err := data.Load()
+		if err != nil {
+			return err
+		}
+		workingDate, err := parsing.WorkingDate(workingDateFlag)
+		if err != nil {
+			return err
+		}
 
 		tagsFlag, err := cmd.Flags().GetBool("tags")
 		if err != nil {
 			return err
 		}
 		if tagsFlag {
-			return printTags(*d, cmd)
+			return printTags(cmd, workingDate, dayList)
 		}
 
 		weekFlag, err := cmd.Flags().GetBool("week")
@@ -47,10 +60,10 @@ var Command = &cobra.Command{
 			return err
 		}
 		if weekFlag {
-			return printWeek(*d, cmd)
+			return printWeek(cmd, workingDate, dayList)
 		}
 
-		return printDefault(*d, cmd)
+		return printDefault(cmd, workingDate, dayList)
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
 		_ = cmd.Flags().Set("tags", "")

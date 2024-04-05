@@ -24,9 +24,9 @@ import (
 	"time"
 )
 
-func printWeek(d data.Day, cmd *cobra.Command) error {
-	date := datetime.FindWeekday(d.Date, datetime.Previous, time.Monday)
-	week := data.CollectWeek(date)
+func printWeek(cmd *cobra.Command, workingDate time.Time, dayList *data.DayList) error {
+	date := datetime.FindWeekday(workingDate, datetime.Previous, time.Monday)
+	week := dayList.Week(date)
 	for _, day := range week.Days {
 		dateStr := day.Date.Format("Mon 02.01.2006")
 		if day.IsEmpty() {

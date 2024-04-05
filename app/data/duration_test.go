@@ -26,10 +26,9 @@ import (
 
 func TestDayDuration(t *testing.T) {
 	t.Run("open day duration", func(t *testing.T) {
-		State.WorkingDate = test.Time("0:00")
 		task1 := NewTask(test.Time("9:00"), "task 1")
 		task2 := NewTask(test.Time("10:00"), "task 2")
-		d := Day{Date: State.WorkingDate,
+		d := Day{Date: test.Time("0:00"),
 			Tasks:    []*Task{task1, task2},
 			Finished: time.Time{},
 		}
@@ -39,10 +38,9 @@ func TestDayDuration(t *testing.T) {
 		assert.Duration(t, "total", dur, 7*time.Hour)
 	})
 	t.Run("finished day duration", func(t *testing.T) {
-		State.WorkingDate = test.Time("0:00")
 		task1 := NewTask(test.Time("9:00"), "task 1")
 		task2 := NewTask(test.Time("10:00"), "task 2")
-		d := Day{Date: State.WorkingDate,
+		d := Day{Date: test.Time("0:00"),
 			Tasks:    []*Task{task1, task2},
 			Finished: test.Time("14:00"),
 		}
@@ -55,12 +53,11 @@ func TestDayDuration(t *testing.T) {
 
 func TestTotalWorkBreakDurations(t *testing.T) {
 	t.Run("one break", func(t *testing.T) {
-		State.WorkingDate = test.Time("0:00")
 		task1 := NewTask(test.Time("9:00"), "task 1")
 		lunch := NewTask(test.Time("12:00"), "lunch")
 		lunch.IsPause = true
 		task2 := NewTask(test.Time("12:45"), "task 2")
-		d := Day{Date: State.WorkingDate,
+		d := Day{Date: test.Time("0:00"),
 			Tasks:    []*Task{task1, lunch, task2},
 			Finished: test.Time("14:00"),
 		}
@@ -73,7 +70,6 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 		assert.Duration(t, "work", w, 4*time.Hour+15*time.Minute)
 	})
 	t.Run("multiple breaks", func(t *testing.T) {
-		State.WorkingDate = test.Time("0:00")
 		task1 := NewTask(test.Time("10:00"), "task 1")
 		lunch := NewTask(test.Time("12:00"), "lunch")
 		lunch.IsPause = true
@@ -81,7 +77,7 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 		tea := NewTask(test.Time("16:00"), "tea")
 		tea.IsPause = true
 		task3 := NewTask(test.Time("16:15"), "task 3")
-		d := Day{Date: State.WorkingDate,
+		d := Day{Date: test.Time("0:00"),
 			Tasks:    []*Task{task1, lunch, task2, tea, task3},
 			Finished: test.Time("17:00"),
 		}
@@ -94,11 +90,10 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 		assert.Duration(t, "work", w, 6*time.Hour)
 	})
 	t.Run("open break", func(t *testing.T) {
-		State.WorkingDate = test.Time("0:00")
 		task1 := NewTask(test.Time("9:00"), "task 1")
 		lunch := NewTask(test.Time("12:00"), "break")
 		lunch.IsPause = true
-		d := Day{Date: State.WorkingDate,
+		d := Day{Date: test.Time("0:00"),
 			Tasks:    []*Task{task1, lunch},
 			Finished: time.Time{},
 		}
@@ -113,11 +108,10 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 }
 
 func TestTagDuration(t *testing.T) {
-	State.WorkingDate = test.Time("0:00")
 	task1 := NewTask(test.Time("10:00"), "task 1", "T1")
 	task2 := NewTask(test.Time("12:00"), "task 2", "T1", "T2")
 	task3 := NewTask(test.Time("15:00"), "task 3", "T3")
-	d := Day{Date: State.WorkingDate,
+	d := Day{Date: test.Time("0:00"),
 		Tasks:    []*Task{task1, task2, task3},
 		Finished: test.Time("16:00"),
 	}
@@ -132,10 +126,9 @@ func TestTagDuration(t *testing.T) {
 
 func TestTaskDuration(t *testing.T) {
 	t.Run("task with a successor", func(t *testing.T) {
-		State.WorkingDate = test.Time("0:00")
 		task1 := NewTask(test.Time("9:00"), "task 1")
 		task2 := NewTask(test.Time("10:00"), "task 2")
-		d := Day{Date: State.WorkingDate,
+		d := Day{Date: test.Time("0:00"),
 			Tasks:    []*Task{task1, task2},
 			Finished: time.Time{},
 		}
@@ -144,10 +137,9 @@ func TestTaskDuration(t *testing.T) {
 		assert.Duration(t, "task", dur, 1*time.Hour)
 	})
 	t.Run("task without a successor should return duration until now", func(t *testing.T) {
-		State.WorkingDate = test.Time("0:00")
 		task1 := NewTask(test.Time("9:00"), "task 1")
 		task2 := NewTask(test.Time("10:00"), "task 2")
-		d := Day{Date: State.WorkingDate,
+		d := Day{Date: test.Time("0:00"),
 			Tasks:    []*Task{task1, task2},
 			Finished: time.Time{},
 		}
@@ -157,10 +149,9 @@ func TestTaskDuration(t *testing.T) {
 		assert.Duration(t, "task", dur, 2*time.Hour)
 	})
 	t.Run("given day is finished should use this as end timestamp", func(t *testing.T) {
-		State.WorkingDate = test.Time("0:00")
 		task1 := NewTask(test.Time("9:00"), "task 1")
 		task2 := NewTask(test.Time("10:00"), "task 2")
-		d := Day{Date: State.WorkingDate,
+		d := Day{Date: test.Time("0:00"),
 			Tasks:    []*Task{task1, task2},
 			Finished: test.Time("12:00"),
 		}

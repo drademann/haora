@@ -23,9 +23,12 @@ import (
 	"github.com/drademann/haora/command/internal/format"
 	"github.com/spf13/cobra"
 	"strings"
+	"time"
 )
 
-func printDefault(d data.Day, cmd *cobra.Command) error {
+func printDefault(cmd *cobra.Command, workingDate time.Time, dayList *data.DayList) error {
+	d := dayList.Day(workingDate)
+
 	headerStr := func(day data.Day) string {
 		ds := day.Date.Format("02.01.2006 (Mon)")
 		if day.IsToday() {
@@ -33,7 +36,7 @@ func printDefault(d data.Day, cmd *cobra.Command) error {
 		}
 		return fmt.Sprintf("Tasks for %s\n", ds)
 	}
-	cmd.Println(headerStr(d))
+	cmd.Println(headerStr(*d))
 
 	if d.IsEmpty() {
 		cmd.Println("no tasks recorded")

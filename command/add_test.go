@@ -28,13 +28,6 @@ import (
 func TestAddCmd(t *testing.T) {
 	now := datetime.AssumeForTestNowAt(t, test.Date("26.02.2024 13:37"))
 
-	prepareTestData := func() {
-		data.State = &data.StateType{
-			DayList: &data.DayListType{},
-		}
-		data.State.DayList.Days = nil
-	}
-
 	testCases := []struct {
 		argLine       string
 		expectedStart time.Time
@@ -68,29 +61,32 @@ func TestAddCmd(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		prepareTestData()
+		t.Run(tc.argLine, func(t *testing.T) {
+			dayList := data.DayList{}
+			defer data.MockLoadSave(&dayList)()
 
-		test.ExecuteCommand(t, Root, tc.argLine)
+			test.ExecuteCommand(t, Root, tc.argLine)
 
-		d := data.State.DayList.Day(tc.expectedStart)
-		if len(d.Tasks) != 1 {
-			t.Fatalf("expected 1 task, got %d", len(d.Tasks))
-		}
-		task := d.Tasks[0]
-		if task.Start != tc.expectedStart {
-			t.Errorf("expected start time %v, got %v", tc.expectedStart, task.Start)
-		}
-		if task.Text != tc.expectedText {
-			t.Errorf("expected text %q, got %q", tc.expectedText, task.Text)
-		}
-		if !reflect.DeepEqual(task.Tags, tc.expectedTags) {
-			t.Errorf("expected tags %v, got %v", tc.expectedTags, task.Tags)
-		}
+			d := dayList.Day(tc.expectedStart)
+			if len(d.Tasks) != 1 {
+				t.Fatalf("expected 1 task, got %d", len(d.Tasks))
+			}
+			task := d.Tasks[0]
+			if task.Start != tc.expectedStart {
+				t.Errorf("expected start time %v, got %v", tc.expectedStart, task.Start)
+			}
+			if task.Text != tc.expectedText {
+				t.Errorf("expected text %q, got %q", tc.expectedText, task.Text)
+			}
+			if !reflect.DeepEqual(task.Tags, tc.expectedTags) {
+				t.Errorf("expected tags %v, got %v", tc.expectedTags, task.Tags)
+			}
+		})
 	}
 }
 
 func TestAddShouldUpdateExistingTaskAtSameTime(t *testing.T) {
-	data.State.DayList = &data.DayListType{
+	dayList := data.DayList{
 		Days: []*data.Day{
 			{
 				Date: test.Date("26.02.2024 00:00"),
@@ -104,10 +100,11 @@ func TestAddShouldUpdateExistingTaskAtSameTime(t *testing.T) {
 			},
 		},
 	}
+	defer data.MockLoadSave(&dayList)()
 
 	test.ExecuteCommand(t, Root, "--date 26.02.2024 add --start 12:15 --tags haora simple task")
 
-	d := data.State.DayList.Day(test.Date("26.02.2024 00:00"))
+	d := dayList.Day(test.Date("26.02.2024 00:00"))
 	if len(d.Tasks) != 1 {
 		t.Fatalf("expected 1 task, got %d", len(d.Tasks))
 	}

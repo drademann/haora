@@ -51,11 +51,6 @@ func (d *Day) IsFinished() bool {
 	return !d.Finished.IsZero()
 }
 
-// AddNewTask creates a new task.
-//
-// The new task starts at the start timestamp with given text and tags.
-// The date part of the start timestamp is not used, instead the day's date is applied.
-// If a task at the specific timestamp already exists, it will be updated instead of added.
 func (d *Day) AddNewTask(s time.Time, txt string, tgs []string) error {
 	s = datetime.Combine(d.Date, s)
 	t, err := d.taskAt(s)

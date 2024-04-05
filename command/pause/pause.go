@@ -29,8 +29,9 @@ func init() {
 }
 
 var Command = &cobra.Command{
-	Use:   "pause",
-	Short: "Adds a pause to a day",
+	Use:     "pause",
+	Aliases: []string{"p", "pa", "pau", "break", "bre", "br"},
+	Short:   "Adds a pause to a day",
 	Long: `Adds a new pause to a day.
 
 The command accepts the first arg as timestamp, and any following as text (optional), like

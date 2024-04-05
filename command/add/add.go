@@ -31,8 +31,9 @@ func init() {
 }
 
 var Command = &cobra.Command{
-	Use:   "add",
-	Short: "Adds a task to a day",
+	Use:     "add",
+	Aliases: []string{"a", "ad"},
+	Short:   "Adds a task to a day",
 	Long: `Adds a new task to a day. 
 
 The default and simplest to use format for the add command is 

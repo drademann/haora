@@ -29,9 +29,10 @@ func init() {
 }
 
 var Command = &cobra.Command{
-	Use:   "list",
-	Short: "List the recorded tasks of a day",
-	Long:  `Provides a list of all tasks of a day, including their duration. A summary with total pause and working times is displayed at the end.`,
+	Use:     "list",
+	Aliases: []string{"l", "li", "lis"},
+	Short:   "List the recorded tasks of a day",
+	Long:    `Provides a list of all tasks of a day, including their duration. A summary with total pause and working times is displayed at the end.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		workingDateFlag, err := cmd.Flags().GetString("date")
 		if err != nil {

@@ -23,9 +23,10 @@ import (
 const version = "0.6.0-beta"
 
 var Command = &cobra.Command{
-	Use:   "version",
-	Short: "Print the version",
-	Long:  `Prints the version number of Haora.`,
+	Use:     "version",
+	Aliases: []string{"v", "ve", "ver", "vers"},
+	Short:   "Print the version",
+	Long:    `Prints the version number of Haora.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Printf("Haora v%s\n", version)
 	},

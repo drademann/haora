@@ -28,14 +28,14 @@ import (
 	"os"
 )
 
-var (
-	workingDateFlag string
-)
-
 var Root = &cobra.Command{
 	Use:   "haora",
 	Short: "Time tracking with Haora",
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		workingDateFlag, err := cmd.Flags().GetString("date")
+		if err != nil {
+			return err
+		}
 		workingDate, err := parseDateFlag(workingDateFlag)
 		if err != nil {
 			return err
@@ -47,7 +47,7 @@ var Root = &cobra.Command{
 		cmd.Println("The Haora CLI. Choose your command ...")
 	},
 	PersistentPostRun: func(cmd *cobra.Command, args []string) { // reset flag so tests can rerun!
-		workingDateFlag = ""
+		_ = cmd.Flags().Set("date", "")
 	},
 	SilenceErrors: true,
 	SilenceUsage:  true,
@@ -55,7 +55,7 @@ var Root = &cobra.Command{
 
 func init() {
 	cobra.OnInitialize(config.InitViper)
-	Root.PersistentFlags().StringVarP(&workingDateFlag, "date", "d", "", "date for the command to execute on (defaults to today)")
+	Root.PersistentFlags().StringP("date", "d", "", "date for the command to execute on (defaults to today)")
 	Root.AddCommand(add.Command)
 	Root.AddCommand(finish.Command)
 	Root.AddCommand(list.Command)

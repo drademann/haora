@@ -22,12 +22,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	endFlag string
-)
-
 func init() {
-	Command.Flags().StringVarP(&endFlag, "end", "e", "", "finish timestamp, like 17:00, for the day")
+	Command.Flags().StringP("end", "e", "", "finish timestamp, like 17:00, for the day")
 }
 
 var Command = &cobra.Command{
@@ -38,15 +34,23 @@ The command accepts the first arg as timestamp:
 
 $ haora finish 17:00`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		time, _, err := parsing.Time(endFlag, args)
+		endFlag, err := cmd.Flags().GetString("end")
 		if err != nil {
 			return err
 		}
-		day := data.State.WorkingDay()
-		day.Finish(time)
-		return nil
+		return finishAction(endFlag, args)
 	},
 	PostRun: func(cmd *cobra.Command, args []string) { // reset flag so tests can rerun!
-		endFlag = ""
+		_ = cmd.Flags().Set("end", "")
 	},
+}
+
+func finishAction(endFlag string, args []string) error {
+	time, _, err := parsing.Time(endFlag, args)
+	if err != nil {
+		return err
+	}
+	day := data.State.WorkingDay()
+	day.Finish(time)
+	return nil
 }

@@ -23,12 +23,8 @@ import (
 	"strings"
 )
 
-var (
-	startFlag string
-)
-
 func init() {
-	Command.Flags().StringVarP(&startFlag, "start", "s", "", "starting timestamp, like 12:00, of the pause")
+	Command.Flags().StringP("start", "s", "", "starting timestamp, like 12:00, of the pause")
 }
 
 var Command = &cobra.Command{
@@ -40,15 +36,23 @@ The command accepts the first arg as timestamp, and any following as text (optio
 
 $ haora pause 12:00 Lunch`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		time, args, err := parsing.Time(startFlag, args)
+		startFlag, err := cmd.Flags().GetString("start")
 		if err != nil {
 			return err
 		}
-		text := strings.Join(args, " ")
-		d := data.State.WorkingDay()
-		return d.AddNewPause(time, text)
+		return pauseAction(startFlag, args)
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
-		startFlag = ""
+		_ = cmd.Flags().Set("start", "")
 	},
+}
+
+func pauseAction(startFlag string, args []string) error {
+	time, args, err := parsing.Time(startFlag, args)
+	if err != nil {
+		return err
+	}
+	text := strings.Join(args, " ")
+	d := data.State.WorkingDay()
+	return d.AddNewPause(time, text)
 }

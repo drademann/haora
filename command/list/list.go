@@ -22,14 +22,9 @@ import (
 	"time"
 )
 
-var (
-	tagsFlag bool
-	weekFlag bool
-)
-
 func init() {
-	Command.Flags().BoolVar(&tagsFlag, "tags", false, "shows durations per tag")
-	Command.Flags().BoolVar(&weekFlag, "week", false, "shows week summary")
+	Command.Flags().Bool("tags", false, "shows durations per tag")
+	Command.Flags().Bool("week", false, "shows week summary")
 }
 
 var Command = &cobra.Command{
@@ -38,16 +33,28 @@ var Command = &cobra.Command{
 	Long:  `Provides a list of all tasks of a day, including their duration. A summary with total pause and working times is displayed at the end.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		d := data.State.WorkingDay()
+
+		tagsFlag, err := cmd.Flags().GetBool("tags")
+		if err != nil {
+			return err
+		}
 		if tagsFlag {
 			return printTags(*d, cmd)
+		}
+
+		weekFlag, err := cmd.Flags().GetBool("week")
+		if err != nil {
+			return err
 		}
 		if weekFlag {
 			return printWeek(*d, cmd)
 		}
+
 		return printDefault(*d, cmd)
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
-		tagsFlag = false
+		_ = cmd.Flags().Set("tags", "")
+		_ = cmd.Flags().Set("week", "")
 	},
 }
 

@@ -98,6 +98,16 @@ No tags are used for a pause, but a text may be set.
 
 To explicitly set a starting timestamp for the pause.
 
+### remove
+
+Removes a task of a day. The task is identified by its starting timestamp, like
+
+```shell
+$ haora remove 10:00
+```
+
+It may also remove a pause, which is nothing less than a task marked as pause.
+
 ### finish
 
 Closes the day and sets a finish timestamp.
@@ -111,6 +121,10 @@ $ haora finish 17:00
 `--end 17:00` or `-e 17:00`
 
 To explicitly set a finish time.
+
+`--remove`
+
+To remove an already set finish time.
 
 ### version
 

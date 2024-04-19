@@ -20,11 +20,11 @@ import (
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/command/internal/parsing"
 	"github.com/spf13/cobra"
-	"time"
 )
 
 func init() {
 	Command.Flags().StringP("end", "e", "", "finish timestamp, like 17:00, for the day")
+	Command.Flags().Bool("remove", false, "removes the set finish timestamp")
 }
 
 var Command = &cobra.Command{
@@ -44,6 +44,10 @@ $ haora finish 17:00`,
 		if err != nil {
 			return err
 		}
+		removeFlag, err := cmd.Flags().GetBool("remove")
+		if err != nil {
+			return err
+		}
 
 		dayList, err := data.Load()
 		if err != nil {
@@ -53,8 +57,11 @@ $ haora finish 17:00`,
 		if err != nil {
 			return err
 		}
+		day := dayList.Day(workingDate)
 
-		if err := finishAction(workingDate, dayList, endFlag, args); err != nil {
+		if removeFlag {
+			day.Unfinished()
+		} else if err := finishAction(day, endFlag, args); err != nil {
 			return err
 		}
 		return data.Save(dayList)
@@ -64,12 +71,13 @@ $ haora finish 17:00`,
 	},
 }
 
-func finishAction(workingDate time.Time, dayList *data.DayList, endFlag string, args []string) error {
+func finishAction(day *data.Day, endFlag string, args []string) error {
 	endTime, _, err := parsing.Time(endFlag, args)
 	if err != nil {
 		return err
 	}
-	day := dayList.Day(workingDate)
-	day.Finish(endTime)
+	if err = day.Finish(endTime); err != nil {
+		return err
+	}
 	return nil
 }

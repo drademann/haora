@@ -55,7 +55,7 @@ func init() {
 func Execute() {
 	var err error
 	if err = Root.Execute(); err != nil {
-		Root.PrintErrf("error: %v\n\n", err)
+		Root.PrintErrf("error: %v\n", err)
 		os.Exit(1)
 	}
 }

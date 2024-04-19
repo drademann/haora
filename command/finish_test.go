@@ -20,6 +20,7 @@ import (
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
 	"github.com/drademann/haora/test"
+	"github.com/drademann/haora/test/assert"
 	"testing"
 	"time"
 )
@@ -59,5 +60,52 @@ func TestFinish(t *testing.T) {
 				t.Errorf("expected finished time %v, but got %v", tc.expectedFinished, d.Finished)
 			}
 		})
+	}
+}
+
+func TestFinishWithoutTasks(t *testing.T) {
+	now := test.Date("22.02.2024 16:32")
+	datetime.AssumeForTestNowAt(t, now)
+
+	d := data.NewDay(test.Date("22.02.2024 00:00"))
+	if !d.Finished.IsZero() {
+		t.Fatal("day to test should not be finished already")
+	}
+	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{d}})
+
+	out := test.ExecuteCommand(t, Root, "finish 18:00")
+
+	assert.Output(t, out, "error: no tasks to finish\n")
+}
+
+func TestFinishBeforeLastTask(t *testing.T) {
+	now := test.Date("22.02.2024 16:32")
+	datetime.AssumeForTestNowAt(t, now)
+
+	d := data.NewDay(test.Date("22.02.2024 00:00"))
+	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "a task", "Haora"))
+	if !d.Finished.IsZero() {
+		t.Fatal("day to test should not be finished already")
+	}
+	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{d}})
+
+	out := test.ExecuteCommand(t, Root, "finish 8:00")
+
+	assert.Output(t, out, "error: can't finish before last task's start timestamp (09:00)\n")
+}
+
+func TestUnfinished(t *testing.T) {
+	now := test.Date("22.02.2024 16:32")
+	datetime.AssumeForTestNowAt(t, now)
+
+	d := data.NewDay(test.Date("22.02.2024 00:00"))
+	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "a task", "Haora"))
+	d.Finished = test.Date("22.02.2024 18:00")
+	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{d}})
+
+	test.ExecuteCommand(t, Root, "finish --remove")
+
+	if d.IsFinished() {
+		t.Errorf("expected day to be unfinished now, but it is still finished")
 	}
 }

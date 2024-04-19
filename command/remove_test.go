@@ -102,5 +102,5 @@ func TestRemoveNoTask_shouldPrintErrorMessage(t *testing.T) {
 
 	out := test.ExecuteCommand(t, Root, "remove 12:00")
 
-	assert.Output(t, out, "error: no task found at 12:00\n\n")
+	assert.Output(t, out, "error: no task found at 12:00\n")
 }

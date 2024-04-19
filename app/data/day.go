@@ -18,6 +18,7 @@ package data
 
 import (
 	"errors"
+	"fmt"
 	"github.com/drademann/haora/app/config"
 	"github.com/drademann/haora/app/datetime"
 	"slices"
@@ -120,9 +121,21 @@ func (d *Day) End() time.Time {
 	return d.Finished
 }
 
-func (d *Day) Finish(f time.Time) {
+func (d *Day) Finish(f time.Time) error {
+	if len(d.Tasks) == 0 {
+		return errors.New("no tasks to finish")
+	}
 	f = datetime.Combine(d.Date, f)
+	last := d.Tasks[len(d.Tasks)-1]
+	if f.Before(last.Start) {
+		return fmt.Errorf("can't finish before last task's start timestamp (%s)", last.Start.Format("15:04"))
+	}
 	d.Finished = f
+	return nil
+}
+
+func (d *Day) Unfinished() {
+	d.Finished = time.Time{}
 }
 
 func (d *Day) TotalDuration() time.Duration {

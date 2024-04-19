@@ -30,7 +30,7 @@ func ExecuteCommand(t *testing.T, cmd *cobra.Command, argLine string) *bytes.Buf
 	cmd.SetErr(buf)
 	cmd.SetArgs(strings.Split(argLine, " "))
 	if err := cmd.Execute(); err != nil {
-		cmd.PrintErrf("error: %v\n\n", err)
+		cmd.PrintErrf("error: %v\n", err)
 	}
 	return buf
 }

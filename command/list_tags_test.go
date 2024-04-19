@@ -30,7 +30,7 @@ func TestListTagsCmd_givenNoTasks(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local))
 
 	t.Run("no days and thus no tasks for today", func(t *testing.T) {
-		defer data.MockLoadSave(&data.DayList{})()
+		data.MockLoadSave(t, &data.DayList{})
 
 		out := test.ExecuteCommand(t, Root, "-d 22.02.2024 list --tags")
 
@@ -42,7 +42,7 @@ func TestListTagsCmd_givenNoTasks(t *testing.T) {
 			`)
 	})
 	t.Run("no tasks for other day than today", func(t *testing.T) {
-		defer data.MockLoadSave(&data.DayList{})()
+		data.MockLoadSave(t, &data.DayList{})
 
 		out := test.ExecuteCommand(t, Root, "-d 20.02.2024 list --tags")
 
@@ -60,7 +60,7 @@ func TestListTagsCmd(t *testing.T) {
 	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "a task", "haora"))
 	d.AddTask(data.NewTask(test.Date("22.02.2024 12:00"), "a task", "learning"))
 	d.AddTask(data.NewTask(test.Date("22.02.2024 15:00"), "a task", "go", "learning"))
-	defer data.MockLoadSave(&data.DayList{Days: []*data.Day{&d}})()
+	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
 
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 

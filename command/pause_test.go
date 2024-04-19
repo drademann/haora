@@ -52,7 +52,7 @@ func TestPause(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.argLine, func(t *testing.T) {
 			dayList := prepareTestDay()
-			defer data.MockLoadSave(dayList)()
+			data.MockLoadSave(t, dayList)
 
 			test.ExecuteCommand(t, Root, tc.argLine)
 
@@ -88,7 +88,7 @@ func TestPauseUpdate(t *testing.T) {
 	d.AddTask(data.NewTask(test.Date("03.03.2024 9:00"), "a task", "Haora"))
 	d.AddTask(data.NewPause(test.Date("03.03.2024 12:00"), "lunch"))
 	dayList := &data.DayList{Days: []*data.Day{d}}
-	defer data.MockLoadSave(dayList)()
+	data.MockLoadSave(t, dayList)
 
 	test.ExecuteCommand(t, Root, "pause 12:00 breakfast")
 

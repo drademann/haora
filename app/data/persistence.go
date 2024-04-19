@@ -22,6 +22,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"testing"
 )
 
 var Load = loadFunc
@@ -120,7 +121,8 @@ func ensureDataDirExists() error {
 // The mocked data.Save function always returns nil error.
 //
 // Should not be called from production code!
-func MockLoadSave(dayList *DayList) func() {
+func MockLoadSave(t *testing.T, dayList *DayList) {
+	t.Helper()
 	originalLoad := Load
 	Load = func() (*DayList, error) {
 		return dayList, nil
@@ -129,8 +131,8 @@ func MockLoadSave(dayList *DayList) func() {
 	Save = func(dayList *DayList) error {
 		return nil
 	}
-	return func() {
+	t.Cleanup(func() {
 		Load = originalLoad
 		Save = originalSave
-	}
+	})
 }

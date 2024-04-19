@@ -32,7 +32,7 @@ func TestListWeekCmd_givenNoTasks(t *testing.T) {
 	config.SetDurationPerWeek(t, 40*time.Hour)
 	config.SetDaysPerWeek(t, 5)
 
-	defer data.MockLoadSave(&data.DayList{})()
+	data.MockLoadSave(t, &data.DayList{})
 
 	out := test.ExecuteCommand(t, Root, "-d 22.02.2024 list --week")
 
@@ -58,7 +58,7 @@ func TestListWeekCmd(t *testing.T) {
 	d.AddTask(data.NewPause(test.Date("22.02.2024 12:00"), "lunch"))
 	d.AddTask(data.NewTask(test.Date("22.02.2024 12:45"), "task 2"))
 	d.Finished = test.Date("22.02.2024 17:00")
-	defer data.MockLoadSave(&data.DayList{Days: []*data.Day{&d}})()
+	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
 
 	out := test.ExecuteCommand(t, Root, "list --week")
 
@@ -83,7 +83,7 @@ func TestListWeekCmd_givenDayIsOpen_shouldDisplayNowAsEndTime(t *testing.T) {
 	d.AddTask(data.NewTask(test.Date("22.02.2024 09:00"), "task 1"))
 	d.AddTask(data.NewPause(test.Date("22.02.2024 12:00"), "lunch"))
 	d.AddTask(data.NewTask(test.Date("22.02.2024 12:45"), "task 2"))
-	defer data.MockLoadSave(&data.DayList{Days: []*data.Day{&d}})()
+	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
 
 	out := test.ExecuteCommand(t, Root, "list --week")
 
@@ -105,7 +105,7 @@ func TestListWeekCmd_givenTodayIsMonday_shouldStartOneWeekBack(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("18.03.2024 16:32"))
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
-	defer data.MockLoadSave(&data.DayList{Days: []*data.Day{&d}})()
+	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
 
 	out := test.ExecuteCommand(t, Root, "-d mo list --week")
 
@@ -138,7 +138,7 @@ func TestListWeekCmd_withTotalDuration(t *testing.T) {
 	d2.AddTask(data.NewTask(test.Date("23.02.2024 12:30"), "task b"))
 	d2.Finished = test.Date("23.02.2024 15:00")
 
-	defer data.MockLoadSave(&data.DayList{Days: []*data.Day{&d1, &d2}})()
+	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d1, &d2}})
 
 	flagCases := []string{"--week", "-w"}
 	for _, fc := range flagCases {

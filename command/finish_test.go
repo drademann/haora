@@ -50,7 +50,7 @@ func TestFinish(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.argLine, func(t *testing.T) {
 			dayList := prepareTestDay()
-			defer data.MockLoadSave(dayList)()
+			data.MockLoadSave(t, dayList)
 
 			test.ExecuteCommand(t, Root, tc.argLine)
 

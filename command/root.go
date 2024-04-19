@@ -22,6 +22,7 @@ import (
 	"github.com/drademann/haora/command/finish"
 	"github.com/drademann/haora/command/list"
 	"github.com/drademann/haora/command/pause"
+	"github.com/drademann/haora/command/remove"
 	"github.com/drademann/haora/command/version"
 	"github.com/spf13/cobra"
 	"os"
@@ -44,6 +45,7 @@ func init() {
 	cobra.OnInitialize(config.InitViper)
 	Root.PersistentFlags().StringP("date", "d", "", "date for the command to execute on (defaults to today)")
 	Root.AddCommand(add.Command)
+	Root.AddCommand(remove.Command)
 	Root.AddCommand(finish.Command)
 	Root.AddCommand(list.Command)
 	Root.AddCommand(pause.Command)

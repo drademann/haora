@@ -21,6 +21,7 @@ import (
 	"github.com/drademann/haora/app/config"
 	"github.com/drademann/haora/app/datetime"
 	"slices"
+	"sort"
 	"strings"
 	"time"
 )
@@ -89,6 +90,20 @@ func (d *Day) AddNewPause(s time.Time, txt string) error {
 func (d *Day) AddTask(task *Task) {
 	d.Tasks = append(d.Tasks, task)
 	slices.SortFunc(d.Tasks, tasksByStart)
+}
+
+// RemoveTask removes a task from the Day's list of tasks based on the specified time.
+// It returns true if a task was found and removed, otherwise false.
+func (d *Day) RemoveTask(timeToDelete time.Time) bool {
+	timeToDelete = datetime.Combine(d.Date, timeToDelete)
+	i, found := sort.Find(len(d.Tasks), func(i int) int {
+		return timeToDelete.Compare(d.Tasks[i].Start)
+	})
+	if found {
+		d.Tasks = append(d.Tasks[:i], d.Tasks[i+1:]...)
+		return true
+	}
+	return false
 }
 
 func (d *Day) Start() time.Time {

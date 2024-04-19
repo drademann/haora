@@ -63,7 +63,7 @@ func TestAddCmd(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.argLine, func(t *testing.T) {
 			dayList := data.DayList{}
-			defer data.MockLoadSave(&dayList)()
+			data.MockLoadSave(t, &dayList)
 
 			test.ExecuteCommand(t, Root, tc.argLine)
 
@@ -100,7 +100,7 @@ func TestAddShouldUpdateExistingTaskAtSameTime(t *testing.T) {
 			},
 		},
 	}
-	defer data.MockLoadSave(&dayList)()
+	data.MockLoadSave(t, &dayList)
 
 	test.ExecuteCommand(t, Root, "--date 26.02.2024 add --start 12:15 --tags haora simple task")
 

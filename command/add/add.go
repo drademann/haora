@@ -80,6 +80,9 @@ $ haora add [time] [single tag] [text...]`,
 
 func addAction(workingDate time.Time, dayList *data.DayList, startFlag, tagsFlag string, noTagsFlag bool, args []string) error {
 	startTime, args, err := parsing.Time(startFlag, args)
+	if err != nil {
+		return err
+	}
 	var tags []string
 	if !noTagsFlag {
 		tags, args, err = parseTags(tagsFlag, args)

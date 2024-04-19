@@ -85,6 +85,68 @@ func TestRemoveOneTask(t *testing.T) {
 	}
 }
 
+func TestRemoveLastTask_shouldSetDayToUnfinished(t *testing.T) {
+	now := test.Date("21.06.2024 16:23")
+	datetime.AssumeForTestNowAt(t, now)
+
+	dayList := data.DayList{
+		Days: []*data.Day{
+			{
+				Date: test.Date("21.06.2024 00:00"),
+				Tasks: []*data.Task{
+					{Start: test.Time("10:00"), Text: "B"},
+				},
+				Finished: test.Date("21.06.2024 18:00"),
+			},
+		},
+	}
+	if dayList.Day(now).Finished.IsZero() {
+		t.Fatal("test expects day to be finished")
+	}
+	data.MockLoadSave(t, &dayList)
+
+	test.ExecuteCommand(t, Root, "remove 10:00")
+
+	if len(dayList.Days) != 1 {
+		t.Errorf("expected still 1 day, got %d", len(dayList.Days))
+	}
+	if !dayList.Days[0].Finished.IsZero() {
+		t.Errorf("expected day to be unfinished now, but finish timestamp is still set: %v", dayList.Days[0].Finished)
+	}
+}
+
+func TestRemoveTask_givenAtLeastOneTaskRemains_shouldNotRemoveFinishDate(t *testing.T) {
+	now := test.Date("21.06.2024 16:23")
+	datetime.AssumeForTestNowAt(t, now)
+
+	expFinished := test.Date("21.06.2024 18:00")
+	dayList := data.DayList{
+		Days: []*data.Day{
+			{
+				Date: test.Date("21.06.2024 00:00"),
+				Tasks: []*data.Task{
+					{Start: test.Time("10:00"), Text: "B"},
+					{Start: test.Time("12:00"), Text: "B"},
+				},
+				Finished: expFinished,
+			},
+		},
+	}
+	if dayList.Day(now).Finished.IsZero() {
+		t.Fatal("test expects day to be finished")
+	}
+	data.MockLoadSave(t, &dayList)
+
+	test.ExecuteCommand(t, Root, "remove 10:00")
+
+	if len(dayList.Days) != 1 {
+		t.Errorf("expected still 1 day, got %d", len(dayList.Days))
+	}
+	if !dayList.Days[0].Finished.Equal(expFinished) {
+		t.Errorf("expected day to still be finished at %v, but is now %v", expFinished, dayList.Days[0].Finished)
+	}
+}
+
 func TestRemoveNoTask_shouldPrintErrorMessage(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("21.06.2024 16:23"))
 

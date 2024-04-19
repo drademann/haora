@@ -76,5 +76,8 @@ func removeAction(workingDate time.Time, dayList *data.DayList, startFlag string
 	if removed := day.RemoveTask(startTimeToDelete); !removed {
 		return fmt.Errorf("no task found at %s", startTimeToDelete.Format("15:04"))
 	}
+	if day.IsEmpty() {
+		day.Unfinished()
+	}
 	return nil
 }

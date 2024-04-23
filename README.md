@@ -12,6 +12,10 @@ With different commands, the CLI allows recording working times. One record (tas
 - text
 - list of tags
 
+To end the work for a day a finish timestamp can be set, see the `finish` command.
+The `list` command shows the tasks of a day, optionally the sums per tag.
+With the `--week` option it shows all start and end times of a week.
+
 ## Global Flags
 
 ### `--date` `-d`
@@ -156,3 +160,16 @@ Sets the number of workdays in a week.
 This determines the desired number of working hours per day.
 
 Default: `5`
+
+## Build
+
+To get the latest greatest version of haora, it may be built from scratch:
+
+Checkout this repository, ensure you are on the `main` branch (the current _production_ branch), have Go installed, and
+run
+
+```shell
+$ go install
+```
+
+It will install `haora` within your Go `bin` folder. That's it. 

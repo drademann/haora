@@ -14,16 +14,16 @@
 // limitations under the License.
 //
 
-package command
+package cmd
 
 import (
 	"github.com/drademann/haora/app/config"
-	"github.com/drademann/haora/command/add"
-	"github.com/drademann/haora/command/finish"
-	"github.com/drademann/haora/command/list"
-	"github.com/drademann/haora/command/pause"
-	"github.com/drademann/haora/command/remove"
-	"github.com/drademann/haora/command/version"
+	"github.com/drademann/haora/cmd/add"
+	"github.com/drademann/haora/cmd/finish"
+	"github.com/drademann/haora/cmd/list"
+	"github.com/drademann/haora/cmd/pause"
+	"github.com/drademann/haora/cmd/remove"
+	"github.com/drademann/haora/cmd/version"
 	"github.com/spf13/cobra"
 	"os"
 )

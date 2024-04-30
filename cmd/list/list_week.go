@@ -19,7 +19,7 @@ package list
 import (
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
-	"github.com/drademann/haora/command/internal/format"
+	"github.com/drademann/haora/cmd/internal/format"
 	"github.com/spf13/cobra"
 	"time"
 )

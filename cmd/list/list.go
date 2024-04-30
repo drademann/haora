@@ -18,7 +18,7 @@ package list
 
 import (
 	"github.com/drademann/haora/app/data"
-	"github.com/drademann/haora/command/internal/parsing"
+	"github.com/drademann/haora/cmd/internal/parsing"
 	"github.com/spf13/cobra"
 	"time"
 )

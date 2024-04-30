@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-package command
+package cmd
 
 import (
 	"github.com/drademann/haora/app/data"

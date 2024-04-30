@@ -14,37 +14,35 @@
 // limitations under the License.
 //
 
-package finish
+package pause
 
 import (
 	"github.com/drademann/haora/app/data"
-	"github.com/drademann/haora/command/internal/parsing"
+	"github.com/drademann/haora/cmd/internal/parsing"
 	"github.com/spf13/cobra"
+	"strings"
+	"time"
 )
 
 func init() {
-	Command.Flags().StringP("end", "e", "", "finish timestamp, like 17:00, for the day")
-	Command.Flags().Bool("remove", false, "removes the set finish timestamp")
+	Command.Flags().StringP("start", "s", "", "starting timestamp, like 12:00, of the pause")
 }
 
 var Command = &cobra.Command{
-	Use:     "finish",
-	Aliases: []string{"f", "fi", "fin", "fini"},
-	Short:   "Mark the day as done",
-	Long: `Marks the day as done by setting its final end timestamp. 
-The command accepts the first arg as timestamp:
+	Use:     "pause",
+	Aliases: []string{"p", "pa", "pau", "break", "bre", "br"},
+	Short:   "Adds a pause to a day",
+	Long: `Adds a new pause to a day.
 
-$ haora finish 17:00`,
+The command accepts the first arg as timestamp, and any following as text (optional), like
+
+$ haora pause 12:00 Lunch`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		workingDateFlag, err := cmd.Flags().GetString("date")
 		if err != nil {
 			return err
 		}
-		endFlag, err := cmd.Flags().GetString("end")
-		if err != nil {
-			return err
-		}
-		removeFlag, err := cmd.Flags().GetBool("remove")
+		startFlag, err := cmd.Flags().GetString("start")
 		if err != nil {
 			return err
 		}
@@ -57,27 +55,23 @@ $ haora finish 17:00`,
 		if err != nil {
 			return err
 		}
-		day := dayList.Day(workingDate)
 
-		if removeFlag {
-			day.Unfinished()
-		} else if err := finishAction(day, endFlag, args); err != nil {
+		if err := pauseAction(workingDate, dayList, startFlag, args); err != nil {
 			return err
 		}
 		return data.Save(dayList)
 	},
-	PostRun: func(cmd *cobra.Command, args []string) { // reset flag so tests can rerun!
-		_ = cmd.Flags().Set("end", "")
+	PostRun: func(cmd *cobra.Command, args []string) {
+		_ = cmd.Flags().Set("start", "")
 	},
 }
 
-func finishAction(day *data.Day, endFlag string, args []string) error {
-	endTime, _, err := parsing.Time(endFlag, args)
+func pauseAction(workingDate time.Time, dayList *data.DayList, startFlag string, args []string) error {
+	pauseTime, args, err := parsing.Time(startFlag, args)
 	if err != nil {
 		return err
 	}
-	if err = day.Finish(endTime); err != nil {
-		return err
-	}
-	return nil
+	text := strings.Join(args, " ")
+	day := dayList.Day(workingDate)
+	return day.AddNewPause(pauseTime, text)
 }

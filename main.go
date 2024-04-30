@@ -17,9 +17,9 @@
 package main
 
 import (
-	"github.com/drademann/haora/command"
+	"github.com/drademann/haora/cmd"
 )
 
 func main() {
-	command.Execute()
+	cmd.Execute()
 }

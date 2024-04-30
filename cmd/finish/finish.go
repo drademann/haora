@@ -14,36 +14,37 @@
 // limitations under the License.
 //
 
-package remove
+package finish
 
 import (
-	"fmt"
 	"github.com/drademann/haora/app/data"
-	"github.com/drademann/haora/command/internal/parsing"
+	"github.com/drademann/haora/cmd/internal/parsing"
 	"github.com/spf13/cobra"
-	"time"
 )
 
 func init() {
-	Command.Flags().StringP("start", "s", "", "starting timestamp of the task to delete, like 10:00")
+	Command.Flags().StringP("end", "e", "", "finish timestamp, like 17:00, for the day")
+	Command.Flags().Bool("remove", false, "removes the set finish timestamp")
 }
 
 var Command = &cobra.Command{
-	Use:     "remove",
-	Aliases: []string{"r", "re", "rm", "rem"},
-	Short:   "Remove a task",
-	Long: `Remove a task of a day.
+	Use:     "finish",
+	Aliases: []string{"f", "fi", "fin", "fini"},
+	Short:   "Mark the day as done",
+	Long: `Marks the day as done by setting its final end timestamp. 
+The command accepts the first arg as timestamp:
 
-The specific task is identified by its starting timestamp, like so
-
-$ haora delete 10:00
-`,
+$ haora finish 17:00`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		workingDateFlag, err := cmd.Flags().GetString("date")
 		if err != nil {
 			return err
 		}
-		startFlag, err := cmd.Flags().GetString("start")
+		endFlag, err := cmd.Flags().GetString("end")
+		if err != nil {
+			return err
+		}
+		removeFlag, err := cmd.Flags().GetBool("remove")
 		if err != nil {
 			return err
 		}
@@ -56,28 +57,27 @@ $ haora delete 10:00
 		if err != nil {
 			return err
 		}
+		day := dayList.Day(workingDate)
 
-		if err := removeAction(workingDate, dayList, startFlag, args); err != nil {
+		if removeFlag {
+			day.Unfinished()
+		} else if err := finishAction(day, endFlag, args); err != nil {
 			return err
 		}
 		return data.Save(dayList)
 	},
 	PostRun: func(cmd *cobra.Command, args []string) { // reset flag so tests can rerun!
-		_ = cmd.Flags().Set("start", "")
+		_ = cmd.Flags().Set("end", "")
 	},
 }
 
-func removeAction(workingDate time.Time, dayList *data.DayList, startFlag string, args []string) error {
-	startTimeToDelete, args, err := parsing.Time(startFlag, args)
+func finishAction(day *data.Day, endFlag string, args []string) error {
+	endTime, _, err := parsing.Time(endFlag, args)
 	if err != nil {
 		return err
 	}
-	day := dayList.Day(workingDate)
-	if removed := day.RemoveTask(startTimeToDelete); !removed {
-		return fmt.Errorf("no task found at %s", startTimeToDelete.Format("15:04"))
-	}
-	if day.IsEmpty() {
-		day.Unfinished()
+	if err = day.Finish(endTime); err != nil {
+		return err
 	}
 	return nil
 }

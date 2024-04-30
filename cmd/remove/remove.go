@@ -14,29 +14,30 @@
 // limitations under the License.
 //
 
-package pause
+package remove
 
 import (
+	"fmt"
 	"github.com/drademann/haora/app/data"
-	"github.com/drademann/haora/command/internal/parsing"
+	"github.com/drademann/haora/cmd/internal/parsing"
 	"github.com/spf13/cobra"
-	"strings"
 	"time"
 )
 
 func init() {
-	Command.Flags().StringP("start", "s", "", "starting timestamp, like 12:00, of the pause")
+	Command.Flags().StringP("start", "s", "", "starting timestamp of the task to delete, like 10:00")
 }
 
 var Command = &cobra.Command{
-	Use:     "pause",
-	Aliases: []string{"p", "pa", "pau", "break", "bre", "br"},
-	Short:   "Adds a pause to a day",
-	Long: `Adds a new pause to a day.
+	Use:     "remove",
+	Aliases: []string{"r", "re", "rm", "rem"},
+	Short:   "Remove a task",
+	Long: `Remove a task of a day.
 
-The command accepts the first arg as timestamp, and any following as text (optional), like
+The specific task is identified by its starting timestamp, like so
 
-$ haora pause 12:00 Lunch`,
+$ haora delete 10:00
+`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		workingDateFlag, err := cmd.Flags().GetString("date")
 		if err != nil {
@@ -56,22 +57,27 @@ $ haora pause 12:00 Lunch`,
 			return err
 		}
 
-		if err := pauseAction(workingDate, dayList, startFlag, args); err != nil {
+		if err := removeAction(workingDate, dayList, startFlag, args); err != nil {
 			return err
 		}
 		return data.Save(dayList)
 	},
-	PostRun: func(cmd *cobra.Command, args []string) {
+	PostRun: func(cmd *cobra.Command, args []string) { // reset flag so tests can rerun!
 		_ = cmd.Flags().Set("start", "")
 	},
 }
 
-func pauseAction(workingDate time.Time, dayList *data.DayList, startFlag string, args []string) error {
-	pauseTime, args, err := parsing.Time(startFlag, args)
+func removeAction(workingDate time.Time, dayList *data.DayList, startFlag string, args []string) error {
+	startTimeToDelete, args, err := parsing.Time(startFlag, args)
 	if err != nil {
 		return err
 	}
-	text := strings.Join(args, " ")
 	day := dayList.Day(workingDate)
-	return day.AddNewPause(pauseTime, text)
+	if removed := day.RemoveTask(startTimeToDelete); !removed {
+		return fmt.Errorf("no task found at %s", startTimeToDelete.Format("15:04"))
+	}
+	if day.IsEmpty() {
+		day.Unfinished()
+	}
+	return nil
 }

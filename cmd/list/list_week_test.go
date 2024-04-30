@@ -14,13 +14,14 @@
 // limitations under the License.
 //
 
-package cmd
+package list
 
 import (
 	"fmt"
 	"github.com/drademann/haora/app/config"
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
+	"github.com/drademann/haora/cmd/root"
 	"github.com/drademann/haora/test"
 	"github.com/drademann/haora/test/assert"
 	"testing"
@@ -34,7 +35,7 @@ func TestListWeekCmd_givenNoTasks(t *testing.T) {
 
 	data.MockLoadSave(t, &data.DayList{})
 
-	out := test.ExecuteCommand(t, Root, "-d 22.02.2024 list --week")
+	out := test.ExecuteCommand(t, root.Command, "-d 22.02.2024 list --week")
 
 	assert.Output(t, out,
 		`
@@ -60,7 +61,7 @@ func TestListWeekCmd(t *testing.T) {
 	d.Finished = test.Date("22.02.2024 17:00")
 	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
 
-	out := test.ExecuteCommand(t, Root, "list --week")
+	out := test.ExecuteCommand(t, root.Command, "list --week")
 
 	assert.Output(t, out,
 		`
@@ -85,7 +86,7 @@ func TestListWeekCmd_givenDayIsOpen_shouldDisplayNowAsEndTime(t *testing.T) {
 	d.AddTask(data.NewTask(test.Date("22.02.2024 12:45"), "task 2"))
 	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
 
-	out := test.ExecuteCommand(t, Root, "list --week")
+	out := test.ExecuteCommand(t, root.Command, "list --week")
 
 	assert.Output(t, out,
 		`
@@ -107,7 +108,7 @@ func TestListWeekCmd_givenTodayIsMonday_shouldStartOneWeekBack(t *testing.T) {
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
 
-	out := test.ExecuteCommand(t, Root, "-d mo list --week")
+	out := test.ExecuteCommand(t, root.Command, "-d mo list --week")
 
 	assert.Output(t, out,
 		`
@@ -144,7 +145,7 @@ func TestListWeekCmd_withTotalDuration(t *testing.T) {
 	for _, fc := range flagCases {
 		command := fmt.Sprintf("list %s", fc)
 		t.Run(command, func(t *testing.T) {
-			out := test.ExecuteCommand(t, Root, command)
+			out := test.ExecuteCommand(t, root.Command, command)
 
 			assert.Output(t, out,
 				`

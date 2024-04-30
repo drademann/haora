@@ -14,15 +14,16 @@
 // limitations under the License.
 //
 
-package cmd
+package version
 
 import (
+	"github.com/drademann/haora/cmd/root"
 	"github.com/drademann/haora/test"
 	"testing"
 )
 
 func TestVersionCmd(t *testing.T) {
-	out := test.ExecuteCommand(t, Root, "version")
+	out := test.ExecuteCommand(t, root.Command, "version")
 
 	expected := "Haora v1.0.0\n"
 	if out.String() != expected {

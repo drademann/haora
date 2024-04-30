@@ -17,12 +17,17 @@
 package version
 
 import (
+	"github.com/drademann/haora/cmd/root"
 	"github.com/spf13/cobra"
 )
 
 const version = "1.0.0"
 
-var Command = &cobra.Command{
+func init() {
+	root.Command.AddCommand(command)
+}
+
+var command = &cobra.Command{
 	Use:     "version",
 	Aliases: []string{"v", "ve", "ver", "vers"},
 	Short:   "Print the version",

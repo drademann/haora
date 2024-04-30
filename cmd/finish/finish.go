@@ -19,15 +19,17 @@ package finish
 import (
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/cmd/internal/parsing"
+	"github.com/drademann/haora/cmd/root"
 	"github.com/spf13/cobra"
 )
 
 func init() {
-	Command.Flags().StringP("end", "e", "", "finish timestamp, like 17:00, for the day")
-	Command.Flags().Bool("remove", false, "removes the set finish timestamp")
+	command.Flags().StringP("end", "e", "", "finish timestamp, like 17:00, for the day")
+	command.Flags().Bool("remove", false, "removes the set finish timestamp")
+	root.Command.AddCommand(command)
 }
 
-var Command = &cobra.Command{
+var command = &cobra.Command{
 	Use:     "finish",
 	Aliases: []string{"f", "fi", "fin", "fini"},
 	Short:   "Mark the day as done",

@@ -14,11 +14,12 @@
 // limitations under the License.
 //
 
-package cmd
+package remove
 
 import (
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
+	"github.com/drademann/haora/cmd/root"
 	"github.com/drademann/haora/test"
 	"github.com/drademann/haora/test/assert"
 	"reflect"
@@ -42,7 +43,7 @@ func TestRemove(t *testing.T) {
 	}
 	data.MockLoadSave(t, &dayList)
 
-	test.ExecuteCommand(t, Root, "remove 10:00")
+	test.ExecuteCommand(t, root.Command, "remove 10:00")
 
 	if len(dayList.Days) != 1 {
 		t.Errorf("expected still 1 day, got %d", len(dayList.Days))
@@ -75,7 +76,7 @@ func TestRemoveOneTask(t *testing.T) {
 	}
 	data.MockLoadSave(t, &dayList)
 
-	test.ExecuteCommand(t, Root, "remove 10:00")
+	test.ExecuteCommand(t, root.Command, "remove 10:00")
 
 	if len(dayList.Days) != 1 {
 		t.Errorf("expected still 1 day, got %d", len(dayList.Days))
@@ -105,7 +106,7 @@ func TestRemoveLastTask_shouldSetDayToUnfinished(t *testing.T) {
 	}
 	data.MockLoadSave(t, &dayList)
 
-	test.ExecuteCommand(t, Root, "remove 10:00")
+	test.ExecuteCommand(t, root.Command, "remove 10:00")
 
 	if len(dayList.Days) != 1 {
 		t.Errorf("expected still 1 day, got %d", len(dayList.Days))
@@ -137,7 +138,7 @@ func TestRemoveTask_givenAtLeastOneTaskRemains_shouldNotRemoveFinishDate(t *test
 	}
 	data.MockLoadSave(t, &dayList)
 
-	test.ExecuteCommand(t, Root, "remove 10:00")
+	test.ExecuteCommand(t, root.Command, "remove 10:00")
 
 	if len(dayList.Days) != 1 {
 		t.Errorf("expected still 1 day, got %d", len(dayList.Days))
@@ -162,7 +163,7 @@ func TestRemoveNoTask_shouldPrintErrorMessage(t *testing.T) {
 	}
 	data.MockLoadSave(t, &dayList)
 
-	out := test.ExecuteCommand(t, Root, "remove 12:00")
+	out := test.ExecuteCommand(t, root.Command, "remove 12:00")
 
 	assert.Output(t, out, "error: no task found at 12:00\n")
 }

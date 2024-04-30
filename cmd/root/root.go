@@ -14,21 +14,15 @@
 // limitations under the License.
 //
 
-package cmd
+package root
 
 import (
 	"github.com/drademann/haora/app/config"
-	"github.com/drademann/haora/cmd/add"
-	"github.com/drademann/haora/cmd/finish"
-	"github.com/drademann/haora/cmd/list"
-	"github.com/drademann/haora/cmd/pause"
-	"github.com/drademann/haora/cmd/remove"
-	"github.com/drademann/haora/cmd/version"
 	"github.com/spf13/cobra"
 	"os"
 )
 
-var Root = &cobra.Command{
+var Command = &cobra.Command{
 	Use:   "haora",
 	Short: "Time tracking with Haora",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -43,19 +37,13 @@ var Root = &cobra.Command{
 
 func init() {
 	cobra.OnInitialize(config.InitViper)
-	Root.PersistentFlags().StringP("date", "d", "", "date for the command to execute on (defaults to today)")
-	Root.AddCommand(add.Command)
-	Root.AddCommand(remove.Command)
-	Root.AddCommand(finish.Command)
-	Root.AddCommand(list.Command)
-	Root.AddCommand(pause.Command)
-	Root.AddCommand(version.Command)
+	Command.PersistentFlags().StringP("date", "d", "", "date for the command to execute on (defaults to today)")
 }
 
 func Execute() {
 	var err error
-	if err = Root.Execute(); err != nil {
-		Root.PrintErrf("error: %v\n", err)
+	if err = Command.Execute(); err != nil {
+		Command.PrintErrf("error: %v\n", err)
 		os.Exit(1)
 	}
 }

@@ -19,18 +19,20 @@ package add
 import (
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/cmd/internal/parsing"
+	"github.com/drademann/haora/cmd/root"
 	"github.com/spf13/cobra"
 	"strings"
 	"time"
 )
 
 func init() {
-	Command.Flags().StringP("start", "s", "", "starting timestamp, like 10:00, of the task")
-	Command.Flags().StringP("tags", "t", "", "comma separated tags of the task")
-	Command.Flags().Bool("no-tags", false, "set if the new task shall have no tags")
+	command.Flags().StringP("start", "s", "", "starting timestamp, like 10:00, of the task")
+	command.Flags().StringP("tags", "t", "", "comma separated tags of the task")
+	command.Flags().Bool("no-tags", false, "set if the new task shall have no tags")
+	root.Command.AddCommand(command)
 }
 
-var Command = &cobra.Command{
+var command = &cobra.Command{
 	Use:     "add",
 	Aliases: []string{"a", "ad"},
 	Short:   "Adds a task to a day",

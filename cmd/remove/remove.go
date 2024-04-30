@@ -20,15 +20,17 @@ import (
 	"fmt"
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/cmd/internal/parsing"
+	"github.com/drademann/haora/cmd/root"
 	"github.com/spf13/cobra"
 	"time"
 )
 
 func init() {
-	Command.Flags().StringP("start", "s", "", "starting timestamp of the task to delete, like 10:00")
+	command.Flags().StringP("start", "s", "", "starting timestamp of the task to delete, like 10:00")
+	root.Command.AddCommand(command)
 }
 
-var Command = &cobra.Command{
+var command = &cobra.Command{
 	Use:     "remove",
 	Aliases: []string{"r", "re", "rm", "rem"},
 	Short:   "Remove a task",

@@ -14,11 +14,12 @@
 // limitations under the License.
 //
 
-package cmd
+package finish
 
 import (
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
+	"github.com/drademann/haora/cmd/root"
 	"github.com/drademann/haora/test"
 	"github.com/drademann/haora/test/assert"
 	"testing"
@@ -53,7 +54,7 @@ func TestFinish(t *testing.T) {
 			dayList := prepareTestDay()
 			data.MockLoadSave(t, dayList)
 
-			test.ExecuteCommand(t, Root, tc.argLine)
+			test.ExecuteCommand(t, root.Command, tc.argLine)
 
 			d := dayList.Day(now)
 			if d.Finished != tc.expectedFinished {
@@ -73,7 +74,7 @@ func TestFinishWithoutTasks(t *testing.T) {
 	}
 	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{d}})
 
-	out := test.ExecuteCommand(t, Root, "finish 18:00")
+	out := test.ExecuteCommand(t, root.Command, "finish 18:00")
 
 	assert.Output(t, out, "error: no tasks to finish\n")
 }
@@ -89,7 +90,7 @@ func TestFinishBeforeLastTask(t *testing.T) {
 	}
 	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{d}})
 
-	out := test.ExecuteCommand(t, Root, "finish 8:00")
+	out := test.ExecuteCommand(t, root.Command, "finish 8:00")
 
 	assert.Output(t, out, "error: can't finish before last task's start timestamp (09:00)\n")
 }
@@ -103,7 +104,7 @@ func TestUnfinished(t *testing.T) {
 	d.Finished = test.Date("22.02.2024 18:00")
 	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{d}})
 
-	test.ExecuteCommand(t, Root, "finish --remove")
+	test.ExecuteCommand(t, root.Command, "finish --remove")
 
 	if d.IsFinished() {
 		t.Errorf("expected day to be unfinished now, but it is still finished")

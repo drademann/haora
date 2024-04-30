@@ -19,16 +19,18 @@ package pause
 import (
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/cmd/internal/parsing"
+	"github.com/drademann/haora/cmd/root"
 	"github.com/spf13/cobra"
 	"strings"
 	"time"
 )
 
 func init() {
-	Command.Flags().StringP("start", "s", "", "starting timestamp, like 12:00, of the pause")
+	command.Flags().StringP("start", "s", "", "starting timestamp, like 12:00, of the pause")
+	root.Command.AddCommand(command)
 }
 
-var Command = &cobra.Command{
+var command = &cobra.Command{
 	Use:     "pause",
 	Aliases: []string{"p", "pa", "pau", "break", "bre", "br"},
 	Short:   "Adds a pause to a day",

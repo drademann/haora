@@ -19,16 +19,18 @@ package list
 import (
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/cmd/internal/parsing"
+	"github.com/drademann/haora/cmd/root"
 	"github.com/spf13/cobra"
 	"time"
 )
 
 func init() {
-	Command.Flags().BoolP("tags", "t", false, "shows durations per tag")
-	Command.Flags().BoolP("week", "w", false, "shows week summary")
+	command.Flags().BoolP("tags", "t", false, "shows durations per tag")
+	command.Flags().BoolP("week", "w", false, "shows week summary")
+	root.Command.AddCommand(command)
 }
 
-var Command = &cobra.Command{
+var command = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"l", "li", "lis"},
 	Short:   "List the recorded tasks of a day",

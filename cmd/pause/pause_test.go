@@ -14,11 +14,12 @@
 // limitations under the License.
 //
 
-package cmd
+package pause
 
 import (
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
+	"github.com/drademann/haora/cmd/root"
 	"github.com/drademann/haora/test"
 	"testing"
 	"time"
@@ -54,7 +55,7 @@ func TestPause(t *testing.T) {
 			dayList := prepareTestDay()
 			data.MockLoadSave(t, dayList)
 
-			test.ExecuteCommand(t, Root, tc.argLine)
+			test.ExecuteCommand(t, root.Command, tc.argLine)
 
 			if len(dayList.Days) != 1 {
 				t.Fatalf("expected still 1 day in the day list, got %d", len(dayList.Days))
@@ -90,7 +91,7 @@ func TestPauseUpdate(t *testing.T) {
 	dayList := &data.DayList{Days: []*data.Day{d}}
 	data.MockLoadSave(t, dayList)
 
-	test.ExecuteCommand(t, Root, "pause 12:00 breakfast")
+	test.ExecuteCommand(t, root.Command, "pause 12:00 breakfast")
 
 	day := dayList.Day(now)
 	if len(day.Tasks) != 2 {

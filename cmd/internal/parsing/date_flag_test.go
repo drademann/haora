@@ -100,6 +100,32 @@ func TestWeekdayFlag(t *testing.T) {
 	}
 }
 
+func TestYesterdayFlag(t *testing.T) {
+	datetime.AssumeForTestNowAt(t, test.Date("18.05.2024 12:00"))
+
+	testCases := []string{
+		"yesterday",
+		"yes",
+		"ye",
+		"yd",
+		"y",
+	}
+
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("flag for yesterday: %q", tc), func(t *testing.T) {
+			date, err := WorkingDate(tc)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			expectedYesterday := test.Date("17.05.2024 00:00")
+			if date != expectedYesterday {
+				t.Errorf("expected parsed working date to be yesterday, the %v, but got %v", expectedYesterday, date)
+			}
+		})
+	}
+}
+
 func TestParseDayOnly(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("12.02.2024 10:00"))
 

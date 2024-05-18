@@ -30,6 +30,7 @@ Different date formats are allowed:
 | DD.MM.<br/>DD.MM        | a date within the current year                                                             | 9.3.<br/>24.12             |
 | DD.<br/>DD              | a day within the current month and year                                                    | 9.<br/>24                  |
 | WW                      | the previous weekday<br>(selects the first date prior to today<br/>with the given weekday) | mo, tu, we, th, fr, sa, su |
+| YD                      | yesterday                                                                                  | y, yd, ye, yes, yesterday  |
 
 ## Commands
 

@@ -39,6 +39,13 @@ var (
 		"sa": time.Saturday,
 		"su": time.Sunday,
 	}
+	yesterdays = []string{
+		"yesterday",
+		"yes",
+		"ye",
+		"yd",
+		"y",
+	}
 )
 
 func WorkingDate(workingDateFlag string) (time.Time, error) {
@@ -47,7 +54,7 @@ func WorkingDate(workingDateFlag string) (time.Time, error) {
 		return datetime.Now(), nil
 	}
 
-	var dateStringErr, weekdayErr error
+	var dateStringErr, weekdayErr, yesterdayErr error
 	workingDate, dateStringErr := tryDateString(workingDateFlag)
 	if dateStringErr == nil {
 		return workingDate, nil
@@ -56,8 +63,12 @@ func WorkingDate(workingDateFlag string) (time.Time, error) {
 	if weekdayErr == nil {
 		return workingDate, nil
 	}
+	workingDate, yesterdayErr = tryYesterdayString(workingDateFlag)
+	if yesterdayErr == nil {
+		return workingDate, nil
+	}
 
-	return time.Time{}, errors.Join(dateStringErr, weekdayErr)
+	return time.Time{}, errors.Join(dateStringErr, weekdayErr, yesterdayErr)
 }
 
 func tryDateString(workingDateFlag string) (time.Time, error) {
@@ -118,4 +129,14 @@ func previous(weekday time.Weekday) time.Time {
 		d = d.Add(-24 * time.Hour)
 	}
 	return time.Date(d.Year(), d.Month(), d.Day(), 0, 0, 0, 0, d.Location())
+}
+
+func tryYesterdayString(workingDateFlag string) (time.Time, error) {
+	for _, yd := range yesterdays {
+		if strings.ToLower(workingDateFlag) == yd {
+			d := datetime.Now().Add(-24 * time.Hour)
+			return time.Date(d.Year(), d.Month(), d.Day(), 0, 0, 0, 0, d.Location()), nil
+		}
+	}
+	return time.Time{}, errors.New("no yesterday string match")
 }

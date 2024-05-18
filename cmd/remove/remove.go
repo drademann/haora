@@ -38,7 +38,7 @@ var command = &cobra.Command{
 
 The specific task is identified by its starting timestamp, like so
 
-$ haora delete 10:00
+$ haora remove 10:00
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		workingDateFlag, err := cmd.Flags().GetString("date")

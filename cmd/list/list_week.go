@@ -41,19 +41,26 @@ func printWeek(cmd *cobra.Command, workingDate time.Time, dayList *data.DayList)
 			}
 			dur := day.TotalWorkDuration()
 			durStr := format.Duration(dur)
+			durDecStr := format.DurationDecimal(dur)
+			durDecRoundedStr := format.DurationDecimalRounded(dur, 15*time.Minute)
 			overtime, exist := day.OvertimeDuration()
 			if !exist || overtime == 0 {
-				cmd.Printf("%s   %s - %s  worked %s\n", dateStr, startStr, endStr, durStr)
+				cmd.Printf("%s   %s - %s  worked %s  %s  %s\n", dateStr, startStr, endStr, durStr, durDecStr, durDecRoundedStr)
 			} else {
-				cmd.Printf("%s   %s - %s  worked %s   (%s %v)\n", dateStr, startStr, endStr, durStr, sign(overtime), format.DurationShort(overtime))
+				cmd.Printf("%s   %s - %s  worked %s  %s  %s   (%s %v)\n", dateStr, startStr, endStr, durStr, durDecStr, durDecRoundedStr, sign(overtime), format.DurationShort(overtime))
 			}
 		}
 	}
-	overtime, exist := week.TotalOvertimeDuration()
-	if !exist || overtime == 0 {
-		cmd.Printf("\n                          total worked %s\n", format.Duration(week.TotalWorkDuration()))
+	totalDur := week.TotalWorkDuration()
+	totalDurStr := format.Duration(totalDur)
+	totalDurDecStr := format.DurationDecimal(totalDur)
+	totalDurDecRoundedStr := format.DurationDecimalRounded(totalDur, 15*time.Minute)
+	totalOvertimeDur, exist := week.TotalOvertimeDuration()
+	if !exist || totalOvertimeDur == 0 {
+		cmd.Printf("\n                          total worked %s  %s  %s\n", totalDurStr, totalDurDecStr, totalDurDecRoundedStr)
 	} else {
-		cmd.Printf("\n                          total worked %s   (%s %v)\n", format.Duration(week.TotalWorkDuration()), sign(overtime), format.DurationShort(overtime))
+		totalOvertimeDurStr := format.DurationShort(totalOvertimeDur)
+		cmd.Printf("\n                          total worked %s  %s  %s   (%s %v)\n", totalDurStr, totalDurDecStr, totalDurDecRoundedStr, sign(totalOvertimeDur), totalOvertimeDurStr)
 	}
 	return nil
 }

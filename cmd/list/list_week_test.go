@@ -47,7 +47,7 @@ func TestListWeekCmd_givenNoTasks(t *testing.T) {
 		Sat 24.02.2024   -
 		Sun 25.02.2024   -
 
-		                          total worked      0m   (- 40h)
+		                          total worked      0m   0.00h   0.00h   (- 40h)
 		`)
 }
 
@@ -68,12 +68,12 @@ func TestListWeekCmd(t *testing.T) {
 		Mon 19.02.2024   -
 		Tue 20.02.2024   -
 		Wed 21.02.2024   -
-		Thu 22.02.2024   09:00 - 17:00  worked  7h 15m   (- 45m)
+		Thu 22.02.2024   09:00 - 17:00  worked  7h 15m   7.25h   7.25h   (- 45m)
 		Fri 23.02.2024   -
 		Sat 24.02.2024   -
 		Sun 25.02.2024   -
 		
-		                          total worked  7h 15m   (- 32h 45m)
+		                          total worked  7h 15m   7.25h   7.25h   (- 32h 45m)
 		`)
 }
 
@@ -93,12 +93,12 @@ func TestListWeekCmd_givenDayIsOpen_shouldDisplayNowAsEndTime(t *testing.T) {
 		Mon 19.02.2024   -
 		Tue 20.02.2024   -
 		Wed 21.02.2024   -
-		Thu 22.02.2024   09:00 -  now   worked  6h 47m   (-  1h 13m)
+		Thu 22.02.2024   09:00 -  now   worked  6h 47m   6.78h   6.75h   (-  1h 13m)
 		Fri 23.02.2024   -
 		Sat 24.02.2024   -
 		Sun 25.02.2024   -
 		
-		                          total worked  6h 47m   (- 33h 13m)
+		                          total worked  6h 47m   6.78h   6.75h   (- 33h 13m)
 		`)
 }
 
@@ -120,7 +120,7 @@ func TestListWeekCmd_givenTodayIsMonday_shouldStartOneWeekBack(t *testing.T) {
 		Sat 16.03.2024   -
 		Sun 17.03.2024   -
 		
-		                          total worked      0m   (- 40h)
+		                          total worked      0m   0.00h   0.00h   (- 40h)
 		`)
 }
 
@@ -152,12 +152,12 @@ func TestListWeekCmd_withTotalDuration(t *testing.T) {
 				Mon 19.02.2024   -
 				Tue 20.02.2024   -
 				Wed 21.02.2024   -
-				Thu 22.02.2024   09:00 - 17:00  worked  7h 15m   (- 45m)
-				Fri 23.02.2024   10:30 - 15:00  worked  4h 15m   (-  3h 45m)
+				Thu 22.02.2024   09:00 - 17:00  worked  7h 15m   7.25h   7.25h   (- 45m)
+				Fri 23.02.2024   10:30 - 15:00  worked  4h 15m   4.25h   4.25h   (-  3h 45m)
 				Sat 24.02.2024   -
 				Sun 25.02.2024   -
 				
-				                          total worked 11h 30m   (- 28h 30m)
+				                          total worked 11h 30m  11.50h  11.50h   (- 28h 30m)
 				`)
 		})
 	}

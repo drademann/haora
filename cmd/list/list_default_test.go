@@ -100,7 +100,7 @@ func TestListCmd_multipleTasksLastOpen(t *testing.T) {
 
 		         total   7h 32m
 		        paused       0m
-		        worked   7h 32m   (- 28m)
+		        worked   7h 32m   (- 28m to 17:00)
 		`)
 }
 
@@ -178,7 +178,7 @@ func TestListCmd_withPause(t *testing.T) {
 
 		         total   7h 32m
 		        paused      45m
-		        worked   6h 47m   (-  1h 13m)
+		        worked   6h 47m   (-  1h 13m to 17:45)
 		`)
 }
 

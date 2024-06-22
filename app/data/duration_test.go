@@ -51,8 +51,8 @@ func TestDayDuration(t *testing.T) {
 	})
 }
 
-func TestTotalWorkBreakDurations(t *testing.T) {
-	t.Run("one break", func(t *testing.T) {
+func TestTotalWorkPauseDurations(t *testing.T) {
+	t.Run("one pause", func(t *testing.T) {
 		task1 := NewTask(test.Time("9:00"), "task 1")
 		lunch := NewTask(test.Time("12:00"), "lunch")
 		lunch.IsPause = true
@@ -63,13 +63,13 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 		}
 		datetime.AssumeForTestNowAt(t, test.Time("23:59"))
 
-		b := d.TotalBreakDuration()
-		assert.Duration(t, "break", b, 45*time.Minute)
+		b := d.TotalPauseDuration()
+		assert.Duration(t, "pause", b, 45*time.Minute)
 
 		w := d.TotalWorkDuration()
 		assert.Duration(t, "work", w, 4*time.Hour+15*time.Minute)
 	})
-	t.Run("multiple breaks", func(t *testing.T) {
+	t.Run("multiple pauses", func(t *testing.T) {
 		task1 := NewTask(test.Time("10:00"), "task 1")
 		lunch := NewTask(test.Time("12:00"), "lunch")
 		lunch.IsPause = true
@@ -83,15 +83,15 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 		}
 		datetime.AssumeForTestNowAt(t, test.Time("23:59"))
 
-		b := d.TotalBreakDuration()
-		assert.Duration(t, "break", b, 1*time.Hour)
+		b := d.TotalPauseDuration()
+		assert.Duration(t, "pause", b, 1*time.Hour)
 
 		w := d.TotalWorkDuration()
 		assert.Duration(t, "work", w, 6*time.Hour)
 	})
-	t.Run("open break", func(t *testing.T) {
+	t.Run("open pause", func(t *testing.T) {
 		task1 := NewTask(test.Time("9:00"), "task 1")
-		lunch := NewTask(test.Time("12:00"), "break")
+		lunch := NewTask(test.Time("12:00"), "pause")
 		lunch.IsPause = true
 		d := Day{Date: test.Time("0:00"),
 			Tasks:    []*Task{task1, lunch},
@@ -99,8 +99,8 @@ func TestTotalWorkBreakDurations(t *testing.T) {
 		}
 		datetime.AssumeForTestNowAt(t, test.Time("16:00"))
 
-		b := d.TotalBreakDuration()
-		assert.Duration(t, "break", b, 4*time.Hour)
+		b := d.TotalPauseDuration()
+		assert.Duration(t, "pause", b, 4*time.Hour)
 
 		w := d.TotalWorkDuration()
 		assert.Duration(t, "work", w, 3*time.Hour)

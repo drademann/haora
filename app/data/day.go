@@ -93,8 +93,8 @@ func (d *Day) AddTask(task *Task) {
 	slices.SortFunc(d.Tasks, tasksByStart)
 }
 
-// RemoveTask removes a task from the Day's list of tasks based on the specified time.
-// It returns true if a task was found and removed, otherwise false.
+// RemoveTask removes a task from the Day’s list of tasks based on the specified time.
+// After removing a found task it returns true.
 func (d *Day) RemoveTask(timeToDelete time.Time) bool {
 	timeToDelete = datetime.Combine(d.Date, timeToDelete)
 	i, found := sort.Find(len(d.Tasks), func(i int) int {
@@ -138,6 +138,15 @@ func (d *Day) Unfinished() {
 	d.Finished = time.Time{}
 }
 
+// SuggestedFinish returns a suggested finish time. Empty days or already finished days return false.
+func (d *Day) SuggestedFinish() (time.Time, bool) {
+	durationPerDay, exist := config.DurationPerDay()
+	if !exist || d.IsFinished() || d.IsEmpty() {
+		return time.Time{}, false
+	}
+	return d.Tasks[0].Start.Add(durationPerDay).Add(d.TotalPauseDuration()), true
+}
+
 func (d *Day) TotalDuration() time.Duration {
 	var total time.Duration
 	for _, task := range d.Tasks {
@@ -146,7 +155,7 @@ func (d *Day) TotalDuration() time.Duration {
 	return total
 }
 
-func (d *Day) TotalBreakDuration() time.Duration {
+func (d *Day) TotalPauseDuration() time.Duration {
 	var sum time.Duration = 0
 	for _, t := range d.Tasks {
 		if t.IsPause {

@@ -76,12 +76,21 @@ func printDefault(cmd *cobra.Command, workingDate time.Time, dayList *data.DayLi
 	}
 	cmd.Println()
 	cmd.Printf("         total  %v\n", format.Duration(d.TotalDuration()))
-	cmd.Printf("        paused  %v\n", format.Duration(d.TotalBreakDuration()))
-	overtime, exist := d.OvertimeDuration()
-	if !exist || overtime == 0 {
-		cmd.Printf("        worked  %v\n", format.Duration(d.TotalWorkDuration()))
-	} else {
-		cmd.Printf("        worked  %v   (%s %v)\n", format.Duration(d.TotalWorkDuration()), sign(overtime), format.DurationShort(overtime))
-	}
+	cmd.Printf("        paused  %v\n", format.Duration(d.TotalPauseDuration()))
+	printWorkedOvertime(cmd, d)
 	return nil
+}
+
+func printWorkedOvertime(cmd *cobra.Command, d *data.Day) {
+	output := fmt.Sprintf("        worked  %v", format.Duration(d.TotalWorkDuration()))
+	overtime, exist := d.OvertimeDuration()
+	if exist && overtime != 0 {
+		suggestion, ok := d.SuggestedFinish()
+		if ok && overtime < 0 {
+			output += fmt.Sprintf("   (%s %v to %v)", sign(overtime), format.DurationShort(overtime), suggestion.Format("15:04"))
+		} else {
+			output += fmt.Sprintf("   (%s %v)", sign(overtime), format.DurationShort(overtime))
+		}
+	}
+	cmd.Println(output)
 }

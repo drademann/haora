@@ -25,7 +25,7 @@ import (
 func TestVersionCmd(t *testing.T) {
 	out := test.ExecuteCommand(t, root.Command, "version")
 
-	expected := "Haora v1.0.1\n"
+	expected := "Haora v1.1.0\n"
 	if out.String() != expected {
 		t.Errorf("expected output %q but got %q", expected, out.String())
 	}

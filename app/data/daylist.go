@@ -25,9 +25,6 @@ type DayList struct {
 }
 
 // Day returns the Day struct for the specified date.
-//
-// The returned struct is a copy of the day.
-// Changes to this day won't be applied to the data model automatically.
 func (dl *DayList) Day(date time.Time) *Day {
 	for _, day := range dl.Days {
 		if isSameDay(day.Date, date) {

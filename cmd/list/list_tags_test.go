@@ -33,7 +33,7 @@ func TestListTagsCmd_givenNoTasks(t *testing.T) {
 	t.Run("no days and thus no tasks for today", func(t *testing.T) {
 		data.MockLoadSave(t, &data.DayList{})
 
-		out := test.ExecuteCommand(t, root.Command, "-d 22.02.2024 list --tags")
+		out := test.ExecuteCommand(t, root.Command, "-d 22.02.2024 list --tags day")
 
 		assert.Output(t, out,
 			`
@@ -45,7 +45,7 @@ func TestListTagsCmd_givenNoTasks(t *testing.T) {
 	t.Run("no tasks for other day than today", func(t *testing.T) {
 		data.MockLoadSave(t, &data.DayList{})
 
-		out := test.ExecuteCommand(t, root.Command, "-d 20.02.2024 list --tags")
+		out := test.ExecuteCommand(t, root.Command, "-d 20.02.2024 list --tags day")
 
 		assert.Output(t, out,
 			`
@@ -56,7 +56,7 @@ func TestListTagsCmd_givenNoTasks(t *testing.T) {
 	})
 }
 
-func TestListTagsCmd(t *testing.T) {
+func TestListTagsDayCmd(t *testing.T) {
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "a task", "haora"))
 	d.AddTask(data.NewTask(test.Date("22.02.2024 12:00"), "a task", "learning"))
@@ -65,7 +65,7 @@ func TestListTagsCmd(t *testing.T) {
 
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 
-	flagCases := []string{"--tags", "-t"}
+	flagCases := []string{"--tags day", "-t day"}
 	for _, fc := range flagCases {
 		command := fmt.Sprintf("list %s", fc)
 		t.Run(command, func(t *testing.T) {
@@ -78,6 +78,38 @@ func TestListTagsCmd(t *testing.T) {
 				 1h 32m   1.53h   1.50h   #go
 				 3h  0m   3.00h   3.00h   #haora
 				 4h 32m   4.53h   4.50h   #learning
+				`)
+		})
+	}
+}
+
+func TestListTagsMonthCmd(t *testing.T) {
+	d1 := data.Day{Date: test.Date("22.02.2024 00:00")}
+	d1.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "a task", "haora"))
+	d1.AddTask(data.NewTask(test.Date("22.02.2024 12:00"), "a task", "learning"))
+	d1.AddTask(data.NewTask(test.Date("22.02.2024 15:00"), "a task", "go", "learning"))
+	d1.Finished = test.Date("22.02.2024 17:00")
+
+	d2 := data.Day{Date: test.Date("24.02.2024 00:00")}
+	d2.AddTask(data.NewTask(test.Date("24.02.2024 10:00"), "a task", "haora"))
+	d2.AddTask(data.NewTask(test.Date("24.02.2024 14:00"), "a task", "learning"))
+	d2.Finished = test.Date("24.02.2024 16:00")
+
+	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d1, &d2}})
+
+	flagCases := []string{"-d 26.02. --tags month", "-d 26.02. -t month"}
+	for _, fc := range flagCases {
+		command := fmt.Sprintf("list %s", fc)
+		t.Run(command, func(t *testing.T) {
+			out := test.ExecuteCommand(t, root.Command, command)
+
+			assert.Output(t, out,
+				`
+				Tag summary for February 2024
+		
+				 2h  0m   2.00h   2.00h   #go
+				 7h  0m   7.00h   7.00h   #haora
+				 7h  0m   7.00h   7.00h   #learning
 				`)
 		})
 	}

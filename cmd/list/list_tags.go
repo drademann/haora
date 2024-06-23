@@ -21,6 +21,8 @@ import (
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/cmd/internal/format"
 	"github.com/spf13/cobra"
+	"golang.org/x/exp/maps"
+	"slices"
 	"time"
 )
 
@@ -43,6 +45,45 @@ func printTags(cmd *cobra.Command, workingDate time.Time, dayList *data.DayList)
 
 	for _, tg := range d.Tags() {
 		tagDur := d.TotalTagDuration(tg)
+		cmd.Printf("%v  %v  %v   #%v\n",
+			format.Duration(tagDur),
+			format.DurationDecimal(tagDur),
+			format.DurationDecimalRounded(tagDur, 15*time.Minute),
+			tg,
+		)
+	}
+
+	return nil
+}
+
+func printTagsMonth(cmd *cobra.Command, workingDate time.Time, dayList *data.DayList) error {
+	cmd.Printf("Tag summary for %s\n\n", workingDate.Format("January 2006"))
+
+	firstDate := time.Date(workingDate.Year(), workingDate.Month(), 1, 0, 0, 0, 0, workingDate.Location())
+	lastDate := time.Date(workingDate.Year(), workingDate.Month()+1, 0, 0, 0, 0, 0, workingDate.Location())
+
+	date := firstDate
+	totals := make(map[string]time.Duration)
+	for {
+		d := dayList.Day(date)
+		for _, tg := range d.Tags() {
+			totals[tg] += d.TotalTagDuration(tg)
+		}
+		date = date.AddDate(0, 0, 1)
+		if date.After(lastDate) {
+			break
+		}
+	}
+
+	tags := maps.Keys(totals)
+	if len(tags) == 0 {
+		cmd.Println("no tags found")
+		return nil
+	}
+
+	slices.Sort(tags)
+	for _, tg := range tags {
+		tagDur := totals[tg]
 		cmd.Printf("%v  %v  %v   #%v\n",
 			format.Duration(tagDur),
 			format.DurationDecimal(tagDur),

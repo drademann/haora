@@ -25,7 +25,7 @@ import (
 )
 
 func init() {
-	command.Flags().BoolP("tags", "t", false, "shows durations per tag")
+	command.Flags().StringP("tags", "t", "", "shows durations per tag and day or month")
 	command.Flags().BoolP("week", "w", false, "shows week summary")
 	root.Command.AddCommand(command)
 }
@@ -50,12 +50,15 @@ var command = &cobra.Command{
 			return err
 		}
 
-		tagsFlag, err := cmd.Flags().GetBool("tags")
+		tagsFlag, err := cmd.Flags().GetString("tags")
 		if err != nil {
 			return err
 		}
-		if tagsFlag {
+		switch tagsFlag {
+		case "day":
 			return printTags(cmd, workingDate, dayList)
+		case "month":
+			return printTagsMonth(cmd, workingDate, dayList)
 		}
 
 		weekFlag, err := cmd.Flags().GetBool("week")

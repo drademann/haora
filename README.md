@@ -1,18 +1,19 @@
 # Haora
 
-A CLI application programmed with Go to track working times.
+A command-line tool application programmed with Go to track working times.
 
 [![Go Build & Test](https://github.com/drademann/haora/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/drademann/haora/actions/workflows/go.yml)
 
 ## Description
 
-With different commands, the CLI allows recording working times. One record (task) consists of
+The command-line tool allows recording working times.
+One record of a task consists of the following data:
 
 - starting time
 - text
 - list of tags
 
-To end the work for a day a finish timestamp can be set, see the `finish` command.
+To end the work for a day, a finish timestamp can be set, see the `finish` command.
 The `list` command shows the tasks of a day, optionally the sums per tag.
 With the `--week` option it shows all start and end times of a week.
 
@@ -34,7 +35,7 @@ Different date formats are allowed:
 
 ## Commands
 
-Commands that take a timestamp as argument accept different formats:
+Commands that take a timestamp as an argument accept different formats:
 
 | Format | Description              | Example        |
 |--------|--------------------------|----------------|
@@ -54,23 +55,22 @@ $ haora list
 `--tags [day|month]`
 
 List the working hours per tag.
-The totals collect the tags of either a `day` or a `month` based on the given global date. 
+The totals collect the tags of either a `day` or a `month` based on the given global date.
 
 `--week`
 
 List the start and end timestamps of a week.
-The week always starts at the previous monday compared to the given date.
+The week always starts on the previous Monday compared to the given date.
 
 ### add
 
 The `add` command adds another task to the selected day.
-The simplest way is to use the command without any flag:
 
 ```shell
 $ haora add 10:00 haora some programming
 ```
 
-This will add a task
+This adds a task
 
 - at 10:00
 - with the text "some programming"
@@ -86,7 +86,7 @@ To explicitly set a starting timestamp for the task.
 
 `--tags "haora,go"`
 
-Specific flag to set multiple tags.
+A specific flag to set multiple tags.
 
 ### pause
 
@@ -106,7 +106,7 @@ To explicitly set a starting timestamp for the pause.
 
 ### remove
 
-Removes a task of a day. The task is identified by its starting timestamp, like
+Removes a task of a day. The starting timestamp identifies the task to remove.
 
 ```shell
 $ haora remove 10:00
@@ -149,29 +149,29 @@ times:
 
 When the file is not present, the default values are used.
 
-### Duration per Week
+### Duration per week
 
-Sets the desired number of working hours per week.
+Sets the desired amount of working hours for each week.
 Minutes may be added as well, like `"38h 30m"`.
 
 Default: `"40h"`
 
-### Days per Week
+### Days per week
 
-Sets the number of workdays in a week.
-This determines the desired number of working hours per day.
+Defines the number of workdays for a week.
+This determines the desired amount of working hours per day.
 
 Default: `5`
 
 ## Build
 
-To get the latest greatest version of haora, it may be built from scratch:
+To get the latest greatest version of haora, it can be built from scratch:
 
-Checkout this repository, ensure you are on the `main` branch (the current _production_ branch), have Go installed, and
-run
+Check out this repository, ensure you are on the `main` branch (the current _production_ branch), have Go installed, and
+install `haora`.
 
 ```shell
 $ go install
 ```
 
-It will install `haora` within your Go `bin` folder. That's it. 
+It installs `haora` within the Go `bin` folder.

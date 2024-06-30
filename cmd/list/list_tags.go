@@ -18,11 +18,10 @@ package list
 
 import (
 	"fmt"
+	"github.com/drademann/fugo/maps"
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/cmd/internal/format"
 	"github.com/spf13/cobra"
-	"golang.org/x/exp/maps"
-	"slices"
 	"time"
 )
 
@@ -75,13 +74,12 @@ func printTagsMonth(cmd *cobra.Command, workingDate time.Time, dayList *data.Day
 		}
 	}
 
-	tags := maps.Keys(totals)
+	tags := maps.SortedKeys(totals)
 	if len(tags) == 0 {
 		cmd.Println("no tags found")
 		return nil
 	}
 
-	slices.Sort(tags)
 	for _, tg := range tags {
 		tagDur := totals[tg]
 		cmd.Printf("%v  %v  %v   #%v\n",

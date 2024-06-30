@@ -18,8 +18,8 @@ package parsing
 
 import (
 	"fmt"
+	"github.com/drademann/fugo/test"
 	"github.com/drademann/haora/app/datetime"
-	"github.com/drademann/haora/test"
 	"testing"
 	"time"
 )

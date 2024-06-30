@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-package test
+package cmd
 
 import (
 	"bytes"
@@ -23,7 +23,7 @@ import (
 	"testing"
 )
 
-func ExecuteCommand(t *testing.T, cmd *cobra.Command, argLine string) *bytes.Buffer {
+func TestExecute(t *testing.T, cmd *cobra.Command, argLine string) *bytes.Buffer {
 	t.Helper()
 	buf := new(bytes.Buffer)
 	cmd.SetOut(buf)

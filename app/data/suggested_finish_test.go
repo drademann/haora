@@ -17,8 +17,8 @@
 package data
 
 import (
+	"github.com/drademann/fugo/test"
 	"github.com/drademann/haora/app/config"
-	"github.com/drademann/haora/test"
 	"testing"
 	"time"
 )

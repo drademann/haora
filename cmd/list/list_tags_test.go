@@ -18,11 +18,12 @@ package list
 
 import (
 	"fmt"
+	"github.com/drademann/fugo/test"
+	"github.com/drademann/fugo/test/assert"
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
+	"github.com/drademann/haora/cmd"
 	"github.com/drademann/haora/cmd/root"
-	"github.com/drademann/haora/test"
-	"github.com/drademann/haora/test/assert"
 	"testing"
 	"time"
 )
@@ -33,7 +34,7 @@ func TestListTagsCmd_givenNoTasks(t *testing.T) {
 	t.Run("no days and thus no tasks for today", func(t *testing.T) {
 		data.MockLoadSave(t, &data.DayList{})
 
-		out := test.ExecuteCommand(t, root.Command, "-d 22.02.2024 list --tags day")
+		out := cmd.TestExecute(t, root.Command, "-d 22.02.2024 list --tags day")
 
 		assert.Output(t, out,
 			`
@@ -45,7 +46,7 @@ func TestListTagsCmd_givenNoTasks(t *testing.T) {
 	t.Run("no tasks for other day than today", func(t *testing.T) {
 		data.MockLoadSave(t, &data.DayList{})
 
-		out := test.ExecuteCommand(t, root.Command, "-d 20.02.2024 list --tags day")
+		out := cmd.TestExecute(t, root.Command, "-d 20.02.2024 list --tags day")
 
 		assert.Output(t, out,
 			`
@@ -69,7 +70,7 @@ func TestListTagsDayCmd(t *testing.T) {
 	for _, fc := range flagCases {
 		command := fmt.Sprintf("list %s", fc)
 		t.Run(command, func(t *testing.T) {
-			out := test.ExecuteCommand(t, root.Command, command)
+			out := cmd.TestExecute(t, root.Command, command)
 
 			assert.Output(t, out,
 				`
@@ -101,7 +102,7 @@ func TestListTagsMonthCmd(t *testing.T) {
 	for _, fc := range flagCases {
 		command := fmt.Sprintf("list %s", fc)
 		t.Run(command, func(t *testing.T) {
-			out := test.ExecuteCommand(t, root.Command, command)
+			out := cmd.TestExecute(t, root.Command, command)
 
 			assert.Output(t, out,
 				`

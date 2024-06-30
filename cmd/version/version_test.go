@@ -17,13 +17,13 @@
 package version
 
 import (
+	"github.com/drademann/haora/cmd"
 	"github.com/drademann/haora/cmd/root"
-	"github.com/drademann/haora/test"
 	"testing"
 )
 
 func TestVersionCmd(t *testing.T) {
-	out := test.ExecuteCommand(t, root.Command, "version")
+	out := cmd.TestExecute(t, root.Command, "version")
 
 	expected := "Haora v1.1.0\n"
 	if out.String() != expected {

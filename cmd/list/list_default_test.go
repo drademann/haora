@@ -17,12 +17,13 @@
 package list
 
 import (
+	"github.com/drademann/fugo/test"
+	"github.com/drademann/fugo/test/assert"
 	"github.com/drademann/haora/app/config"
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
+	"github.com/drademann/haora/cmd"
 	"github.com/drademann/haora/cmd/root"
-	"github.com/drademann/haora/test"
-	"github.com/drademann/haora/test/assert"
 	"testing"
 	"time"
 )
@@ -33,7 +34,7 @@ func TestListCmd_givenNoTasks(t *testing.T) {
 	t.Run("no days and thus no tasks for today", func(t *testing.T) {
 		data.MockLoadSave(t, &data.DayList{})
 
-		out := test.ExecuteCommand(t, root.Command, "-d 22.02.2024 list")
+		out := cmd.TestExecute(t, root.Command, "-d 22.02.2024 list")
 
 		assert.Output(t, out,
 			`
@@ -45,7 +46,7 @@ func TestListCmd_givenNoTasks(t *testing.T) {
 	t.Run("no tasks for other day than today", func(t *testing.T) {
 		data.MockLoadSave(t, &data.DayList{})
 
-		out := test.ExecuteCommand(t, root.Command, "-d 20.02.2024 list")
+		out := cmd.TestExecute(t, root.Command, "-d 20.02.2024 list")
 
 		assert.Output(t, out,
 			`
@@ -65,7 +66,7 @@ func TestListCmd_oneOpenTaskForToday(t *testing.T) {
 	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "a task", "Haora"))
 	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
 
-	out := test.ExecuteCommand(t, root.Command, "list")
+	out := cmd.TestExecute(t, root.Command, "list")
 
 	assert.Output(t, out,
 		`
@@ -89,7 +90,7 @@ func TestListCmd_multipleTasksLastOpen(t *testing.T) {
 	d.AddTask(data.NewTask(test.Date("22.02.2024 10:00"), "fixing bugs"))
 	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
 
-	out := test.ExecuteCommand(t, root.Command, "list")
+	out := cmd.TestExecute(t, root.Command, "list")
 
 	assert.Output(t, out,
 		`
@@ -114,7 +115,7 @@ func TestListCmd_multipleTasksLastInFuture(t *testing.T) {
 	d.AddTask(data.NewTask(test.Date("22.02.2024 17:00"), "fixing bugs"))
 	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
 
-	out := test.ExecuteCommand(t, root.Command, "list")
+	out := cmd.TestExecute(t, root.Command, "list")
 
 	assert.Output(t, out,
 		`
@@ -140,7 +141,7 @@ func TestListCmd_multipleTasksLastInFuture_andFinishedInFuture(t *testing.T) {
 	d.Finished = test.Date("22.02.2024 18:00")
 	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
 
-	out := test.ExecuteCommand(t, root.Command, "list")
+	out := cmd.TestExecute(t, root.Command, "list")
 
 	assert.Output(t, out,
 		`
@@ -166,7 +167,7 @@ func TestListCmd_withPause(t *testing.T) {
 	d.AddTask(data.NewTask(test.Date("22.02.2024 13:00"), "fixing bugs"))
 	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
 
-	out := test.ExecuteCommand(t, root.Command, "list")
+	out := cmd.TestExecute(t, root.Command, "list")
 
 	assert.Output(t, out,
 		`
@@ -195,7 +196,7 @@ func TestListCmd_withFinished(t *testing.T) {
 	d.Finished = test.Date("22.02.2024 17:00")
 	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
 
-	out := test.ExecuteCommand(t, root.Command, "list")
+	out := cmd.TestExecute(t, root.Command, "list")
 
 	assert.Output(t, out,
 		`

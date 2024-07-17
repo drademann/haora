@@ -21,31 +21,33 @@ import (
 )
 
 type Task struct {
-	Start   time.Time
-	Text    string
-	IsPause bool
-	Tags    []string
+	ID      uint      `gorm:"primary_key;"`
+	DayID   uint      `gorm:"not null;"`
+	Start   time.Time `gorm:"not null;"`
+	Text    string    `gorm:"not null;"`
+	IsPause bool      `gorm:"not null;default false;"`
+	Tags    []string  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
-func NewTask(s time.Time, tx string, tgs ...string) *Task {
-	return &Task{
-		Start:   s.Truncate(time.Minute),
-		Text:    tx,
+func NewTask(start time.Time, text string, tags ...string) Task {
+	return Task{
+		Start:   start.Truncate(time.Minute),
+		Text:    text,
 		IsPause: false,
-		Tags:    tgs,
+		Tags:    tags,
 	}
 }
 
-func NewPause(s time.Time, tx string) *Task {
-	return &Task{
-		Start:   s.Truncate(time.Minute),
-		Text:    tx,
+func NewPause(start time.Time, text string) Task {
+	return Task{
+		Start:   start.Truncate(time.Minute),
+		Text:    text,
 		IsPause: true,
 		Tags:    nil,
 	}
 }
 
-var tasksByStart = func(t1, t2 *Task) int {
+var tasksByStart = func(t1, t2 Task) int {
 	switch {
 	case t1.Start.Before(t2.Start):
 		return -1

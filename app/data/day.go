@@ -17,6 +17,7 @@
 package data
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"github.com/drademann/haora/app/config"
@@ -28,16 +29,17 @@ import (
 )
 
 type Day struct {
-	Date     time.Time
-	Tasks    []*Task
-	Finished time.Time
+	ID       uint      `gorm:"primary_key"`
+	Date     time.Time `gorm:"not null;"`
+	Tasks    []Task
+	Finished sql.NullTime `gorm:"not null;"`
 }
 
 func NewDay(date time.Time) *Day {
 	return &Day{
 		Date:     date,
-		Tasks:    make([]*Task, 0),
-		Finished: time.Time{},
+		Tasks:    make([]Task, 0),
+		Finished: sql.NullTime{Time: time.Time{}, Valid: false},
 	}
 }
 
@@ -50,23 +52,22 @@ func (d *Day) IsToday() bool {
 }
 
 func (d *Day) IsFinished() bool {
-	return !d.Finished.IsZero()
+	return d.Finished.Valid
 }
 
-func (d *Day) AddNewTask(s time.Time, txt string, tgs []string) error {
+func (d *Day) AddNewTask(s time.Time, txt string, tags []string) error {
 	s = datetime.Combine(d.Date, s)
 	t, err := d.taskAt(s)
 	if err != nil {
 		if errors.Is(err, NoTask) {
-			t = NewTask(s, txt, tgs...)
-			d.AddTask(t)
+			d.AddTask(NewTask(s, txt, tags...))
 		} else {
 			return err
 		}
 	} else {
 		t.Start = s
 		t.Text = txt
-		t.Tags = tgs
+		t.Tags = tags
 	}
 	return nil
 }
@@ -76,8 +77,7 @@ func (d *Day) AddNewPause(s time.Time, txt string) error {
 	p, err := d.taskAt(s)
 	if err != nil {
 		if errors.Is(err, NoTask) {
-			p = NewPause(s, txt)
-			d.AddTask(p)
+			d.AddTask(NewPause(s, txt))
 		} else {
 			return err
 		}
@@ -88,7 +88,7 @@ func (d *Day) AddNewPause(s time.Time, txt string) error {
 	return nil
 }
 
-func (d *Day) AddTask(task *Task) {
+func (d *Day) AddTask(task Task) {
 	d.Tasks = append(d.Tasks, task)
 	slices.SortFunc(d.Tasks, tasksByStart)
 }
@@ -115,10 +115,10 @@ func (d *Day) Start() time.Time {
 }
 
 func (d *Day) End() time.Time {
-	if d.Finished.IsZero() {
-		return datetime.Now()
+	if d.Finished.Valid {
+		return d.Finished.Time
 	}
-	return d.Finished
+	return datetime.Now()
 }
 
 func (d *Day) Finish(f time.Time) error {
@@ -130,12 +130,12 @@ func (d *Day) Finish(f time.Time) error {
 	if f.Before(last.Start) {
 		return fmt.Errorf("can't finish before last task's start timestamp (%s)", last.Start.Format("15:04"))
 	}
-	d.Finished = f
+	d.Finished = sql.NullTime{Time: f, Valid: true}
 	return nil
 }
 
 func (d *Day) Unfinished() {
-	d.Finished = time.Time{}
+	d.Finished = sql.NullTime{Time: time.Time{}, Valid: false}
 }
 
 // SuggestedFinish returns a suggested finish time. Empty days or already finished days return false.
@@ -150,7 +150,7 @@ func (d *Day) SuggestedFinish() (time.Time, bool) {
 func (d *Day) TotalDuration() time.Duration {
 	var total time.Duration
 	for _, task := range d.Tasks {
-		total += d.TaskDuration(*task)
+		total += d.TaskDuration(task)
 	}
 	return total
 }
@@ -159,7 +159,7 @@ func (d *Day) TotalPauseDuration() time.Duration {
 	var sum time.Duration = 0
 	for _, t := range d.Tasks {
 		if t.IsPause {
-			sum += d.TaskDuration(*t)
+			sum += d.TaskDuration(t)
 		}
 	}
 	return sum
@@ -169,7 +169,7 @@ func (d *Day) TotalWorkDuration() time.Duration {
 	var sum time.Duration = 0
 	for _, t := range d.Tasks {
 		if !t.IsPause {
-			sum += d.TaskDuration(*t)
+			sum += d.TaskDuration(t)
 		}
 	}
 	return sum
@@ -187,7 +187,7 @@ func (d *Day) TotalTagDuration(tag string) time.Duration {
 	var sum time.Duration = 0
 	for _, t := range d.Tasks {
 		if slices.Contains(t.Tags, tag) {
-			sum += d.TaskDuration(*t)
+			sum += d.TaskDuration(t)
 		}
 	}
 	return sum
@@ -202,7 +202,7 @@ func (d *Day) TaskDuration(task Task) time.Duration {
 		case !d.IsFinished():
 			return datetime.Now().Sub(task.Start)
 		default:
-			return d.Finished.Sub(task.Start)
+			return d.Finished.Time.Sub(task.Start)
 		}
 	}
 	return s.Start.Sub(task.Start)
@@ -214,7 +214,7 @@ var (
 	NoTaskPred = errors.New("no preceding task")
 )
 
-func (d *Day) Succ(task Task) (*Task, error) {
+func (d *Day) Succ(task Task) (Task, error) {
 	for i, t := range d.Tasks {
 		if t.Start == task.Start {
 			j := i + 1
@@ -223,10 +223,10 @@ func (d *Day) Succ(task Task) (*Task, error) {
 			}
 		}
 	}
-	return nil, NoTaskSucc
+	return task, NoTaskSucc
 }
 
-func (d *Day) Pred(task Task) (*Task, error) {
+func (d *Day) Pred(task Task) (Task, error) {
 	for i, t := range d.Tasks {
 		if t.Start == task.Start {
 			j := i - 1
@@ -235,13 +235,13 @@ func (d *Day) Pred(task Task) (*Task, error) {
 			}
 		}
 	}
-	return nil, NoTaskPred
+	return task, NoTaskPred
 }
 
 func (d *Day) taskAt(start time.Time) (*Task, error) {
 	for _, t := range d.Tasks {
 		if t.Start.Hour() == start.Hour() && t.Start.Minute() == start.Minute() {
-			return t, nil
+			return &t, nil
 		}
 	}
 	return nil, NoTask

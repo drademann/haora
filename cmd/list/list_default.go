@@ -57,17 +57,17 @@ func printDefault(cmd *cobra.Command, workingDate time.Time, dayList *data.DayLi
 	for _, task := range d.Tasks {
 		start := task.Start.Format("15:04")
 		var end string
-		succ, err := d.Succ(*task)
+		succ, err := d.Succ(task)
 		if err == nil {
 			end = succ.Start.Format("15:04")
 		} else {
 			if errors.Is(err, data.NoTaskSucc) && d.IsFinished() {
-				end = d.Finished.Format("15:04")
+				end = d.Finished.Time.Format("15:04")
 			} else {
 				end = " now "
 			}
 		}
-		dur := format.Duration(d.TaskDuration(*task))
+		dur := format.Duration(d.TaskDuration(task))
 		if task.IsPause {
 			cmd.Printf("      |         %v   %v\n", dur, task.Text)
 		} else {

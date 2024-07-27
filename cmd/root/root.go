@@ -26,7 +26,7 @@ var Command = &cobra.Command{
 	Use:   "haora",
 	Short: "Time tracking with Haora",
 	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Println("The Haora CLI. Choose your command ...")
+		cmd.Println("The Haora CLI.")
 	},
 	PersistentPostRun: func(cmd *cobra.Command, args []string) { // reset flag so tests can rerun!
 		_ = cmd.Flags().Set("date", "")

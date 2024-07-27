@@ -167,7 +167,7 @@ Default: `5`
 
 To get the latest greatest version of haora, it can be built from scratch:
 
-Check out this repository, ensure you are on the `main` branch (the current _production_ branch), have Go installed, and
+Check out this repository, ensure you're on the `main` branch (the current _production_ branch), have Go installed, and
 install `haora`.
 
 ```shell

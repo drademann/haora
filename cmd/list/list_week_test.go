@@ -33,7 +33,7 @@ func TestListWeekCmd_givenNoTasks(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local))
 	config.SetDurationPerWeek(t, 40*time.Hour)
 	config.SetDaysPerWeek(t, 5)
-	config.InitViper()
+	config.ApplyConfigOptions(t)
 
 	data.MockLoadSave(t, &data.DayList{})
 
@@ -56,7 +56,6 @@ func TestListWeekCmd_givenNoTasks(t *testing.T) {
 
 func TestListWeekCmd(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
-	config.InitViper()
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTask(data.NewTask(test.Date("22.02.2024 09:00"), "task 1"))
@@ -173,7 +172,7 @@ func TestListWeekCmd_withTotalDuration(t *testing.T) {
 
 func TestListWeekCmd_withHiddenWeekdays(t *testing.T) {
 	config.SetHiddenWeekdays(t, "sat sun")
-	config.InitViper()
+	config.ApplyConfigOptions(t)
 	datetime.AssumeForTestNowAt(t, test.Date("20.03.2024 16:32"))
 
 	d := data.Day{Date: test.Date("22.03.2024 00:00")}
@@ -196,7 +195,7 @@ func TestListWeekCmd_withHiddenWeekdays(t *testing.T) {
 
 func TestListWeekCmd_withHiddenWeekdays_showsHiddenWeekdaysWhenNotEmpty(t *testing.T) {
 	config.SetHiddenWeekdays(t, "mon sat sun")
-	config.InitViper()
+	config.ApplyConfigOptions(t)
 	datetime.AssumeForTestNowAt(t, test.Date("20.03.2024 16:32"))
 
 	d := data.Day{Date: test.Date("18.03.2024 00:00")}

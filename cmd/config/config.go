@@ -61,6 +61,10 @@ func InitViper() {
 			panic(err)
 		}
 	}
+	setConfigOptions()
+}
+
+func setConfigOptions() {
 	if viper.IsSet(durationPerWeekKey) {
 		duration := viper.GetDuration(durationPerWeekKey)
 		durationPerWeek = &duration
@@ -102,32 +106,59 @@ func IsHidden(weekday time.Weekday) bool {
 
 // for testing
 
+// ApplyConfigOptions applies previously set config options. See the functions listed below.
+// It must be called after all options are set.
+func ApplyConfigOptions(t *testing.T) {
+	t.Helper()
+	setConfigOptions()
+}
+
 func SetDurationPerWeek(t *testing.T, d time.Duration) {
 	t.Helper()
+	prev := viper.Get(durationPerWeekKey)
 	viper.Set(durationPerWeekKey, d)
 	durationPerWeek = nil
+	t.Cleanup(func() {
+		viper.Set(durationPerWeekKey, prev)
+	})
 }
 
 func SetNoDurationPerWeek(t *testing.T) {
 	t.Helper()
+	prev := viper.Get(durationPerWeekKey)
 	viper.Set(durationPerWeekKey, nil)
 	durationPerWeek = nil
+	t.Cleanup(func() {
+		viper.Set(durationPerWeekKey, prev)
+	})
 }
 
 func SetDaysPerWeek(t *testing.T, n int) {
 	t.Helper()
+	prev := viper.Get(daysPerWeekKey)
 	viper.Set(daysPerWeekKey, n)
 	daysPerWeek = nil
+	t.Cleanup(func() {
+		viper.Set(durationPerWeekKey, prev)
+	})
 }
 
 func SetNoDaysPerWeek(t *testing.T) {
 	t.Helper()
+	prev := viper.Get(daysPerWeekKey)
 	viper.Set(daysPerWeekKey, nil)
 	daysPerWeek = nil
+	t.Cleanup(func() {
+		viper.Set(durationPerWeekKey, prev)
+	})
 }
 
 func SetHiddenWeekdays(t *testing.T, hiddenWeekdaysStr string) {
 	t.Helper()
+	prev := viper.Get(hiddenWeekdaysKey)
 	viper.Set(hiddenWeekdaysKey, hiddenWeekdaysStr)
 	hiddenWeekdays = nil
+	t.Cleanup(func() {
+		viper.Set(hiddenWeekdaysKey, prev)
+	})
 }

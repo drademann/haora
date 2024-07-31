@@ -26,7 +26,7 @@ import (
 func TestSuggestedFinishTime(t *testing.T) {
 	config.SetDurationPerWeek(t, 35*time.Hour)
 	config.SetDaysPerWeek(t, 5)
-	config.InitViper()
+	config.ApplyConfigOptions(t)
 
 	d := Day{
 		Tasks: []*Task{
@@ -60,7 +60,7 @@ func TestSuggestedFinishTime_NoTasks(t *testing.T) {
 func TestSuggestedFinishTime_WithPause(t *testing.T) {
 	config.SetDurationPerWeek(t, 35*time.Hour)
 	config.SetDaysPerWeek(t, 5)
-	config.InitViper()
+	config.ApplyConfigOptions(t)
 
 	d := Day{
 		Tasks: []*Task{

@@ -163,6 +163,28 @@ This determines the desired amount of working hours per day.
 
 Default: `5`
 
+### Hidden weekdays
+
+Defines weekdays that shouldn't be displayed.
+Possible values, separated by space:
+
+- mo
+- tu
+- we
+- th
+- fr
+- sa
+- su
+
+Example:
+
+```yaml
+times:
+  hiddenWeekdays: sa su
+```
+
+Default: none set, all displayed
+
 ## Build
 
 To get the latest greatest version of haora, it can be built from scratch:

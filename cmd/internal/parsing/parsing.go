@@ -22,7 +22,28 @@ import (
 	"github.com/drademann/haora/app/datetime"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
+)
+
+var (
+	// weekdays for selecting the preceding weekday
+	weekdays = map[string]time.Weekday{
+		"mo": time.Monday,
+		"tu": time.Tuesday,
+		"we": time.Wednesday,
+		"th": time.Thursday,
+		"fr": time.Friday,
+		"sa": time.Saturday,
+		"su": time.Sunday,
+	}
+	yesterdays = []string{
+		"yesterday",
+		"yes",
+		"ye",
+		"yd",
+		"y",
+	}
 )
 
 func Time(flag string, args []string) (time.Time, []string, error) {
@@ -69,4 +90,13 @@ func parseTime(timeStr string) (time.Time, error) {
 	}
 	t := time.Time{}
 	return time.Date(t.Year(), t.Month(), t.Day(), hour, minute, 0, 0, t.Location()), nil
+}
+
+func Weekday(weekdayStr string) (time.Weekday, error) {
+	for str, weekday := range weekdays {
+		if strings.HasPrefix(strings.ToLower(weekdayStr), str) {
+			return weekday, nil
+		}
+	}
+	return time.Wednesday, fmt.Errorf("no weekday found for %s", weekdayStr)
 }

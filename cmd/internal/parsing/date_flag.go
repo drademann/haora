@@ -27,25 +27,8 @@ import (
 )
 
 var (
-	// RE for parsing dates like 02.01.2006 or 02.01. or 02. ...
+	// RE for parsing dates like 02.01.2006 or 02.01. or 02.
 	dateFlagRE = regexp.MustCompile(`(\d+)(?:\.(\d+)(?:\.(\d+)?)?)?`)
-	// weekdays for selecting the preceding weekday
-	weekdays = map[string]time.Weekday{
-		"mo": time.Monday,
-		"tu": time.Tuesday,
-		"we": time.Wednesday,
-		"th": time.Thursday,
-		"fr": time.Friday,
-		"sa": time.Saturday,
-		"su": time.Sunday,
-	}
-	yesterdays = []string{
-		"yesterday",
-		"yes",
-		"ye",
-		"yd",
-		"y",
-	}
 )
 
 func WorkingDate(workingDateFlag string) (time.Time, error) {

@@ -19,10 +19,10 @@ package list
 import (
 	"github.com/drademann/fugo/test"
 	"github.com/drademann/fugo/test/assert"
-	"github.com/drademann/haora/app/config"
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
 	"github.com/drademann/haora/cmd"
+	"github.com/drademann/haora/cmd/config"
 	"github.com/drademann/haora/cmd/root"
 	"testing"
 	"time"

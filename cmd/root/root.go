@@ -17,7 +17,7 @@
 package root
 
 import (
-	"github.com/drademann/haora/app/config"
+	"github.com/drademann/haora/cmd/config"
 	"github.com/spf13/cobra"
 	"os"
 )

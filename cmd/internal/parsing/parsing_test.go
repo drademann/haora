@@ -18,9 +18,11 @@ package parsing
 
 import (
 	"github.com/drademann/fugo/test"
+	"github.com/drademann/fugo/test/assert"
 	"github.com/drademann/haora/app/datetime"
 	"reflect"
 	"testing"
+	"time"
 )
 
 func TestTime(t *testing.T) {
@@ -69,6 +71,29 @@ func TestTime(t *testing.T) {
 				if !reflect.DeepEqual(parsedArgs, tc.wantArgs) {
 					t.Errorf("remaining args %v after parsing do not match expected args %v", parsedArgs, tc.wantArgs)
 				}
+			}
+		})
+	}
+}
+
+func TestParseWeekday(t *testing.T) {
+	testCases := []struct {
+		weekdayStr string
+		expected   time.Weekday
+	}{
+		{"Monday", time.Monday},
+		{"Mon", time.Monday},
+		{"mo", time.Monday},
+		{"wedn", time.Wednesday},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.weekdayStr, func(t *testing.T) {
+			wd, err := Weekday(tc.weekdayStr)
+
+			assert.NoError(t, err)
+			if wd != tc.expected {
+				t.Errorf("expected %v, got %v", tc.expected, wd)
 			}
 		})
 	}

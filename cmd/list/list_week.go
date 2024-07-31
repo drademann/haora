@@ -19,6 +19,7 @@ package list
 import (
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
+	"github.com/drademann/haora/cmd/config"
 	"github.com/drademann/haora/cmd/internal/format"
 	"github.com/spf13/cobra"
 	"time"
@@ -29,7 +30,9 @@ func printWeek(cmd *cobra.Command, workingDate time.Time, dayList *data.DayList)
 	week := dayList.Week(date)
 	for _, day := range week.Days {
 		dateStr := day.Date.Format("Mon 02.01.2006")
-		if day.IsEmpty() {
+		if config.IsHidden(day.Date.Weekday()) && day.IsEmpty() {
+			continue
+		} else if day.IsEmpty() {
 			cmd.Printf("%s   -\n", dateStr)
 		} else {
 			startStr := day.Start().Format("15:04")
@@ -45,8 +48,10 @@ func printWeek(cmd *cobra.Command, workingDate time.Time, dayList *data.DayList)
 			durDecRoundedStr := format.DurationDecimalRounded(dur, 15*time.Minute)
 			overtime, exist := day.OvertimeDuration()
 			if !exist || overtime == 0 {
+				//goland:noinspection GrazieInspection
 				cmd.Printf("%s   %s - %s  worked %s  %s  %s\n", dateStr, startStr, endStr, durStr, durDecStr, durDecRoundedStr)
 			} else {
+				//goland:noinspection GrazieInspection
 				cmd.Printf("%s   %s - %s  worked %s  %s  %s   (%s %v)\n", dateStr, startStr, endStr, durStr, durDecStr, durDecRoundedStr, sign(overtime), format.DurationShort(overtime))
 			}
 		}

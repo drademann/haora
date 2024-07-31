@@ -18,7 +18,7 @@ package data
 
 import (
 	"github.com/drademann/fugo/test"
-	"github.com/drademann/haora/app/config"
+	"github.com/drademann/haora/cmd/config"
 	"testing"
 	"time"
 )
@@ -26,6 +26,8 @@ import (
 func TestSuggestedFinishTime(t *testing.T) {
 	config.SetDurationPerWeek(t, 35*time.Hour)
 	config.SetDaysPerWeek(t, 5)
+	config.InitViper()
+
 	d := Day{
 		Tasks: []*Task{
 			{Start: test.Time("10:20")},
@@ -41,7 +43,7 @@ func TestSuggestedFinishTime(t *testing.T) {
 		t.Fatal("expected a valid suggestion time")
 	}
 	if suggestion != test.Time("17:20") {
-		t.Errorf("expected suggested finish time to be 17:20, but got %v", suggestion)
+		t.Errorf("expected the suggested finish time to be 17:20 but got %v", suggestion)
 	}
 }
 
@@ -51,11 +53,15 @@ func TestSuggestedFinishTime_NoTasks(t *testing.T) {
 	_, ok := d.SuggestedFinish()
 
 	if ok {
-		t.Errorf("expected suggestion to be NOT ok cause there is no task to begin with")
+		t.Errorf("expected a suggestion to be NOT ok because there is no task to begin with")
 	}
 }
 
 func TestSuggestedFinishTime_WithPause(t *testing.T) {
+	config.SetDurationPerWeek(t, 35*time.Hour)
+	config.SetDaysPerWeek(t, 5)
+	config.InitViper()
+
 	d := Day{
 		Tasks: []*Task{
 			{Start: test.Time("10:20")},
@@ -67,7 +73,7 @@ func TestSuggestedFinishTime_WithPause(t *testing.T) {
 	suggestion, _ := d.SuggestedFinish()
 
 	if suggestion != test.Time("18:05") {
-		t.Errorf("expected suggested finish time to be 18:05, but got %v", suggestion)
+		t.Errorf("expected the suggested finish time to be 18:05 but got %v", suggestion)
 	}
 }
 
@@ -84,6 +90,6 @@ func TestSuggestedFinishTime_WithSetFinish(t *testing.T) {
 	_, ok := d.SuggestedFinish()
 
 	if ok {
-		t.Errorf("expected suggestion to be NOT ok cause the day is already finished")
+		t.Errorf("expected a suggestion to be NOT ok because the day is already finished")
 	}
 }

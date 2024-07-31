@@ -18,7 +18,7 @@ package data
 
 import (
 	"encoding/json"
-	"github.com/drademann/haora/app/config"
+	"github.com/drademann/haora/cmd/config"
 	"io"
 	"os"
 	"path/filepath"

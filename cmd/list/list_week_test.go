@@ -20,10 +20,10 @@ import (
 	"fmt"
 	"github.com/drademann/fugo/test"
 	"github.com/drademann/fugo/test/assert"
-	"github.com/drademann/haora/app/config"
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
 	"github.com/drademann/haora/cmd"
+	"github.com/drademann/haora/cmd/config"
 	"github.com/drademann/haora/cmd/root"
 	"testing"
 	"time"
@@ -33,11 +33,13 @@ func TestListWeekCmd_givenNoTasks(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local))
 	config.SetDurationPerWeek(t, 40*time.Hour)
 	config.SetDaysPerWeek(t, 5)
+	config.InitViper()
 
 	data.MockLoadSave(t, &data.DayList{})
 
 	out := cmd.TestExecute(t, root.Command, "-d 22.02.2024 list --week")
 
+	//goland:noinspection GrazieInspection
 	assert.Output(t, out,
 		`
 		Mon 19.02.2024   -
@@ -54,6 +56,7 @@ func TestListWeekCmd_givenNoTasks(t *testing.T) {
 
 func TestListWeekCmd(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
+	config.InitViper()
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTask(data.NewTask(test.Date("22.02.2024 09:00"), "task 1"))
@@ -64,6 +67,7 @@ func TestListWeekCmd(t *testing.T) {
 
 	out := cmd.TestExecute(t, root.Command, "list --week")
 
+	//goland:noinspection GrazieInspection
 	assert.Output(t, out,
 		`
 		Mon 19.02.2024   -
@@ -89,6 +93,7 @@ func TestListWeekCmd_givenDayIsOpen_shouldDisplayNowAsEndTime(t *testing.T) {
 
 	out := cmd.TestExecute(t, root.Command, "list --week")
 
+	//goland:noinspection GrazieInspection
 	assert.Output(t, out,
 		`
 		Mon 19.02.2024   -
@@ -111,6 +116,7 @@ func TestListWeekCmd_givenTodayIsMonday_shouldStartOneWeekBack(t *testing.T) {
 
 	out := cmd.TestExecute(t, root.Command, "-d mo list --week")
 
+	//goland:noinspection GrazieInspection
 	assert.Output(t, out,
 		`
 		Mon 11.03.2024   -
@@ -148,6 +154,7 @@ func TestListWeekCmd_withTotalDuration(t *testing.T) {
 		t.Run(command, func(t *testing.T) {
 			out := cmd.TestExecute(t, root.Command, command)
 
+			//goland:noinspection GrazieInspection
 			assert.Output(t, out,
 				`
 				Mon 19.02.2024   -
@@ -162,4 +169,54 @@ func TestListWeekCmd_withTotalDuration(t *testing.T) {
 				`)
 		})
 	}
+}
+
+func TestListWeekCmd_withHiddenWeekdays(t *testing.T) {
+	config.SetHiddenWeekdays(t, "sat sun")
+	config.InitViper()
+	datetime.AssumeForTestNowAt(t, test.Date("20.03.2024 16:32"))
+
+	d := data.Day{Date: test.Date("22.03.2024 00:00")}
+	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
+
+	out := cmd.TestExecute(t, root.Command, "-d mo list --week")
+
+	//goland:noinspection GrazieInspection
+	assert.Output(t, out,
+		`
+		Mon 18.03.2024   -
+		Tue 19.03.2024   -
+		Wed 20.03.2024   -
+		Thu 21.03.2024   -
+		Fri 22.03.2024   -
+		
+		                          total worked      0m   0.00h   0.00h   (- 40h)
+		`)
+}
+
+func TestListWeekCmd_withHiddenWeekdays_showsHiddenWeekdaysWhenNotEmpty(t *testing.T) {
+	config.SetHiddenWeekdays(t, "mon sat sun")
+	config.InitViper()
+	datetime.AssumeForTestNowAt(t, test.Date("20.03.2024 16:32"))
+
+	d := data.Day{Date: test.Date("18.03.2024 00:00")}
+	d.AddTask(data.NewTask(test.Date("18.03.2024 09:00"), "task 1"))
+	d.AddTask(data.NewPause(test.Date("18.03.2024 12:00"), "lunch"))
+	d.AddTask(data.NewTask(test.Date("18.03.2024 12:45"), "task 2"))
+	d.Finished = test.Date("18.03.2024 17:00")
+	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
+
+	out := cmd.TestExecute(t, root.Command, "-d mo list --week")
+
+	//goland:noinspection GrazieInspection
+	assert.Output(t, out,
+		`
+		Mon 18.03.2024   09:00 - 17:00  worked  7h 15m   7.25h   7.25h   (- 45m)
+		Tue 19.03.2024   -
+		Wed 20.03.2024   -
+		Thu 21.03.2024   -
+		Fri 22.03.2024   -
+		
+		                          total worked  7h 15m   7.25h   7.25h   (- 32h 45m)
+		`)
 }

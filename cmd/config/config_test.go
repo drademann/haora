@@ -17,6 +17,7 @@
 package config
 
 import (
+	"github.com/drademann/fugo/test/assert"
 	"testing"
 	"time"
 )
@@ -47,4 +48,13 @@ func TestDurationPerDay(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestHiddenWeekdays(t *testing.T) {
+	SetHiddenWeekdays(t, "sa sun")
+	InitViper()
+
+	assert.True(t, IsHidden(time.Saturday))
+	assert.True(t, IsHidden(time.Sunday))
+	assert.False(t, IsHidden(time.Wednesday))
 }

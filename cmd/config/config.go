@@ -18,9 +18,11 @@ package config
 
 import (
 	"errors"
+	"github.com/drademann/haora/cmd/internal/parsing"
 	"github.com/spf13/viper"
 	"os"
 	"path/filepath"
+	"slices"
 	"testing"
 	"time"
 )
@@ -32,6 +34,7 @@ const (
 
 	durationPerWeekKey = "times.durationPerWeek"
 	daysPerWeekKey     = "times.daysPerWeek"
+	hiddenWeekdaysKey  = "times.hiddenWeekdays"
 )
 
 var UserHomeDir = os.UserHomeDir
@@ -39,6 +42,7 @@ var UserHomeDir = os.UserHomeDir
 var (
 	durationPerWeek *time.Duration
 	daysPerWeek     *int
+	hiddenWeekdays  *[]time.Weekday
 )
 
 func InitViper() {
@@ -65,6 +69,16 @@ func InitViper() {
 		days := viper.GetInt(daysPerWeekKey)
 		daysPerWeek = &days
 	}
+	hiddenWeekdays = new([]time.Weekday)
+	if viper.IsSet(hiddenWeekdaysKey) {
+		weekdays := viper.GetStringSlice(hiddenWeekdaysKey)
+		for _, weekday := range weekdays {
+			weekdayTime, err := parsing.Weekday(weekday)
+			if err == nil {
+				*hiddenWeekdays = append(*hiddenWeekdays, weekdayTime)
+			}
+		}
+	}
 }
 
 func DurationPerWeek() (time.Duration, bool) {
@@ -82,12 +96,16 @@ func DurationPerDay() (time.Duration, bool) {
 	return time.Duration(nanos), true
 }
 
+func IsHidden(weekday time.Weekday) bool {
+	return slices.Contains(*hiddenWeekdays, weekday)
+}
+
 // for testing
 
 func SetDurationPerWeek(t *testing.T, d time.Duration) {
 	t.Helper()
 	viper.Set(durationPerWeekKey, d)
-	durationPerWeek = &d
+	durationPerWeek = nil
 }
 
 func SetNoDurationPerWeek(t *testing.T) {
@@ -99,11 +117,17 @@ func SetNoDurationPerWeek(t *testing.T) {
 func SetDaysPerWeek(t *testing.T, n int) {
 	t.Helper()
 	viper.Set(daysPerWeekKey, n)
-	daysPerWeek = &n
+	daysPerWeek = nil
 }
 
 func SetNoDaysPerWeek(t *testing.T) {
 	t.Helper()
 	viper.Set(daysPerWeekKey, nil)
 	daysPerWeek = nil
+}
+
+func SetHiddenWeekdays(t *testing.T, hiddenWeekdaysStr string) {
+	t.Helper()
+	viper.Set(hiddenWeekdaysKey, hiddenWeekdaysStr)
+	hiddenWeekdays = nil
 }

@@ -19,8 +19,8 @@ package data
 import (
 	"errors"
 	"fmt"
-	"github.com/drademann/haora/app/config"
 	"github.com/drademann/haora/app/datetime"
+	"github.com/drademann/haora/cmd/config"
 	"slices"
 	"sort"
 	"strings"

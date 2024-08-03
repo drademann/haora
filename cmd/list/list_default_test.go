@@ -43,7 +43,7 @@ func TestListCmd_givenNoTasks(t *testing.T) {
 			no tasks recorded
 			`)
 	})
-	t.Run("no tasks for other day than today", func(t *testing.T) {
+	t.Run("no tasks for other days than today", func(t *testing.T) {
 		data.MockLoadSave(t, &data.DayList{})
 
 		out := cmd.TestExecute(t, root.Command, "-d 20.02.2024 list")
@@ -61,6 +61,7 @@ func TestListCmd_oneOpenTaskForToday(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 	config.SetDurationPerWeek(t, 35*time.Hour)
 	config.SetDaysPerWeek(t, 5)
+	config.ApplyConfigOptions(t)
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "a task", "Haora"))
@@ -68,6 +69,7 @@ func TestListCmd_oneOpenTaskForToday(t *testing.T) {
 
 	out := cmd.TestExecute(t, root.Command, "list")
 
+	//goland:noinspection GrazieInspection
 	assert.Output(t, out,
 		`
 		Tasks for today, 22.02.2024 (Thu)
@@ -84,6 +86,7 @@ func TestListCmd_multipleTasksLastOpen(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 	config.SetDurationPerWeek(t, 40*time.Hour)
 	config.SetDaysPerWeek(t, 5)
+	config.ApplyConfigOptions(t)
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"))
@@ -92,6 +95,7 @@ func TestListCmd_multipleTasksLastOpen(t *testing.T) {
 
 	out := cmd.TestExecute(t, root.Command, "list")
 
+	//goland:noinspection GrazieInspection
 	assert.Output(t, out,
 		`
 		Tasks for today, 22.02.2024 (Thu)
@@ -109,6 +113,7 @@ func TestListCmd_multipleTasksLastInFuture(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 	config.SetDurationPerWeek(t, 40*time.Hour)
 	config.SetDaysPerWeek(t, 5)
+	config.ApplyConfigOptions(t)
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"))
@@ -117,6 +122,7 @@ func TestListCmd_multipleTasksLastInFuture(t *testing.T) {
 
 	out := cmd.TestExecute(t, root.Command, "list")
 
+	//goland:noinspection GrazieInspection
 	assert.Output(t, out,
 		`
 		Tasks for today, 22.02.2024 (Thu)
@@ -134,6 +140,7 @@ func TestListCmd_multipleTasksLastInFuture_andFinishedInFuture(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 	config.SetDurationPerWeek(t, 40*time.Hour)
 	config.SetDaysPerWeek(t, 5)
+	config.ApplyConfigOptions(t)
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"))
@@ -143,6 +150,7 @@ func TestListCmd_multipleTasksLastInFuture_andFinishedInFuture(t *testing.T) {
 
 	out := cmd.TestExecute(t, root.Command, "list")
 
+	//goland:noinspection GrazieInspection
 	assert.Output(t, out,
 		`
 		Tasks for today, 22.02.2024 (Thu)
@@ -160,6 +168,7 @@ func TestListCmd_withPause(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 	config.SetDurationPerWeek(t, 40*time.Hour)
 	config.SetDaysPerWeek(t, 5)
+	config.ApplyConfigOptions(t)
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"))
@@ -169,6 +178,7 @@ func TestListCmd_withPause(t *testing.T) {
 
 	out := cmd.TestExecute(t, root.Command, "list")
 
+	//goland:noinspection GrazieInspection
 	assert.Output(t, out,
 		`
 		Tasks for today, 22.02.2024 (Thu)
@@ -183,10 +193,37 @@ func TestListCmd_withPause(t *testing.T) {
 		`)
 }
 
+func TestListCmd_withDefaultPause(t *testing.T) {
+	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
+	config.SetDurationPerWeek(t, 40*time.Hour)
+	config.SetDaysPerWeek(t, 5)
+	config.SetDefaultPause(t, 45*time.Minute)
+	config.ApplyConfigOptions(t)
+
+	d := data.Day{Date: test.Date("22.02.2024 00:00")}
+	d.AddTask(data.NewTask(test.Date("22.02.2024 9:00"), "some programming", "Haora"))
+	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
+
+	out := cmd.TestExecute(t, root.Command, "list")
+
+	//goland:noinspection GrazieInspection
+	assert.Output(t, out,
+		`
+		Tasks for today, 22.02.2024 (Thu)
+
+		09:00 -  now     7h 32m   some programming #Haora
+
+		         total   7h 32m
+		        paused       0m
+		        worked   7h 32m   (-  1h 13m to 17:45)*
+		`)
+}
+
 func TestListCmd_withFinished(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 	config.SetDurationPerWeek(t, 36*time.Hour+15*time.Minute)
 	config.SetDaysPerWeek(t, 5)
+	config.ApplyConfigOptions(t)
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 
@@ -198,6 +235,7 @@ func TestListCmd_withFinished(t *testing.T) {
 
 	out := cmd.TestExecute(t, root.Command, "list")
 
+	//goland:noinspection GrazieInspection
 	assert.Output(t, out,
 		`
 		Tasks for today, 22.02.2024 (Thu)

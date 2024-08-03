@@ -71,12 +71,15 @@ func printDefault(cmd *cobra.Command, workingDate time.Time, dayList *data.DayLi
 		if task.IsPause {
 			cmd.Printf("      |         %v   %v\n", dur, task.Text)
 		} else {
+			//goland:noinspection GrazieInspection
 			cmd.Printf("%v - %v   %v   %v%v\n", start, end, dur, task.Text, tagsStr(task.Tags))
 		}
 	}
 	cmd.Println()
 	cmd.Printf("         total  %v\n", format.Duration(d.TotalDuration()))
-	cmd.Printf("        paused  %v\n", format.Duration(d.TotalPauseDuration()))
+	totalPause := d.TotalPauseDuration()
+	//goland:noinspection GrazieInspection
+	cmd.Printf("        paused  %v\n", format.Duration(totalPause))
 	printWorkedOvertime(cmd, d)
 	return nil
 }
@@ -87,7 +90,11 @@ func printWorkedOvertime(cmd *cobra.Command, d *data.Day) {
 	if exist && overtime != 0 {
 		suggestion, ok := d.SuggestedFinish()
 		if ok && overtime < 0 {
-			output += fmt.Sprintf("   (%s %v to %v)", sign(overtime), format.DurationShort(overtime), suggestion.Format("15:04"))
+			pauseMarker := ""
+			if d.UsesDefaultPause() {
+				pauseMarker = "*"
+			}
+			output += fmt.Sprintf("   (%s %v to %v)%s", sign(overtime), format.DurationShort(overtime), suggestion.Format("15:04"), pauseMarker)
 		} else {
 			output += fmt.Sprintf("   (%s %v)", sign(overtime), format.DurationShort(overtime))
 		}

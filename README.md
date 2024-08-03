@@ -145,11 +145,15 @@ This JSON file has the following format:
 times:
   durationPerWeek: "32h"
   daysPerWeek: 5
+  defaultPause: "45m"
+  hiddenWeekdays: sa so
 ```
 
 When the file is not present, the default values are used.
 
 ### Duration per week
+
+`times.durationPerWeek`
 
 Sets the desired amount of working hours for each week.
 Minutes may be added as well, like `"38h 30m"`.
@@ -158,12 +162,28 @@ Default: `"40h"`
 
 ### Days per week
 
+`times.daysPerWeek`
+
 Defines the number of workdays for a week.
 This determines the desired amount of working hours per day.
 
 Default: `5`
 
+### Default pause duration
+
+`times.defaultPause`
+
+Optionally, sets the default pause duration.
+This duration will be added to the suggested finish time as long
+as the actual total pause duration of the day is less than the default one.
+If no default pause duration is set, then only the actual total pause duration will be added.
+
+A little asterisk `*` is show at the suggested finish time
+whenever the default pause duration is used.
+
 ### Hidden weekdays
+
+`times.hiddenWeekdays`
 
 Defines weekdays that shouldn't be displayed.
 Possible values, separated by space:
@@ -189,8 +209,8 @@ Default: none set, all displayed
 
 To get the latest greatest version of haora, it can be built from scratch:
 
-Check out this repository, ensure you're on the `main` branch (the current _production_ branch), have Go installed, and
-install `haora`.
+Check out this repository, ensure you're on the `main` branch (the current _production_ branch),
+have Go installed, and install `haora`.
 
 ```shell
 $ go install

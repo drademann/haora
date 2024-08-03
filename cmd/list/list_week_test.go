@@ -56,6 +56,9 @@ func TestListWeekCmd_givenNoTasks(t *testing.T) {
 
 func TestListWeekCmd(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
+	config.SetDurationPerWeek(t, 40*time.Hour)
+	config.SetDaysPerWeek(t, 5)
+	config.ApplyConfigOptions(t)
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTask(data.NewTask(test.Date("22.02.2024 09:00"), "task 1"))
@@ -83,6 +86,9 @@ func TestListWeekCmd(t *testing.T) {
 
 func TestListWeekCmd_givenDayIsOpen_shouldDisplayNowAsEndTime(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
+	config.SetDurationPerWeek(t, 40*time.Hour)
+	config.SetDaysPerWeek(t, 5)
+	config.ApplyConfigOptions(t)
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d.AddTask(data.NewTask(test.Date("22.02.2024 09:00"), "task 1"))
@@ -109,6 +115,9 @@ func TestListWeekCmd_givenDayIsOpen_shouldDisplayNowAsEndTime(t *testing.T) {
 
 func TestListWeekCmd_givenTodayIsMonday_shouldStartOneWeekBack(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("18.03.2024 16:32"))
+	config.SetDurationPerWeek(t, 40*time.Hour)
+	config.SetDaysPerWeek(t, 5)
+	config.ApplyConfigOptions(t)
 
 	d := data.Day{Date: test.Date("22.02.2024 00:00")}
 	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
@@ -131,8 +140,6 @@ func TestListWeekCmd_givenTodayIsMonday_shouldStartOneWeekBack(t *testing.T) {
 }
 
 func TestListWeekCmd_withTotalDuration(t *testing.T) {
-	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
-
 	d1 := data.Day{Date: test.Date("22.02.2024 00:00")}
 	d1.AddTask(data.NewTask(test.Date("22.02.2024 09:00"), "task 1"))
 	d1.AddTask(data.NewPause(test.Date("22.02.2024 12:00"), "lunch"))
@@ -151,6 +158,11 @@ func TestListWeekCmd_withTotalDuration(t *testing.T) {
 	for _, fc := range flagCases {
 		command := fmt.Sprintf("list %s", fc)
 		t.Run(command, func(t *testing.T) {
+			datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
+			config.SetDurationPerWeek(t, 40*time.Hour)
+			config.SetDaysPerWeek(t, 5)
+			config.ApplyConfigOptions(t)
+
 			out := cmd.TestExecute(t, root.Command, command)
 
 			//goland:noinspection GrazieInspection
@@ -171,9 +183,11 @@ func TestListWeekCmd_withTotalDuration(t *testing.T) {
 }
 
 func TestListWeekCmd_withHiddenWeekdays(t *testing.T) {
+	datetime.AssumeForTestNowAt(t, test.Date("20.03.2024 16:32"))
+	config.SetDurationPerWeek(t, 40*time.Hour)
+	config.SetDaysPerWeek(t, 5)
 	config.SetHiddenWeekdays(t, "sat sun")
 	config.ApplyConfigOptions(t)
-	datetime.AssumeForTestNowAt(t, test.Date("20.03.2024 16:32"))
 
 	d := data.Day{Date: test.Date("22.03.2024 00:00")}
 	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
@@ -194,9 +208,11 @@ func TestListWeekCmd_withHiddenWeekdays(t *testing.T) {
 }
 
 func TestListWeekCmd_withHiddenWeekdays_showsHiddenWeekdaysWhenNotEmpty(t *testing.T) {
+	datetime.AssumeForTestNowAt(t, test.Date("20.03.2024 16:32"))
+	config.SetDurationPerWeek(t, 40*time.Hour)
+	config.SetDaysPerWeek(t, 5)
 	config.SetHiddenWeekdays(t, "mon sat sun")
 	config.ApplyConfigOptions(t)
-	datetime.AssumeForTestNowAt(t, test.Date("20.03.2024 16:32"))
 
 	d := data.Day{Date: test.Date("18.03.2024 00:00")}
 	d.AddTask(data.NewTask(test.Date("18.03.2024 09:00"), "task 1"))

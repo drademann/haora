@@ -148,7 +148,7 @@ func TestTaskDuration(t *testing.T) {
 		dur := d.TaskDuration(*task2)
 		assert.Duration(t, dur, 2*time.Hour)
 	})
-	t.Run("given day is finished should use this as end timestamp", func(t *testing.T) {
+	t.Run("given day is finished should use this as an end timestamp", func(t *testing.T) {
 		task1 := NewTask(test.Time("9:00"), "task 1")
 		task2 := NewTask(test.Time("10:00"), "task 2")
 		d := Day{Date: test.Time("0:00"),

@@ -93,7 +93,7 @@ func TestFinishBeforeLastTask(t *testing.T) {
 
 	out := cmd.TestExecute(t, root.Command, "finish 8:00")
 
-	assert.Output(t, out, "error: can't finish before last task's start timestamp (09:00)\n")
+	assert.Output(t, out, "error: can't finish before the last task's start timestamp (09:00)\n")
 }
 
 func TestUnfinished(t *testing.T) {

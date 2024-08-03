@@ -94,7 +94,7 @@ func (d *Day) AddTask(task *Task) {
 }
 
 // RemoveTask removes a task from the Day’s list of tasks based on the specified time.
-// After removing a found task it returns true.
+// After removing a found task, it returns true.
 func (d *Day) RemoveTask(timeToDelete time.Time) bool {
 	timeToDelete = datetime.Combine(d.Date, timeToDelete)
 	i, found := sort.Find(len(d.Tasks), func(i int) int {
@@ -128,7 +128,7 @@ func (d *Day) Finish(f time.Time) error {
 	f = datetime.Combine(d.Date, f)
 	last := d.Tasks[len(d.Tasks)-1]
 	if f.Before(last.Start) {
-		return fmt.Errorf("can't finish before last task's start timestamp (%s)", last.Start.Format("15:04"))
+		return fmt.Errorf("can't finish before the last task's start timestamp (%s)", last.Start.Format("15:04"))
 	}
 	d.Finished = f
 	return nil
@@ -138,13 +138,25 @@ func (d *Day) Unfinished() {
 	d.Finished = time.Time{}
 }
 
-// SuggestedFinish returns a suggested finish time. Empty days or already finished days return false.
+// SuggestedFinish returns a suggested finish time.
+// Empty days or already finished days return false.
 func (d *Day) SuggestedFinish() (time.Time, bool) {
 	durationPerDay, exist := config.DurationPerDay()
 	if !exist || d.IsFinished() || d.IsEmpty() {
 		return time.Time{}, false
 	}
-	return d.Tasks[0].Start.Add(durationPerDay).Add(d.TotalPauseDuration()), true
+	totalPause := d.TotalPauseDuration()
+	defaultPause, _ := config.DefaultPause()
+	if d.UsesDefaultPause() {
+		totalPause = defaultPause
+	}
+	return d.Tasks[0].Start.Add(durationPerDay).Add(totalPause), true
+}
+
+func (d *Day) UsesDefaultPause() bool {
+	totalPause := d.TotalPauseDuration()
+	defaultPause, exists := config.DefaultPause()
+	return exists && defaultPause > totalPause
 }
 
 func (d *Day) TotalDuration() time.Duration {
@@ -180,7 +192,12 @@ func (d *Day) OvertimeDuration() (time.Duration, bool) {
 	if !exist {
 		return 0, false
 	}
-	return d.TotalWorkDuration() - durationPerDay, true
+	totalPause := d.TotalPauseDuration()
+	defaultPause, exists := config.DefaultPause()
+	if exists && defaultPause > totalPause {
+		totalPause = defaultPause
+	}
+	return d.TotalDuration() - totalPause - durationPerDay, true
 }
 
 func (d *Day) TotalTagDuration(tag string) time.Duration {

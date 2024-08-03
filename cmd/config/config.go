@@ -34,17 +34,20 @@ const (
 
 	durationPerWeekKey = "times.durationPerWeek"
 	daysPerWeekKey     = "times.daysPerWeek"
-	hiddenWeekdaysKey  = "times.hiddenWeekdays"
 	defaultPauseKey    = "times.defaultPause"
+
+	hiddenWeekdaysKey = "view.hiddenWeekdays"
 )
 
 var UserHomeDir = os.UserHomeDir
 
 var (
+	// times
 	durationPerWeek *time.Duration
 	daysPerWeek     *int
-	hiddenWeekdays  *[]time.Weekday
 	defaultPause    *time.Duration
+	// view
+	hiddenWeekdays *[]time.Weekday
 )
 
 func InitViper() {

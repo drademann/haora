@@ -146,6 +146,7 @@ times:
   durationPerWeek: "32h"
   daysPerWeek: 5
   defaultPause: "45m"
+view:
   hiddenWeekdays: sa so
 ```
 
@@ -183,7 +184,7 @@ whenever the default pause duration is used.
 
 ### Hidden weekdays
 
-`times.hiddenWeekdays`
+`view.hiddenWeekdays`
 
 Defines weekdays that shouldn't be displayed.
 Possible values, separated by space:

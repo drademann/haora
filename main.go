@@ -21,6 +21,7 @@ import "github.com/drademann/haora/cmd/root"
 // imports to initialize commands
 
 import _ "github.com/drademann/haora/cmd/add"
+import _ "github.com/drademann/haora/cmd/edit"
 import _ "github.com/drademann/haora/cmd/finish"
 import _ "github.com/drademann/haora/cmd/list"
 import _ "github.com/drademann/haora/cmd/pause"

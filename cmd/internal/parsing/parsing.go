@@ -46,7 +46,18 @@ var (
 	}
 )
 
-func Time(flag string, args []string) (time.Time, []string, error) {
+func Time(flag string) (time.Time, error) {
+	if flag != "" {
+		t, err := parseTime(flag)
+		if err != nil {
+			return t, err
+		}
+		return t, nil
+	}
+	return time.Time{}, errors.New("no time found")
+}
+
+func TimeWithArgs(flag string, args []string) (time.Time, []string, error) {
 	if flag != "" {
 		t, err := parseTime(flag)
 		if err != nil {
@@ -99,4 +110,24 @@ func Weekday(weekdayStr string) (time.Weekday, error) {
 		}
 	}
 	return time.Wednesday, fmt.Errorf("no weekday found for %s", weekdayStr)
+}
+
+func Tags(tagsFlag string) []string {
+	if tagsFlag != "" {
+		tags := strings.Split(tagsFlag, ",")
+		return tags
+	}
+	return []string{}
+}
+
+func TagsWithArgs(tagsFlag string, args []string) ([]string, []string) {
+	if tagsFlag != "" {
+		tags := strings.Split(tagsFlag, ",")
+		return tags, args
+	}
+	if len(args) > 0 {
+		tags := strings.Split(args[0], ",")
+		return tags, args[1:]
+	}
+	return []string{}, args
 }

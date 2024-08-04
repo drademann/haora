@@ -70,7 +70,7 @@ $ haora remove 10:00
 }
 
 func removeAction(workingDate time.Time, dayList *data.DayList, startFlag string, args []string) error {
-	startTimeToDelete, args, err := parsing.Time(startFlag, args)
+	startTimeToDelete, args, err := parsing.TimeWithArgs(startFlag, args)
 	if err != nil {
 		return err
 	}

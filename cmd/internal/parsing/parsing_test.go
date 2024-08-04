@@ -57,7 +57,7 @@ func TestTime(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			parsedTime, parsedArgs, err := Time(tc.flag, tc.args)
+			parsedTime, parsedArgs, err := TimeWithArgs(tc.flag, tc.args)
 			if err != nil && !tc.wantErr {
 				t.Fatalf("expected no error, got %v", err)
 			}

@@ -93,6 +93,23 @@ func (d *Day) AddTask(task *Task) {
 	slices.SortFunc(d.Tasks, tasksByStart)
 }
 
+func (d *Day) EditTask(u time.Time, s *time.Time, txt *string, tgs []string) error {
+	task, err := d.taskAt(u)
+	if err != nil {
+		return err
+	}
+	if s != nil {
+		task.Start = datetime.Combine(d.Date, *s)
+	}
+	if txt != nil {
+		task.Text = *txt
+	}
+	if tgs != nil {
+		task.Tags = tgs
+	}
+	return nil
+}
+
 // RemoveTask removes a task from the Day’s list of tasks based on the specified time.
 // After removing a found task, it returns true.
 func (d *Day) RemoveTask(timeToDelete time.Time) bool {

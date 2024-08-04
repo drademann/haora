@@ -26,9 +26,9 @@ import (
 )
 
 func init() {
-	command.Flags().StringP("start", "s", "", "starting timestamp, like 10:00, of the task")
+	command.Flags().StringP("start", "s", "", "start timestamp, like 10:00, of the task")
 	command.Flags().StringP("tags", "t", "", "comma separated tags of the task")
-	command.Flags().Bool("no-tags", false, "set if the new task shall have no tags")
+	command.Flags().Bool("no-tags", false, "set if the new task should have no tags")
 	root.Command.AddCommand(command)
 }
 
@@ -38,9 +38,9 @@ var command = &cobra.Command{
 	Short:   "Adds a task to a day",
 	Long: `Adds a new task to a day. 
 
-The default and simplest to use format for the add command is 
+The default format and simplest to use for the add command. 
 
-$ haora add [time] [single tag] [text...]`,
+$ haora add [time] [single tag] [text]`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		workingDateFlag, err := cmd.Flags().GetString("date")
 		if err != nil {
@@ -81,30 +81,15 @@ $ haora add [time] [single tag] [text...]`,
 }
 
 func addAction(workingDate time.Time, dayList *data.DayList, startFlag, tagsFlag string, noTagsFlag bool, args []string) error {
-	startTime, args, err := parsing.Time(startFlag, args)
+	startTime, args, err := parsing.TimeWithArgs(startFlag, args)
 	if err != nil {
 		return err
 	}
 	var tags []string
 	if !noTagsFlag {
-		tags, args, err = parseTags(tagsFlag, args)
-		if err != nil {
-			return err
-		}
+		tags, args = parsing.TagsWithArgs(tagsFlag, args)
 	}
 	text := strings.Join(args, " ")
 	day := dayList.Day(workingDate)
 	return day.AddNewTask(startTime, text, tags)
-}
-
-func parseTags(tagsFlag string, args []string) ([]string, []string, error) {
-	if tagsFlag != "" {
-		tags := strings.Split(tagsFlag, ",")
-		return tags, args, nil
-	}
-	if len(args) > 0 {
-		tags := strings.Split(args[0], ",")
-		return tags, args[1:], nil
-	}
-	return []string{}, args, nil
 }

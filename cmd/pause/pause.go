@@ -69,7 +69,7 @@ $ haora pause 12:00 Lunch`,
 }
 
 func pauseAction(workingDate time.Time, dayList *data.DayList, startFlag string, args []string) error {
-	pauseTime, args, err := parsing.Time(startFlag, args)
+	pauseTime, args, err := parsing.TimeWithArgs(startFlag, args)
 	if err != nil {
 		return err
 	}

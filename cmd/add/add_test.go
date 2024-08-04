@@ -71,7 +71,7 @@ func TestAddCmd(t *testing.T) {
 
 			d := dayList.Day(tc.expectedStart)
 			if len(d.Tasks) != 1 {
-				t.Fatalf("expected 1 task, got %d", len(d.Tasks))
+				t.Fatalf("expected one task, got %d", len(d.Tasks))
 			}
 			task := d.Tasks[0]
 			if task.Start != tc.expectedStart {
@@ -108,13 +108,13 @@ func TestAddShouldUpdateExistingTaskAtSameTime(t *testing.T) {
 
 	d := dayList.Day(test.Date("26.02.2024 00:00"))
 	if len(d.Tasks) != 1 {
-		t.Fatalf("expected 1 task, got %d", len(d.Tasks))
+		t.Fatalf("expected one task, got %d", len(d.Tasks))
 	}
 	task := d.Tasks[0]
 	if task.Text != "simple task" {
-		t.Errorf("expected updated task's text to be %q, but got %q", "simple task", task.Text)
+		t.Errorf("expected the updated task's text to be %q but got %q", "simple task", task.Text)
 	}
 	if !reflect.DeepEqual(task.Tags, []string{"haora"}) {
-		t.Errorf("expected updated task's tags to be %v, but got %v", []string{"haora"}, task.Tags)
+		t.Errorf("expected the updated task's tags to be %v but got %v", []string{"haora"}, task.Tags)
 	}
 }

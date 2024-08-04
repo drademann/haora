@@ -74,7 +74,7 @@ $ haora finish 17:00`,
 }
 
 func finishAction(day *data.Day, endFlag string, args []string) error {
-	endTime, _, err := parsing.Time(endFlag, args)
+	endTime, _, err := parsing.TimeWithArgs(endFlag, args)
 	if err != nil {
 		return err
 	}

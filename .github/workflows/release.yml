@@ -7,7 +7,23 @@ on:
       - 'v*.*.*'
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.23
+
+      - name: Test
+        run: go test -v ./...
+
   build:
+    needs: test
     runs-on: ubuntu-latest
 
     strategy:
@@ -23,16 +39,6 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: ${{ matrix.go-version }}
-
-      - name: Test
-        run: |
-          if [[ "${{ matrix.os }}" == "windows-amd64" ]]; then
-            GOOS=windows GOARCH=amd64 go test ./...
-          elif [[ "${{ matrix.os }}" == "macos-arm64" ]]; then
-            GOOS=darwin GOARCH=arm64 go test ./...
-          else
-            GOOS=linux GOARCH=amd64 go test ./...
-          fi
 
       - name: Build
         run: |

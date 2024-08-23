@@ -89,8 +89,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.HAORA_RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release/ubuntu-amd64-haora
-          asset_name: haora
+          asset_path: ./release/ubuntu-amd64-haora/haora
+          asset_name: haora-linux-amd64
           asset_content_type: application/octet-stream
 
       - name: Upload Release Asset (Windows amd64)
@@ -99,8 +99,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.HAORA_RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release/windows-amd64-haora.exe
-          asset_name: haora.exe
+          asset_path: ./release/windows-amd64-haora/haora.exe
+          asset_name: haora-windows-amd64
           asset_content_type: application/octet-stream
 
       - name: Upload Release Asset (macOS arm64)
@@ -109,6 +109,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.HAORA_RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release/macos-arm64-haora
-          asset_name: haora
+          asset_path: ./release/macos-arm64-haora/haora
+          asset_name: haora-macos-arm64
           asset_content_type: application/octet-stream

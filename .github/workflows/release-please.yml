@@ -36,7 +36,7 @@ jobs:
       - name: Archive release
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ runner.os }}-haora
+          name: ${{ matrix.os }}-haora
           path: haora*
 
   release:

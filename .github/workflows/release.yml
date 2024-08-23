@@ -2,6 +2,7 @@ name: Release
 
 on:
   push:
+
     tags:
       - 'v*.*.*'
 
@@ -11,8 +12,8 @@ jobs:
 
     strategy:
       matrix:
-        go-version: [1.23]
-        os: [ubuntu-amd64, windows-amd64, macos-arm64]
+        go-version: [ 1.23 ]
+        os: [ ubuntu-amd64, windows-amd64, macos-arm64 ]
 
     steps:
       - name: Checkout code
@@ -23,6 +24,16 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
 
+      - name: Test
+        run: |
+          if [[ "${{ matrix.os }}" == "windows-amd64" ]]; then
+            GOOS=windows GOARCH=amd64 go test ./...
+          elif [[ "${{ matrix.os }}" == "macos-arm64" ]]; then
+            GOOS=darwin GOARCH=arm64 go test ./...
+          else
+            GOOS=linux GOARCH=amd64 go test ./...
+          fi
+
       - name: Build
         run: |
           if [[ "${{ matrix.os }}" == "windows-amd64" ]]; then
@@ -30,7 +41,7 @@ jobs:
           elif [[ "${{ matrix.os }}" == "macos-arm64" ]]; then
             GOOS=darwin GOARCH=arm64 go build -o haora
           else
-            GOOS=linux GOARCH=amd64 go build -o myapp
+            GOOS=linux GOARCH=amd64 go build -o haora
           fi
 
       - name: Archive release

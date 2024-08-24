@@ -17,6 +17,41 @@ To end the work for a day, a finish timestamp can be set, see the `finish` comma
 The `list` command shows the tasks of a day, optionally the sums per tag.
 With the `--week` option it shows all start and end times of a week.
 
+## Install and Run
+
+There are two ways to install the application.
+
+### Install the Release
+
+The latest release can be downloaded.
+Though there is one drawback at least on macOS:
+The then unzipped executable can't be executed directly because the `haora` application is not signed.
+You have to explicitly trust the application by allowing macOS to run it.
+
+1. Try to run it: You should get an error message saying something like _"not from a trusted source"_.
+2. _Then_ go to System Settings > Privacy and Security where you should now find a selection at the bottom of the right
+   side to allow the application to run.
+
+### Install from GitHub
+
+If you have Go – preferably the latest version – installed, you can build and install the executable yourself:
+
+    $ go install github.com/drademann/haora@v1.2.3
+
+Replace the version with the version you want to install.
+When in doubt, use the same as the latest release version.
+
+### Build from Source
+
+You may also clone this Git Repository.
+The main branch represents the latest release, and uses tags to like `v1.2.3` to mark version commits.
+
+Then, within the cloned repository folder, run
+
+    $ go install
+
+and Go will compile and install the executable for you.
+
 ## Global Flags
 
 ### `--date` `-d`
@@ -205,16 +240,3 @@ times:
 ```
 
 Default: none set, all displayed
-
-## Build
-
-To get the latest greatest version of haora, it can be built from scratch:
-
-Check out this repository, ensure you're on the `main` branch (the current _production_ branch),
-have Go installed, and install `haora`.
-
-```shell
-$ go install
-```
-
-It installs `haora` within the Go `bin` folder.

@@ -2,7 +2,7 @@
 
 A command-line tool application programmed with Go to track working times.
 
-[![Go Build & Test](https://github.com/drademann/haora/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/drademann/haora/actions/workflows/go.yml)
+[![Test](https://github.com/drademann/haora/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/drademann/haora/actions/workflows/test.yml)
 
 ## Description
 

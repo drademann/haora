@@ -42,15 +42,22 @@ func printTags(cmd *cobra.Command, workingDate time.Time, dayList *data.DayList)
 		return nil
 	}
 
+	var totalDur time.Duration
 	for _, tg := range d.Tags() {
 		tagDur := d.TotalTagDuration(tg)
-		cmd.Printf("%v  %v  %v   #%v\n",
+		totalDur += tagDur
+		cmd.Printf("%7v  %6v  %6v   #%v\n",
 			format.Duration(tagDur),
 			format.DurationDecimal(tagDur),
 			format.DurationDecimalRounded(tagDur, 15*time.Minute),
 			tg,
 		)
 	}
+	cmd.Printf("\n%7v  %6v  %6v\n",
+		format.Duration(totalDur),
+		format.DurationDecimal(totalDur),
+		format.DurationDecimalRounded(totalDur, 15*time.Minute),
+	)
 
 	return nil
 }
@@ -80,15 +87,22 @@ func printTagsMonth(cmd *cobra.Command, workingDate time.Time, dayList *data.Day
 		return nil
 	}
 
+	var totalDur time.Duration
 	for _, tg := range tags {
 		tagDur := totals[tg]
-		cmd.Printf("%v  %v  %v   #%v\n",
+		totalDur += tagDur
+		cmd.Printf("%8v  %7v  %7v   #%v\n",
 			format.Duration(tagDur),
 			format.DurationDecimal(tagDur),
 			format.DurationDecimalRounded(tagDur, 15*time.Minute),
 			tg,
 		)
 	}
+	cmd.Printf("\n%8v  %7v  %7v\n",
+		format.Duration(totalDur),
+		format.DurationDecimal(totalDur),
+		format.DurationDecimalRounded(totalDur, 15*time.Minute),
+	)
 
 	return nil
 }

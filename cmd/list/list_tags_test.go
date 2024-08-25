@@ -79,6 +79,8 @@ func TestListTagsDayCmd(t *testing.T) {
 				 1h 32m   1.53h   1.50h   #go
 				 3h  0m   3.00h   3.00h   #haora
 				 4h 32m   4.53h   4.50h   #learning
+				
+				 9h  4m   9.07h   9.00h
 				`)
 		})
 	}
@@ -108,9 +110,57 @@ func TestListTagsMonthCmd(t *testing.T) {
 				`
 				Tag summary for February 2024
 		
-				 2h  0m   2.00h   2.00h   #go
-				 7h  0m   7.00h   7.00h   #haora
-				 7h  0m   7.00h   7.00h   #learning
+				  2h  0m    2.00h    2.00h   #go
+				  7h  0m    7.00h    7.00h   #haora
+				  7h  0m    7.00h    7.00h   #learning
+
+				 16h  0m   16.00h   16.00h
+				`)
+		})
+	}
+}
+
+func TestListTagsMonthCmd_MoreThan100(t *testing.T) {
+	d1 := data.Day{Date: test.Date("22.02.2024 00:00")}
+	d1.AddTask(data.NewTask(test.Date("22.02.2024 1:00"), "a task", "haora"))
+	d1.Finished = test.Date("22.02.2024 23:00")
+
+	d2 := data.Day{Date: test.Date("23.02.2024 00:00")}
+	d2.AddTask(data.NewTask(test.Date("23.02.2024 01:00"), "a task", "haora"))
+	d2.Finished = test.Date("23.02.2024 23:00")
+
+	d3 := data.Day{Date: test.Date("24.02.2024 00:00")}
+	d3.AddTask(data.NewTask(test.Date("24.02.2024 01:00"), "a task", "haora"))
+	d3.Finished = test.Date("24.02.2024 23:00")
+
+	d4 := data.Day{Date: test.Date("25.02.2024 00:00")}
+	d4.AddTask(data.NewTask(test.Date("25.02.2024 01:00"), "a task", "haora"))
+	d4.Finished = test.Date("25.02.2024 23:00")
+
+	d5 := data.Day{Date: test.Date("26.02.2024 00:00")}
+	d5.AddTask(data.NewTask(test.Date("26.02.2024 01:00"), "a task", "haora"))
+	d5.Finished = test.Date("26.02.2024 23:00")
+
+	d6 := data.Day{Date: test.Date("27.02.2024 00:00")}
+	d6.AddTask(data.NewTask(test.Date("27.02.2024 12:00"), "a sandwich", "lunch"))
+	d6.Finished = test.Date("27.02.2024 12:45")
+
+	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d1, &d2, &d3, &d4, &d5, &d6}})
+
+	flagCases := []string{"-d 22.02. --tags month", "-d 22.02. -t month"}
+	for _, fc := range flagCases {
+		command := fmt.Sprintf("list %s", fc)
+		t.Run(command, func(t *testing.T) {
+			out := cmd.TestExecute(t, root.Command, command)
+
+			assert.Output(t, out,
+				`
+				Tag summary for February 2024
+		
+				110h  0m  110.00h  110.00h   #haora
+				     45m    0.75h    0.75h   #lunch
+
+				110h 45m  110.75h  110.75h
 				`)
 		})
 	}

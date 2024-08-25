@@ -139,6 +139,37 @@ No tags are used for a pause, but a text may be set.
 
 To explicitly set a starting timestamp for the pause.
 
+### edit
+
+The `edit` command allows updating an existing task entry.
+The task to edit is chosen by its start time.
+Anything not set won't be changed.
+Unlike the use of the `add` command, all flags to update must be set explicitly.
+All plain arguments are added to the text flag (`-x`).
+
+#### Examples
+
+    $ haora edit -u 09:30 -s 10:00 -t programming -x "some more Go code"
+    $ haora edit -u 10:00 -x "was Kotlin code"
+
+#### Flags
+
+`--update 10:00`
+
+Mandatory flag to select the task to update by its current starting time.
+
+`--start 09:30`
+
+New starting time (optional).
+
+`--tags project-b`
+
+New tags (optional).
+
+`--text "did something else"`
+
+New text (optional).
+
 ### remove
 
 Removes a task of a day. The starting timestamp identifies the task to remove.

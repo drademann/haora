@@ -46,9 +46,12 @@ var command = &cobra.Command{
 
 The task to edit is chosen by its start time. Anything not set won't be changed.
 Unlike the use of the add command, all flags to update must be set explicitly. 
-All plain arguments are added to the text flag.
+All plain arguments are added to the text flag (-x).
 
-$ haora edit [existing time] [new time] [single tag] [text]`,
+Examples:
+
+  $ haora edit -u 09:30 -s 10:00 -t programming -x "some more Go code"
+  $ haora edit -u 10:00 -x "was Kotlin code"`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		workingDateFlag, err := cmd.Flags().GetString("date")
 		if err != nil {

@@ -19,18 +19,7 @@ With the `--week` option it shows all start and end times of a week.
 
 ## Install and Run
 
-There are two ways to install the application.
-
-### Install the Release
-
-The latest release can be downloaded.
-Though there is one drawback at least on macOS:
-The then unzipped executable can't be executed directly because the `haora` application is not signed.
-You have to explicitly trust the application by allowing macOS to run it.
-
-1. Try to run it: You should get an error message saying something like _"not from a trusted source"_.
-2. _Then_ go to System Settings > Privacy and Security where you should now find a selection at the bottom of the right
-   side to allow the application to run.
+There are two ways to install the application. For both, a [Go installation](https://go.dev/dl/) is necessary.
 
 ### Install from GitHub
 
@@ -38,8 +27,8 @@ If you have Go – preferably the latest version – installed, you can build an
 
     $ go install github.com/drademann/haora@v1.2.3
 
-Replace the version with the version you want to install.
-When in doubt, use the same as the latest release version.
+Replace the version with the version you want to install: [List of Version Tags](https://github.com/drademann/haora/tags)
+When in doubt, use the latest version.
 
 ### Build from Source
 

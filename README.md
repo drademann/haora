@@ -27,7 +27,7 @@ If you have Go – preferably the latest version – installed, you can build an
 
     $ go install github.com/drademann/haora@v1.2.3
 
-Replace the version with the version you want to install: [List of Version Tags](https://github.com/drademann/haora/tags)
+Replace the version with the version you want to install: [List of Version Tags](https://github.com/drademann/haora/tags).
 When in doubt, use the latest version.
 
 ### Build from Source

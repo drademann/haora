@@ -100,6 +100,7 @@ func (d *Day) EditTask(u time.Time, s *time.Time, txt *string, tgs []string) err
 	}
 	if s != nil {
 		task.Start = datetime.Combine(d.Date, *s)
+		slices.SortFunc(d.Tasks, tasksByStart)
 	}
 	if txt != nil {
 		task.Text = *txt

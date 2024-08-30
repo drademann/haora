@@ -1,8 +1,12 @@
 # Haora
 
+![GitHub Tag](https://img.shields.io/github/v/tag/drademann/haora?filter=!*beta*&label=Version)
+
 A command-line tool application programmed with Go to track working times.
 
 [![Test](https://github.com/drademann/haora/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/drademann/haora/actions/workflows/test.yml)
+![GitHub Tag](https://img.shields.io/github/v/tag/drademann/haora?filter=*beta*&label=Beta)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/drademann/haora?label=Open%20Issues)
 
 ## Description
 
@@ -27,8 +31,11 @@ If you have Go – preferably the latest version – installed, you can build an
 
     $ go install github.com/drademann/haora@v1.2.3
 
-Replace the version with the version you want to install: [List of Version Tags](https://github.com/drademann/haora/tags).
-When in doubt, use the latest version.
+Replace the version with the version you want to
+install.
+Use the latest stable version (see above), or a specific one from
+this [list of version tags](https://github.com/drademann/haora/tags).
+Use the latest beta version to test new features early at your own risk.
 
 ### Build from Source
 

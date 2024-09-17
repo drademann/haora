@@ -58,7 +58,7 @@ Different date formats are allowed:
 
 | Format                  | Description                                                                                | Example                    |
 |-------------------------|--------------------------------------------------------------------------------------------|----------------------------|
-| DD.MM.YYYY<br/>DD.MM.YY | a specific date                                                                            | 9.3.2024<br/>24.12.2023    |
+| DD.MM.YYYY<br/>DD.MM.YY | a specific date                                                                            | 9.3.2024<br/>24.12.23      |
 | DD.MM.<br/>DD.MM        | a date within the current year                                                             | 9.3.<br/>24.12             |
 | DD.<br/>DD              | a day within the current month and year                                                    | 9.<br/>24                  |
 | WW                      | the previous weekday<br>(selects the first date prior to today<br/>with the given weekday) | mo, tu, we, th, fr, sa, su |
@@ -68,10 +68,10 @@ Different date formats are allowed:
 
 Commands that take a timestamp as an argument accept different formats:
 
-| Format | Description              | Example        |
-|--------|--------------------------|----------------|
-| HH:MM  | timestamp with semicolon | 10:30<br/>9:42 |
-| HHMM   | without semicolon        | 1030<br/>942   |
+| Format | Description          | Example        |
+|--------|----------------------|----------------|
+| HH:MM  | timestamp with colon | 10:30<br/>9:42 |
+| HHMM   | without colon        | 1030<br/>942   |
 
 ### list
 

@@ -83,10 +83,11 @@ $ haora list
 
 #### Flags
 
-`--tags [day|month]`
+`--tags-per-day`/`-t`<br>
+`--tags-per-month`
 
 List the working hours per tag.
-The totals collect the tags of either a `day` or a `month` based on the given global date.
+The totals collect the tags of either a day or a month based on the given global date. 
 
 `--week`
 

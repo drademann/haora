@@ -25,7 +25,8 @@ import (
 )
 
 func init() {
-	command.Flags().StringP("tags", "t", "", "shows durations per tag and day or month")
+	command.Flags().BoolP("tags-per-day", "t", false, "shows the day's durations per tag")
+	command.Flags().Bool("tags-per-month", false, "shows the month durations per tag")
 	command.Flags().BoolP("week", "w", false, "shows week summary")
 	root.Command.AddCommand(command)
 }
@@ -50,14 +51,16 @@ var command = &cobra.Command{
 			return err
 		}
 
-		tagsFlag, err := cmd.Flags().GetString("tags")
+		dayTagsFlag, err := cmd.Flags().GetBool("tags-per-day")
 		if err != nil {
 			return err
-		}
-		switch tagsFlag {
-		case "day":
+		} else if dayTagsFlag {
 			return printTags(cmd, workingDate, dayList)
-		case "month":
+		}
+		monthTagsFlag, err := cmd.Flags().GetBool("tags-per-month")
+		if err != nil {
+			return err
+		} else if monthTagsFlag {
 			return printTagsMonth(cmd, workingDate, dayList)
 		}
 
@@ -72,7 +75,8 @@ var command = &cobra.Command{
 		return printDefault(cmd, workingDate, dayList)
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
-		_ = cmd.Flags().Set("tags", "")
+		_ = cmd.Flags().Set("tags-per-day", "")
+		_ = cmd.Flags().Set("tags-per-month", "")
 		_ = cmd.Flags().Set("week", "")
 	},
 }

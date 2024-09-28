@@ -34,7 +34,7 @@ func TestListTagsCmd_givenNoTasks(t *testing.T) {
 	t.Run("no days and thus no tasks for today", func(t *testing.T) {
 		data.MockLoadSave(t, &data.DayList{})
 
-		out := cmd.TestExecute(t, root.Command, "-d 22.02.2024 list --tags day")
+		out := cmd.TestExecute(t, root.Command, "-d 22.02.2024 list --tags-per-day")
 
 		assert.Output(t, out,
 			`
@@ -46,7 +46,7 @@ func TestListTagsCmd_givenNoTasks(t *testing.T) {
 	t.Run("no tasks for other day than today", func(t *testing.T) {
 		data.MockLoadSave(t, &data.DayList{})
 
-		out := cmd.TestExecute(t, root.Command, "-d 20.02.2024 list --tags day")
+		out := cmd.TestExecute(t, root.Command, "-d 20.02.2024 list --tags-per-day")
 
 		assert.Output(t, out,
 			`
@@ -66,7 +66,7 @@ func TestListTagsDayCmd(t *testing.T) {
 
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 
-	flagCases := []string{"--tags day", "-t day"}
+	flagCases := []string{"--tags-per-day", "-t"}
 	for _, fc := range flagCases {
 		command := fmt.Sprintf("list %s", fc)
 		t.Run(command, func(t *testing.T) {
@@ -100,7 +100,7 @@ func TestListTagsMonthCmd(t *testing.T) {
 
 	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d1, &d2}})
 
-	flagCases := []string{"-d 26.02. --tags month", "-d 26.02. -t month"}
+	flagCases := []string{"-d 26.02. --tags-per-month"}
 	for _, fc := range flagCases {
 		command := fmt.Sprintf("list %s", fc)
 		t.Run(command, func(t *testing.T) {
@@ -147,7 +147,7 @@ func TestListTagsMonthCmd_MoreThan100(t *testing.T) {
 
 	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d1, &d2, &d3, &d4, &d5, &d6}})
 
-	flagCases := []string{"-d 22.02. --tags month", "-d 22.02. -t month"}
+	flagCases := []string{"-d 22.02. --tags-per-month"}
 	for _, fc := range flagCases {
 		command := fmt.Sprintf("list %s", fc)
 		t.Run(command, func(t *testing.T) {

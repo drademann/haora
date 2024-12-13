@@ -68,10 +68,11 @@ Different date formats are allowed:
 
 Commands that take a timestamp as an argument accept different formats:
 
-| Format | Description          | Example        |
-|--------|----------------------|----------------|
-| HH:MM  | timestamp with colon | 10:30<br/>9:42 |
-| HHMM   | without colon        | 1030<br/>942   |
+| Format | Description                                    | Example        |
+|--------|------------------------------------------------|----------------|
+| HH:MM  | timestamp with colon                           | 10:30<br/>9:42 |
+| HHMM   | without colon                                  | 1030<br/>942   |
+| HH     | number between 0 and 23<br/>(minute will be 0) | 10             |
 
 ### list
 
@@ -87,7 +88,7 @@ $ haora list
 `--tags-per-month`
 
 List the working hours per tag.
-The totals collect the tags of either a day or a month based on the given global date. 
+The totals collect the tags of either a day or a month based on the given global date.
 
 `--week`
 

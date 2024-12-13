@@ -81,25 +81,29 @@ func parseTime(timeStr string) (time.Time, error) {
 	if timeStr == "now" {
 		return datetime.Now(), nil
 	}
+	t := time.Time{}
+	if h, err := strconv.Atoi(timeStr); err == nil && len(timeStr) < 3 && h >= 0 && h < 24 {
+		return time.Date(t.Year(), t.Month(), t.Day(), h, 0, 0, 0, t.Location()), nil
+	}
+
 	groups := timeRE.FindStringSubmatch(timeStr)
 	if len(groups) == 0 {
-		return time.Time{}, errors.New("invalid time format")
+		return t, errors.New("invalid time format")
 	}
 	hour, err := strconv.Atoi(groups[1])
 	if err != nil {
-		return time.Time{}, err
+		return t, err
 	}
 	if hour > 23 {
-		return time.Time{}, fmt.Errorf("invalid hour: %d", hour)
+		return t, fmt.Errorf("invalid hour: %d", hour)
 	}
 	minute, err := strconv.Atoi(groups[2])
 	if err != nil {
-		return time.Time{}, err
+		return t, err
 	}
 	if minute > 59 {
-		return time.Time{}, fmt.Errorf("invalid minute: %d", minute)
+		return t, fmt.Errorf("invalid minute: %d", minute)
 	}
-	t := time.Time{}
 	return time.Date(t.Year(), t.Month(), t.Day(), hour, minute, 0, 0, t.Location()), nil
 }
 

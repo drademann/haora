@@ -100,7 +100,7 @@ func TestListTagsMonthCmd(t *testing.T) {
 
 	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d1, &d2}})
 
-	flagCases := []string{"-d 26.02. --tags-per-month"}
+	flagCases := []string{"-d 26.02.2024 --tags-per-month"}
 	for _, fc := range flagCases {
 		command := fmt.Sprintf("list %s", fc)
 		t.Run(command, func(t *testing.T) {
@@ -147,7 +147,7 @@ func TestListTagsMonthCmd_MoreThan100(t *testing.T) {
 
 	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d1, &d2, &d3, &d4, &d5, &d6}})
 
-	flagCases := []string{"-d 22.02. --tags-per-month"}
+	flagCases := []string{"-d 22.02.2024 --tags-per-month"}
 	for _, fc := range flagCases {
 		command := fmt.Sprintf("list %s", fc)
 		t.Run(command, func(t *testing.T) {

@@ -48,6 +48,7 @@ func TestParseDateFlag(t *testing.T) {
 	}{
 		{"full date DD.MM.YYYY", "15.02.2024", test.Date("15.02.2024 00:00")},
 		{"full date D.M.YYYY with single digits", "1.2.2024", test.Date("01.02.2024 00:00")},
+		{"full date D.M.YY with short year", "1.2.24", test.Date("01.02.2024 00:00")},
 		{"DD.MM. should assume current year", "15.02.", test.Date("15.02.2024 00:00")},
 		{"DD.MM should accept string without trailing point", "15.02", test.Date("15.02.2024 00:00")},
 		{"DD. should assume current month and current year", "15.", test.Date("15.02.2024 00:00")},

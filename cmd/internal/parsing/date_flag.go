@@ -71,10 +71,16 @@ func tryDateString(workingDateFlag string) (time.Time, error) {
 	if err = parse(&month, groups[2]); err != nil {
 		return time.Time{}, err
 	}
-	if err = parse(&year, groups[3]); err != nil {
-		return time.Time{}, err
+	switch len(groups[3]) {
+	case 2:
+		if err = parse(&year, "20"+groups[3]); err != nil {
+			return time.Time{}, err
+		}
+	default:
+		if err = parse(&year, groups[3]); err != nil {
+			return time.Time{}, err
+		}
 	}
-
 	if day < 1 || day > daysInMonth(year, month) || month < 1 || month > 12 {
 		return time.Time{}, fmt.Errorf("unable to parse date flag %q", workingDateFlag)
 	}

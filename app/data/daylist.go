@@ -27,7 +27,7 @@ type DayList struct {
 // Day returns the Day struct for the specified date.
 func (dl *DayList) Day(date time.Time) *Day {
 	for _, day := range dl.Days {
-		if isSameDay(day.Date, date) {
+		if IsSameDay(day.Date, date) {
 			return day
 		}
 	}

@@ -46,7 +46,7 @@ func (d *Day) IsEmpty() bool {
 }
 
 func (d *Day) IsToday() bool {
-	return isSameDay(d.Date, datetime.Now())
+	return IsSameDay(d.Date, datetime.Now())
 }
 
 func (d *Day) IsFinished() bool {
@@ -304,8 +304,4 @@ func (d *Day) sanitize() *Day {
 		}
 	}
 	return d
-}
-
-func isSameDay(date1, date2 time.Time) bool {
-	return date1.Location() == date2.Location() && date1.Day() == date2.Day() && date1.Month() == date2.Month() && date1.Year() == date2.Year()
 }

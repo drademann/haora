@@ -127,7 +127,7 @@ func TestSameDay(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := isSameDay(tc.date1, tc.date2)
+			result := IsSameDay(tc.date1, tc.date2)
 			if result != tc.expected {
 				t.Errorf("expected %t, but got %t", tc.expected, result)
 			}

@@ -17,6 +17,7 @@
 package list
 
 import (
+	"fmt"
 	"github.com/drademann/haora/app/data"
 	"github.com/drademann/haora/app/datetime"
 	"github.com/drademann/haora/cmd/config"
@@ -64,8 +65,20 @@ func printWeek(cmd *cobra.Command, workingDate time.Time, dayList *data.DayList)
 	if !exist || totalOvertimeDur == 0 {
 		cmd.Printf("\n                          total worked %s  %s  %s\n", totalDurStr, totalDurDecStr, totalDurDecRoundedStr)
 	} else {
-		totalOvertimeDurStr := format.DurationShort(totalOvertimeDur)
-		cmd.Printf("\n                          total worked %s  %s  %s   (%s %v)\n", totalDurStr, totalDurDecStr, totalDurDecRoundedStr, sign(totalOvertimeDur), totalOvertimeDurStr)
+		cmd.Printf("\n                          total worked %s  %s  %s   (%s)\n", totalDurStr, totalDurDecStr, totalDurDecRoundedStr, formattedWeekOvertime(cmd, totalOvertimeDur))
 	}
 	return nil
+}
+
+func formattedWeekOvertime(cmd *cobra.Command, overtime time.Duration) string {
+	s := sign(overtime)
+	d := format.DurationShort(overtime)
+
+	now := datetime.Now()
+	weekFinish := now.Add(-overtime)
+	if overtime >= 0 || !data.IsSameDay(now, weekFinish) {
+		return fmt.Sprintf("%s %v", s, d)
+	}
+
+	return fmt.Sprintf("%s %v to %v", s, d, weekFinish.Format("15:04"))
 }

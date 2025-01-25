@@ -182,6 +182,52 @@ func TestListWeekCmd_withTotalDuration(t *testing.T) {
 	}
 }
 
+func TestListWeekCmd_withTotalDuration_andWeeksFinishTime(t *testing.T) {
+	d1 := data.Day{Date: test.Date("21.02.2024 00:00")}
+	d1.AddTask(data.NewTask(test.Date("21.02.2024 09:00"), "task 1"))
+	d1.AddTask(data.NewPause(test.Date("21.02.2024 12:00"), "lunch"))
+	d1.AddTask(data.NewTask(test.Date("21.02.2024 12:45"), "task 2"))
+	d1.Finished = test.Date("21.02.2024 17:00")
+
+	d2 := data.Day{Date: test.Date("22.02.2024 00:00")}
+	d2.AddTask(data.NewTask(test.Date("22.02.2024 10:30"), "task a"))
+	d2.AddTask(data.NewPause(test.Date("22.02.2024 12:15"), "some bread"))
+	d2.AddTask(data.NewTask(test.Date("22.02.2024 12:30"), "task b"))
+	d2.Finished = test.Date("22.02.2024 15:00")
+
+	d3 := data.Day{Date: test.Date("23.02.2024 00:00")}
+	d3.AddTask(data.NewTask(test.Date("23.02.2024 09:00"), "task c"))
+
+	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d1, &d2, &d3}})
+
+	flagCases := []string{"--week", "-w"}
+	for _, fc := range flagCases {
+		command := fmt.Sprintf("list %s", fc)
+		t.Run(command, func(t *testing.T) {
+			datetime.AssumeForTestNowAt(t, test.Date("23.02.2024 10:32"))
+			config.SetDurationPerWeek(t, 15*time.Hour)
+			config.SetDaysPerWeek(t, 3)
+			config.ApplyConfigOptions(t)
+
+			out := cmd.TestExecute(t, root.Command, command)
+
+			//goland:noinspection GrazieInspection
+			assert.Output(t, out,
+				`
+				Mon 19.02.2024   -
+				Tue 20.02.2024   -
+				Wed 21.02.2024   09:00 - 17:00  worked  7h 15m   7.25h   7.25h   (+  2h 15m)
+				Thu 22.02.2024   10:30 - 15:00  worked  4h 15m   4.25h   4.25h   (- 45m)
+				Fri 23.02.2024   09:00 -  now   worked  1h 32m   1.53h   1.50h   (-  3h 28m)
+				Sat 24.02.2024   -
+				Sun 25.02.2024   -
+				
+				                          total worked 13h  2m  13.03h  13.00h   (-  1h 58m to 12:30)
+				`)
+		})
+	}
+}
+
 func TestListWeekCmd_withHiddenWeekdays(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("20.03.2024 16:32"))
 	config.SetDurationPerWeek(t, 40*time.Hour)

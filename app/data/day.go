@@ -211,9 +211,11 @@ func (d *Day) OvertimeDuration() (time.Duration, bool) {
 		return 0, false
 	}
 	totalPause := d.TotalPauseDuration()
-	defaultPause, exists := config.DefaultPause()
-	if exists && defaultPause > totalPause {
-		totalPause = defaultPause
+	if !d.IsFinished() {
+		defaultPause, exists := config.DefaultPause()
+		if exists && defaultPause > totalPause {
+			totalPause = defaultPause
+		}
 	}
 	return d.TotalDuration() - totalPause - durationPerDay, true
 }

@@ -65,15 +65,14 @@ func printWeek(cmd *cobra.Command, workingDate time.Time, dayList *data.DayList)
 	if !exist || totalOvertimeDur == 0 {
 		cmd.Printf("\n                          total worked %s  %s  %s\n", totalDurStr, totalDurDecStr, totalDurDecRoundedStr)
 	} else {
-		cmd.Printf("\n                          total worked %s  %s  %s   (%s)\n", totalDurStr, totalDurDecStr, totalDurDecRoundedStr, formattedWeekOvertime(cmd, totalOvertimeDur))
+		cmd.Printf("\n                          total worked %s  %s  %s   (%s)\n", totalDurStr, totalDurDecStr, totalDurDecRoundedStr, formattedWeekOvertime(totalOvertimeDur))
 	}
 	return nil
 }
 
-func formattedWeekOvertime(cmd *cobra.Command, overtime time.Duration) string {
+func formattedWeekOvertime(overtime time.Duration) string {
 	s := sign(overtime)
 	d := format.DurationShort(overtime)
-
 	now := datetime.Now()
 	weekFinish := now.Add(-overtime)
 	if overtime >= 0 || !data.IsSameDay(now, weekFinish) {

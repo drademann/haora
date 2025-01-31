@@ -28,16 +28,18 @@ import (
 )
 
 type Day struct {
-	Date     time.Time
-	Tasks    []*Task
-	Finished time.Time
+	Date       time.Time
+	Tasks      []*Task
+	Finished   time.Time
+	IsVacation bool
 }
 
 func NewDay(date time.Time) *Day {
 	return &Day{
-		Date:     date,
-		Tasks:    make([]*Task, 0),
-		Finished: time.Time{},
+		Date:       date,
+		Tasks:      make([]*Task, 0),
+		Finished:   time.Time{},
+		IsVacation: false,
 	}
 }
 

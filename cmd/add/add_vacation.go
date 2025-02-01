@@ -16,7 +16,12 @@
 
 package add
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/drademann/haora/app/data"
+	"github.com/drademann/haora/cmd/internal/parsing"
+	"github.com/spf13/cobra"
+	"time"
+)
 
 func init() {
 	command.AddCommand(vacationCommand)
@@ -29,7 +34,29 @@ var vacationCommand = &cobra.Command{
 
 $ haora add vacation`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		cmd.Println("add vacation")
-		return nil
+		workingDateFlag, err := cmd.Flags().GetString("date")
+		if err != nil {
+			return err
+		}
+
+		dayList, err := data.Load()
+		if err != nil {
+			return err
+		}
+		workingDate, err := parsing.WorkingDate(workingDateFlag)
+		if err != nil {
+			return err
+		}
+
+		if err := addVacationAction(workingDate, dayList); err != nil {
+			return err
+		}
+		return data.Save(dayList)
 	},
+}
+
+func addVacationAction(workingDate time.Time, dayList *data.DayList) error {
+	day := dayList.Day(workingDate)
+	day.IsVacation = true
+	return nil
 }

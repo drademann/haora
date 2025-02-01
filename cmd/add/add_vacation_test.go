@@ -17,14 +17,30 @@
 package add
 
 import (
+	"github.com/drademann/fugo/test"
 	"github.com/drademann/fugo/test/assert"
+	"github.com/drademann/haora/app/data"
+	"github.com/drademann/haora/app/datetime"
 	"github.com/drademann/haora/cmd"
 	"github.com/drademann/haora/cmd/root"
 	"testing"
 )
 
 func TestAddVacationCmd(t *testing.T) {
-	out := cmd.TestExecute(t, root.Command, "add vacation")
+	datetime.AssumeForTestNowAt(t, test.Date("26.02.2024 13:37"))
+	dayList := data.DayList{
+		Days: []*data.Day{
+			{
+				Date:       test.Date("26.02.2024 00:00"),
+				Tasks:      []*data.Task{},
+				IsVacation: false,
+			},
+		},
+	}
+	data.MockLoadSave(t, &dayList)
 
-	assert.Output(t, out, "add vacation\n")
+	cmd.TestExecute(t, root.Command, "add vacation")
+
+	d := dayList.Day(test.Date("26.02.2024 00:00"))
+	assert.True(t, d.IsVacation)
 }

@@ -26,6 +26,7 @@ import _ "github.com/drademann/haora/cmd/finish"
 import _ "github.com/drademann/haora/cmd/list"
 import _ "github.com/drademann/haora/cmd/pause"
 import _ "github.com/drademann/haora/cmd/remove"
+import _ "github.com/drademann/haora/cmd/vacation"
 import _ "github.com/drademann/haora/cmd/version"
 
 func main() {

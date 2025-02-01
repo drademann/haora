@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-package add
+package vacation
 
 import (
 	"github.com/drademann/fugo/test"
@@ -39,7 +39,7 @@ func TestAddVacationCmd(t *testing.T) {
 	}
 	data.MockLoadSave(t, &dayList)
 
-	cmd.TestExecute(t, root.Command, "add vacation")
+	cmd.TestExecute(t, root.Command, "vacation")
 
 	d := dayList.Day(test.Date("26.02.2024 00:00"))
 	assert.True(t, d.IsVacation)
@@ -66,8 +66,27 @@ func TestAddVacationCmd_shouldRemoveExistingTasks(t *testing.T) {
 	d := dayList.Day(test.Date("26.02.2024 00:00"))
 	assert.Equal(t, 1, len(d.Tasks))
 
-	cmd.TestExecute(t, root.Command, "add vacation")
+	cmd.TestExecute(t, root.Command, "vacation")
 
 	d = dayList.Day(test.Date("26.02.2024 00:00"))
 	assert.True(t, d.IsEmpty())
+}
+
+func TestRemoveVacationCmd(t *testing.T) {
+	datetime.AssumeForTestNowAt(t, test.Date("26.02.2024 13:37"))
+	dayList := data.DayList{
+		Days: []*data.Day{
+			{
+				Date:       test.Date("26.02.2024 00:00"),
+				Tasks:      []*data.Task{},
+				IsVacation: true,
+			},
+		},
+	}
+	data.MockLoadSave(t, &dayList)
+
+	cmd.TestExecute(t, root.Command, "vacation --remove")
+
+	d := dayList.Day(test.Date("26.02.2024 00:00"))
+	assert.False(t, d.IsVacation)
 }

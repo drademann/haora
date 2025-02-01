@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-package add
+package remove
 
 import (
 	"github.com/drademann/fugo/test"
@@ -26,48 +26,21 @@ import (
 	"testing"
 )
 
-func TestAddVacationCmd(t *testing.T) {
+func TestRemoveVacationCmd(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("26.02.2024 13:37"))
 	dayList := data.DayList{
 		Days: []*data.Day{
 			{
 				Date:       test.Date("26.02.2024 00:00"),
 				Tasks:      []*data.Task{},
-				IsVacation: false,
+				IsVacation: true,
 			},
 		},
 	}
 	data.MockLoadSave(t, &dayList)
 
-	cmd.TestExecute(t, root.Command, "add vacation")
+	cmd.TestExecute(t, root.Command, "remove vacation")
 
 	d := dayList.Day(test.Date("26.02.2024 00:00"))
-	assert.True(t, d.IsVacation)
-}
-
-func TestAddVacationCmd_shouldRemoveExistingTasks(t *testing.T) {
-	datetime.AssumeForTestNowAt(t, test.Date("26.02.2024 13:37"))
-	dayList := data.DayList{
-		Days: []*data.Day{
-			{
-				Date: test.Date("26.02.2024 00:00"),
-				Tasks: []*data.Task{
-					{
-						Start: test.Date("26.02.2024 12:15"),
-						Text:  "existing task",
-						Tags:  []string{"beer"},
-					},
-				},
-				IsVacation: false,
-			},
-		},
-	}
-	data.MockLoadSave(t, &dayList)
-	d := dayList.Day(test.Date("26.02.2024 00:00"))
-	assert.Equal(t, 1, len(d.Tasks))
-
-	cmd.TestExecute(t, root.Command, "add vacation")
-
-	d = dayList.Day(test.Date("26.02.2024 00:00"))
-	assert.True(t, d.IsEmpty())
+	assert.False(t, d.IsVacation)
 }

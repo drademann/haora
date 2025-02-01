@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-package add
+package remove
 
 import (
 	"github.com/drademann/haora/app/data"
@@ -24,16 +24,12 @@ import (
 )
 
 func init() {
-	command.AddCommand(addVacationCommand)
+	command.AddCommand(removeVacationCommand)
 }
 
-var addVacationCommand = &cobra.Command{
+var removeVacationCommand = &cobra.Command{
 	Use:   "vacation",
-	Short: "Marks a day as vacation.",
-	Long: `Marks a day as vacation so it won't be considered as working day.
-Any existing tasks will be removed.
-
-$ haora add vacation`,
+	Short: "Removes the vacation flag from a day.",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		workingDateFlag, err := cmd.Flags().GetString("date")
 		if err != nil {
@@ -49,13 +45,12 @@ $ haora add vacation`,
 			return err
 		}
 
-		addVacationAction(workingDate, dayList)
+		removeVacationAction(workingDate, dayList)
 		return data.Save(dayList)
 	},
 }
 
-func addVacationAction(workingDate time.Time, dayList *data.DayList) {
-	day := dayList.Day(workingDate)
-	day.Tasks = make([]*data.Task, 0)
-	day.IsVacation = true
+func removeVacationAction(workingDate time.Time, dayList *data.DayList) {
+	d := dayList.Day(workingDate)
+	d.IsVacation = false
 }

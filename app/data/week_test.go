@@ -30,11 +30,11 @@ func TestWeek_TotalWeekDurationWithoutVacation(t *testing.T) {
 
 	w := Week{
 		Days: [7]Day{
-			Day{test.Date("10.02.2025 00:00"), nil, time.Time{}, false},
-			Day{test.Date("11.02.2025 00:00"), nil, time.Time{}, false},
-			Day{test.Date("12.02.2025 00:00"), nil, time.Time{}, false},
-			Day{test.Date("13.02.2025 00:00"), nil, time.Time{}, false},
-			Day{test.Date("14.02.2025 00:00"), nil, time.Time{}, true},
+			{test.Date("10.02.2025 00:00"), nil, time.Time{}, false},
+			{test.Date("11.02.2025 00:00"), nil, time.Time{}, false},
+			{test.Date("12.02.2025 00:00"), nil, time.Time{}, false},
+			{test.Date("13.02.2025 00:00"), nil, time.Time{}, false},
+			{test.Date("14.02.2025 00:00"), nil, time.Time{}, true},
 		},
 	}
 

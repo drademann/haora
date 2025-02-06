@@ -17,12 +17,17 @@
 package data
 
 import (
+	"github.com/drademann/fugo/fp"
 	"github.com/drademann/haora/cmd/config"
 	"time"
 )
 
 type Week struct {
 	Days [7]Day
+}
+
+func (w Week) HasOpenDay() bool {
+	return fp.Any(w.Days[:], func(d Day) bool { return !d.IsFinished() })
 }
 
 func (w Week) TotalWorkDuration() time.Duration {

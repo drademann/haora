@@ -64,7 +64,7 @@ func printWeek(cmd *cobra.Command, workingDate time.Time, dayList *data.DayList)
 	totalDurDecStr := format.DurationDecimal(totalDur)
 	totalDurDecRoundedStr := format.DurationDecimalRounded(totalDur, 15*time.Minute)
 	totalOvertimeDur, exist := week.TotalOvertimeDuration()
-	if !exist || totalOvertimeDur == 0 {
+	if !exist || totalOvertimeDur == 0 || !week.HasOpenDay() {
 		cmd.Printf("\n                          total worked %s  %s  %s\n", totalDurStr, totalDurDecStr, totalDurDecRoundedStr)
 	} else {
 		cmd.Printf("\n                          total worked %s  %s  %s   (%s)\n", totalDurStr, totalDurDecStr, totalDurDecRoundedStr, formattedWeekOvertime(totalOvertimeDur))

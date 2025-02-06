@@ -38,6 +38,10 @@ func printDefault(cmd *cobra.Command, workingDate time.Time, dayList *data.DayLi
 	}
 	cmd.Println(headerStr(*d))
 
+	if d.IsVacation {
+		cmd.Println("vacation")
+		return nil
+	}
 	if d.IsEmpty() {
 		cmd.Println("no tasks recorded")
 		return nil

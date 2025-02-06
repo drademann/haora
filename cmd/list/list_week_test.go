@@ -84,6 +84,40 @@ func TestListWeekCmd(t *testing.T) {
 		`)
 }
 
+func TestListWeekCmd_shouldMarkVacationDays(t *testing.T) {
+	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
+	config.SetDurationPerWeek(t, 40*time.Hour)
+	config.SetDaysPerWeek(t, 5)
+	config.ApplyConfigOptions(t)
+
+	d1 := data.Day{Date: test.Date("22.02.2024 00:00")}
+	d1.AddTask(data.NewTask(test.Date("22.02.2024 09:00"), "task 1"))
+	d1.AddTask(data.NewPause(test.Date("22.02.2024 12:00"), "lunch"))
+	d1.AddTask(data.NewTask(test.Date("22.02.2024 12:45"), "task 2"))
+	d1.Finished = test.Date("22.02.2024 17:00")
+
+	d2 := data.Day{Date: test.Date("23.02.2024 00:00")}
+	d2.IsVacation = true
+
+	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d1, &d2}})
+
+	out := cmd.TestExecute(t, root.Command, "list --week")
+
+	//goland:noinspection GrazieInspection
+	assert.Output(t, out,
+		`
+		Mon 19.02.2024   -
+		Tue 20.02.2024   -
+		Wed 21.02.2024   -
+		Thu 22.02.2024   09:00 - 17:00  worked  7h 15m   7.25h   7.25h   (- 45m)
+		Fri 23.02.2024   vacation
+		Sat 24.02.2024   -
+		Sun 25.02.2024   -
+		
+		                          total worked  7h 15m   7.25h   7.25h   (- 24h 45m)
+		`)
+}
+
 func TestListWeekCmd_givenDayIsOpen_shouldDisplayNowAsEndTime(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, test.Date("22.02.2024 16:32"))
 	config.SetDurationPerWeek(t, 40*time.Hour)

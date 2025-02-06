@@ -34,9 +34,26 @@ func (w Week) TotalWorkDuration() time.Duration {
 }
 
 func (w Week) TotalOvertimeDuration() (time.Duration, bool) {
-	durationPerWeek, exist := config.DurationPerWeek()
+	durationPerWeek, exist := w.TotalWeekDurationWithoutVacation()
 	if !exist {
 		return 0, false
 	}
 	return w.TotalWorkDuration() - durationPerWeek, true
+}
+
+func (w Week) TotalWeekDurationWithoutVacation() (time.Duration, bool) {
+	total, ok := config.DurationPerWeek()
+	if !ok {
+		return 0, false
+	}
+	perDay, ok := config.DurationPerDay()
+	if !ok {
+		return 0, false
+	}
+	for _, day := range w.Days {
+		if day.IsVacation {
+			total -= perDay
+		}
+	}
+	return total, true
 }

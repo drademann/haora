@@ -34,7 +34,7 @@ var command = &cobra.Command{
 	Long: `Marks a day as vacation so it won't be considered as working day anymore.
 Any existing tasks will be removed.
 
-$ haora add vacation`,
+$ haora vacation`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		workingDateFlag, err := cmd.Flags().GetString("date")
 		if err != nil {

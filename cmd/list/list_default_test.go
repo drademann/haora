@@ -28,6 +28,23 @@ import (
 	"time"
 )
 
+func TestListCmd_givenVacationDay(t *testing.T) {
+	datetime.AssumeForTestNowAt(t, time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local))
+
+	d := data.Day{Date: test.Date("22.02.2024 00:00")}
+	d.IsVacation = true
+	data.MockLoadSave(t, &data.DayList{Days: []*data.Day{&d}})
+
+	out := cmd.TestExecute(t, root.Command, "-d 22.02.2024 list")
+
+	assert.Output(t, out,
+		`
+		Tasks for today, 22.02.2024 (Thu)
+
+		vacation
+		`)
+}
+
 func TestListCmd_givenNoTasks(t *testing.T) {
 	datetime.AssumeForTestNowAt(t, time.Date(2024, time.February, 22, 16, 32, 0, 0, time.Local))
 

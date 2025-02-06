@@ -49,7 +49,7 @@ func (dl *DayList) Week(start time.Time) Week {
 func (dl *DayList) SanitizedDays() []*Day {
 	var r = make([]*Day, 0)
 	for _, d := range dl.Days {
-		if !d.IsEmpty() { // ignore days without any task
+		if !d.IsEmpty() || d.IsVacation { // ignore days without any task except they're marked as vacation
 			r = append(r, d.sanitize())
 		}
 	}

@@ -196,6 +196,27 @@ To explicitly set a finish time.
 
 To remove an already set finish time.
 
+### vacation
+
+Marks a day as vacation. Such days have no tasks, and reduce the week's necessary duration
+by one day (when configured).
+
+```shell
+$  haora vacation
+```
+
+or for example 
+
+```shell
+$ haora -d 15.02. vacation
+```
+
+#### Flags
+
+`--remove`
+
+Removes a set vacation.
+
 ### version
 
 Print the current version of Haora.

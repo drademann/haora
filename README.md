@@ -205,7 +205,7 @@ by one day (when configured).
 $  haora vacation
 ```
 
-or for example 
+or for example
 
 ```shell
 $ haora -d 15.02. vacation
@@ -233,6 +233,8 @@ times:
   defaultPause: "45m"
 view:
   hiddenWeekdays: sa so
+label:
+  vacation: free
 ```
 
 When the file is not present, the default values are used.
@@ -290,3 +292,15 @@ times:
 ```
 
 Default: none set, all displayed
+
+### Vacation Label
+
+`label.vacation`
+
+Allows to set a custom label printed for days marked as vacation.
+The default is `vacation`.
+
+Example:
+
+    label:
+      vacation: free day

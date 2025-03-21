@@ -298,6 +298,9 @@ Default: none set, all displayed
 `label.vacation`
 
 Allows to set a custom label printed for days marked as vacation.
+This will only change the label used by the `list` command when printing, 
+not the command keyword!
+
 The default is `vacation`.
 
 Example:

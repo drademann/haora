@@ -20,6 +20,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/drademann/haora/app/data"
+	"github.com/drademann/haora/cmd/config"
 	"github.com/drademann/haora/cmd/internal/format"
 	"github.com/spf13/cobra"
 	"strings"
@@ -39,7 +40,11 @@ func printDefault(cmd *cobra.Command, workingDate time.Time, dayList *data.DayLi
 	cmd.Println(headerStr(*d))
 
 	if d.IsVacation {
-		cmd.Println("vacation")
+		label, isSet := config.LabelVacation()
+		if !isSet {
+			label = "vacation"
+		}
+		cmd.Println(label)
 		return nil
 	}
 	if d.IsEmpty() {

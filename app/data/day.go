@@ -92,6 +92,10 @@ func (d *Day) AddNewPause(s time.Time, txt string) error {
 
 func (d *Day) AddTask(task *Task) {
 	d.Tasks = append(d.Tasks, task)
+	d.SortTasks()
+}
+
+func (d *Day) SortTasks() {
 	slices.SortFunc(d.Tasks, tasksByStart)
 }
 

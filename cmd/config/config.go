@@ -37,6 +37,8 @@ const (
 	defaultPauseKey    = "times.defaultPause"
 
 	hiddenWeekdaysKey = "view.hiddenWeekdays"
+
+	labelVacationKey = "label.vacation"
 )
 
 var UserHomeDir = os.UserHomeDir
@@ -48,6 +50,8 @@ var (
 	defaultPause    *time.Duration
 	// view
 	hiddenWeekdays *[]time.Weekday
+	// label
+	labelVacation string
 )
 
 func InitViper() {
@@ -92,6 +96,9 @@ func setConfigOptions() {
 		duration := viper.GetDuration(defaultPauseKey)
 		defaultPause = &duration
 	}
+	if viper.IsSet(labelVacationKey) {
+		labelVacation = viper.GetString(labelVacationKey)
+	}
 }
 
 func DurationPerWeek() (time.Duration, bool) {
@@ -118,6 +125,13 @@ func DefaultPause() (time.Duration, bool) {
 		return 0, false
 	}
 	return *defaultPause, true
+}
+
+func LabelVacation() (string, bool) {
+	if labelVacation == "" {
+		return "", false
+	}
+	return labelVacation, true
 }
 
 // for testing
@@ -166,5 +180,15 @@ func SetDefaultPause(t *testing.T, pause time.Duration) {
 	t.Cleanup(func() {
 		viper.Set(defaultPauseKey, nil)
 		defaultPause = nil
+	})
+}
+
+func SetLabelVacation(t *testing.T, label string) {
+	t.Helper()
+	viper.Set(labelVacationKey, label)
+	labelVacation = ""
+	t.Cleanup(func() {
+		viper.Set(labelVacationKey, nil)
+		labelVacation = ""
 	})
 }

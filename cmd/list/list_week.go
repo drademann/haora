@@ -34,7 +34,11 @@ func printWeek(cmd *cobra.Command, workingDate time.Time, dayList *data.DayList)
 		if config.IsHidden(day.Date.Weekday()) && day.IsEmpty() {
 			continue
 		} else if day.IsVacation {
-			cmd.Printf("%s   vacation\n", dateStr)
+			label, isSet := config.LabelVacation()
+			if !isSet {
+				label = "vacation"
+			}
+			cmd.Printf("%s   %s\n", dateStr, label)
 		} else if day.IsEmpty() {
 			cmd.Printf("%s   -\n", dateStr)
 		} else {

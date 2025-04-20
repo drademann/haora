@@ -43,6 +43,10 @@ func (w Week) TotalOvertimeDuration() (time.Duration, bool) {
 	if !exist {
 		return 0, false
 	}
+	defaultPause, exist := config.DefaultPause()
+	if w.HasOpenDay() && exist {
+		return w.TotalWorkDuration() - durationPerWeek - defaultPause, true
+	}
 	return w.TotalWorkDuration() - durationPerWeek, true
 }
 

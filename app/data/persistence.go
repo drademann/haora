@@ -56,10 +56,14 @@ func read(r io.Reader) (*DayList, error) {
 	if err != nil {
 		return nil, err
 	}
-	dayList := DayList{}
-	if err = json.Unmarshal(bytes, &dayList.Days); err != nil {
+	var days []*Day
+	if err = json.Unmarshal(bytes, &days); err != nil {
 		return nil, err
 	}
+	for _, day := range days {
+		day.SortTasks()
+	}
+	dayList := DayList{Days: days}
 	return &dayList, nil
 }
 
